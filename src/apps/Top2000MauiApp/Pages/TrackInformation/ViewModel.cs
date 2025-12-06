@@ -6,11 +6,11 @@ namespace Top2000MauiApp.Pages.TrackInformation;
 
 public partial class ViewModel : ObservableObject
 {
-    private readonly IMediator mediator;
+    private readonly IMediator _mediator;
 
     public ViewModel(IMediator mediator)
     {
-        this.mediator = mediator;
+        this._mediator = mediator;
         this.Listings = [];
     }
 
@@ -67,7 +67,7 @@ public partial class ViewModel : ObservableObject
 
     public async Task LoadTrackDetailsAsync(int trackId)
     {
-        var track = await mediator.Send(new TrackInformationRequest { TrackId = trackId });
+        var track = await _mediator.Send(new TrackInformationRequest { TrackId = trackId });
 
         this.Title = track.Title;
         this.ArtistWithYear = $"{track.Artist} ({track.RecordedYear})";

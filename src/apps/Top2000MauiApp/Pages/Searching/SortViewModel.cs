@@ -6,8 +6,8 @@ public class SortViewModel
 {
     public SortViewModel(ISort value, string name)
     {
-        this.Value = value;
-        this.Name = name;
+        Value = value;
+        Name = name;
     }
 
     public ISort Value { get; }
@@ -16,8 +16,8 @@ public class SortViewModel
 
     public override bool Equals(object? obj)
     {
-        return obj is SortViewModel svm && svm.Name == this.Name;
+        return obj is SortViewModel svm && svm.Name == Name;
     }
 
-    public override int GetHashCode() => this.Name.GetHashCode();
+    public override int GetHashCode() => Name.GetHashCode();
 }

@@ -5,16 +5,16 @@ namespace Top2000MauiApp.Globalisation;
 public class LocalisationService : ILocalisationService
 {
     public const string CulturePreferenceName = "Culture";
-    private readonly IEnumerable<ICulture> cultures;
-    private ICulture activeCulture;
+    private readonly IEnumerable<ICulture> _cultures;
+    private ICulture _activeCulture;
 
     public LocalisationService(IEnumerable<ICulture> cultures)
     {
-        this.cultures = cultures;
-        activeCulture = cultures.Single(x => x.Name == "nl");
+        _cultures = cultures;
+        _activeCulture = cultures.Single(x => x.Name == "nl");
     }
 
-    public ICulture GetCurrentCulture() => activeCulture;
+    public ICulture GetCurrentCulture() => _activeCulture;
 
     public void SetCulture(ICulture cultureInfo)
     {
@@ -22,7 +22,7 @@ public class LocalisationService : ILocalisationService
         {
             Preferences.Set(CulturePreferenceName, cultureInfo.Name);
 
-            activeCulture = cultureInfo;
+            _activeCulture = cultureInfo;
 
             Thread.CurrentThread.CurrentCulture = new CultureInfo(cultureInfo.Name);
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cultureInfo.Name);
@@ -34,7 +34,7 @@ public class LocalisationService : ILocalisationService
     public void SetCultureFromSetting()
     {
         var name = Preferences.Get(CulturePreferenceName, "nl");
-        activeCulture = this.FindCulture(name);
+        _activeCulture = this.FindCulture(name);
         Thread.CurrentThread.CurrentCulture = new CultureInfo(name);
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(name);
 
@@ -42,5 +42,5 @@ public class LocalisationService : ILocalisationService
     }
 
     private ICulture FindCulture(string name)
-        => cultures.SingleOrDefault(x => x.Name == name) ?? cultures.Single(x => x.Name == "nl");
+        => _cultures.SingleOrDefault(x => x.Name == name) ?? _cultures.Single(x => x.Name == "nl");
 }

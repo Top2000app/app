@@ -9,7 +9,7 @@ public class SupportedCulture : ICulture
 {
     public SupportedCulture(string name)
     {
-        this.Name = name;
+        Name = name;
     }
 
     public string Name { get; }

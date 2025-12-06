@@ -6,19 +6,19 @@ namespace Top2000MauiApp.Pages.Searching;
 
 public partial class ViewModel : ObservableObject
 {
-    private readonly IMediator mediator;
-    private readonly IEnumerable<IGroup> groupOptions;
-    private readonly IEnumerable<ISort> sortOptions;
+    private readonly IMediator _mediator;
+    private readonly IEnumerable<IGroup> _groupOptions;
+    private readonly IEnumerable<ISort> _sortOptions;
 
     public ViewModel(IMediator mediator, IEnumerable<IGroup> groupOptions, IEnumerable<ISort> sortOptions)
     {
-        this.mediator = mediator;
-        this.groupOptions = groupOptions;
-        this.sortOptions = sortOptions;
-        this.GroupByOptions = [];
-        this.SortByOptions = [];
-        this.Results = [];
-        this.ResultsFlat = [];
+        _mediator = mediator;
+        _groupOptions = groupOptions;
+        _sortOptions = sortOptions;
+        GroupByOptions = [];
+        SortByOptions = [];
+        Results = [];
+        ResultsFlat = [];
     }
 
     [ObservableProperty]
@@ -59,8 +59,8 @@ public partial class ViewModel : ObservableObject
     {
         if (this.GroupByOptions.Count == 0)
         {
-            this.GroupByOptions.ClearAddRange(groupOptions.Select(x => new GroupViewModel(x, nameProvider.GetNameForGroup(x))));
-            this.SortByOptions.ClearAddRange(sortOptions.Select(x => new SortViewModel(x, nameProvider.GetNameForSort(x))));
+            this.GroupByOptions.ClearAddRange(_groupOptions.Select(x => new GroupViewModel(x, nameProvider.GetNameForGroup(x))));
+            this.SortByOptions.ClearAddRange(_sortOptions.Select(x => new SortViewModel(x, nameProvider.GetNameForSort(x))));
             this.GroupBy = this.GroupByOptions[0];
             this.SortBy = this.SortByOptions[0];
         }
@@ -80,7 +80,7 @@ public partial class ViewModel : ObservableObject
 
     public async Task ExceuteSearchAsync()
     {
-        var editions = await mediator.Send(new AllEditionsRequest());
+        var editions = await _mediator.Send(new AllEditionsRequest());
         var lastEdition = editions.First();
 
         var request = new SearchTrackRequest
@@ -91,7 +91,7 @@ public partial class ViewModel : ObservableObject
             LatestYear = lastEdition.Year,
 
         };
-        var result = await mediator.Send(request);
+        var result = await _mediator.Send(request);
 
         this.Results.ClearAddRange(result);
         this.ResultsFlat.ClearAddRange(this.Results.SelectMany(x => x));

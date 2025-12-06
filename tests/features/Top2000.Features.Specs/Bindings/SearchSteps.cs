@@ -7,39 +7,39 @@ namespace Top2000.Features.Specs.Bindings;
 [Binding]
 public class SearchSteps
 {
-    private List<IGrouping<string, SearchedTrack>> result;
-    private readonly IGroup grouping = new GroupByNothing();
-    private readonly ISort sorting = new SortByTitle();
-    private readonly IMediator mediator = App.GetService<IMediator>();
+    private List<IGrouping<string, SearchedTrack>> result = [];
+    private readonly IGroup _grouping = new GroupByNothing();
+    private readonly ISort _sorting = new SortByTitle();
+    private readonly IMediator _mediator = App.GetService<IMediator>();
 
     [When(@"searching for (.*)")]
-    public async Task WhenSearchingFor(string queryString)
+    public async Task WhenSearchingForAsync(string queryString)
     {
         var latestEdition = await GetLatestEditionAsync();
         var request = new SearchTrackRequest
         {
             QueryString = queryString,
             LatestYear = latestEdition,
-            Sorting = sorting,
-            Grouping = grouping,
+            Sorting = _sorting,
+            Grouping = _grouping,
         };
 
-        result = await mediator.Send(request);
+        result = await _mediator.Send(request);
     }
 
     [When(@"searching without a query")]
-    public async Task WhenSearchingWithoutAQuery()
+    public async Task WhenSearchingWithoutAQueryAsync()
     {
         var latestEdition = await GetLatestEditionAsync();
         var request = new SearchTrackRequest
         {
             QueryString = string.Empty,
             LatestYear = latestEdition,
-            Sorting = sorting,
-            Grouping = grouping,
+            Sorting = _sorting,
+            Grouping = _grouping,
         };
 
-        result = await mediator.Send(request);
+        result = await _mediator.Send(request);
     }
 
     [Then(@"the following tracks are found:")]
@@ -72,7 +72,7 @@ public class SearchSteps
 
     private async Task<int> GetLatestEditionAsync()
     {
-        var allEditions = await mediator.Send(new AllEditionsRequest());
+        var allEditions = await _mediator.Send(new AllEditionsRequest());
         return allEditions.Last().Year;
     }
 

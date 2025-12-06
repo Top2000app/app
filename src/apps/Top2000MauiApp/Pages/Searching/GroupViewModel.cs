@@ -6,8 +6,8 @@ public class GroupViewModel
 {
     public GroupViewModel(IGroup value, string name)
     {
-        this.Value = value;
-        this.Name = name;
+        Value = value;
+        Name = name;
     }
 
     public IGroup Value { get; }
@@ -21,8 +21,8 @@ public class GroupViewModel
             return false;
         }
 
-        return obj is GroupViewModel svm && svm.Name == this.Name;
+        return obj is GroupViewModel svm && svm.Name == Name;
     }
 
-    public override int GetHashCode() => this.Name.GetHashCode();
+    public override int GetHashCode() => Name.GetHashCode();
 }

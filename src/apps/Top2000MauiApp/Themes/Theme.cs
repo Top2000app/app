@@ -13,12 +13,7 @@
     {
         private const string ThemePreferenceName = "Theme";
 
-        public ThemeService()
-        {
-            CurrentThemeName = Light.ThemeName;
-        }
-
-        public string CurrentThemeName { get; private set; }
+        public string CurrentThemeName { get; private set; } = Light.ThemeName;
 
         public void SetThemeFromSetting()
         {
@@ -42,7 +37,7 @@
             }
         }
 
-        private ResourceDictionary GetThemeByName(string name)
+        private static ResourceDictionary GetThemeByName(string name)
         {
             return name switch
             {

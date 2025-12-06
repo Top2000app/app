@@ -4,7 +4,7 @@ public static class PageExtensions
 {
     public static async Task<DisplayActionSheetResult> DisplayActionSheetAsync(this ContentPage page, string title, string cancel, params string[] options)
     {
-        var result = await page.DisplayActionSheet(title, cancel, destruction: null, options);
+        var result = await page.DisplayActionSheetAsync(title, cancel, destruction: null, options);
 
         return new DisplayActionSheetResult
         (

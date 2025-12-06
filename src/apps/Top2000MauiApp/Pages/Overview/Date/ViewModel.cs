@@ -6,13 +6,13 @@ namespace Top2000MauiApp.Pages.Overview.Date;
 
 public partial class ViewModel : ObservableObject
 {
-    private readonly IMediator mediator;
+    private readonly IMediator _mediator;
 
     public ViewModel(IMediator mediator)
     {
-        this.mediator = mediator;
-        this.Listings = [];
-        this.Dates = [];
+        _mediator = mediator;
+        Listings = [];
+        Dates = [];
     }
 
     public ObservableGroupedList<DateTime, TrackListingViewModel> Listings { get; }
@@ -28,7 +28,7 @@ public partial class ViewModel : ObservableObject
 
     public async Task InitialiseViewModelAsync()
     {
-        var editions = await mediator.Send(new AllEditionsRequest());
+        var editions = await _mediator.Send(new AllEditionsRequest());
         this.SelectedEditionYear = editions.First().Year;
 
         await this.LoadAllListingsAsync();
@@ -36,7 +36,7 @@ public partial class ViewModel : ObservableObject
 
     public async Task LoadAllListingsAsync()
     {
-        var tracks = await mediator.Send(new AllListingsOfEditionRequest { Year = this.SelectedEditionYear });
+        var tracks = await _mediator.Send(new AllListingsOfEditionRequest { Year = this.SelectedEditionYear });
 
         var listings = tracks
              .Select(x => new TrackListingViewModel

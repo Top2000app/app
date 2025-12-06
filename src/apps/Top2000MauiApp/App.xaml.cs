@@ -10,10 +10,7 @@ namespace Top2000MauiApp;
 public partial class App : Application
 {
     public static readonly IFormatProvider DateTimeFormatProvider = DateTimeFormatInfo.InvariantInfo;
-
     public static readonly IFormatProvider NumberFormatProvider = NumberFormatInfo.InvariantInfo;
-
-    private static IServiceProvider? serviceProvider;
 
     public App()
     {
@@ -31,15 +28,8 @@ public partial class App : Application
 
     public static IServiceProvider ServiceProvider
     {
-        get
-        {
-            return serviceProvider ??
-                throw new InvalidOperationException("Application isn't booted yet");
-        }
-        set
-        {
-            serviceProvider = value;
-        }
+        get {  return field ??  throw new InvalidOperationException("Application isn't booted yet");  }
+        set;
     }
 
     public static T GetService<T>() where T : notnull => ServiceProvider.GetRequiredService<T>();

@@ -5,7 +5,11 @@ namespace Top2000.Features.Specs.Bindings;
 [Binding]
 public class TrackInformationSteps
 {
-    private TrackDetails track;
+    private TrackDetails Track
+    {
+        get { return field ?? throw new InvalidOperationException("Forget to set Track?"); }
+        set;
+    }
 
     [When(@"the track information feature is executed for TrackId (.*)")]
     public async Task WhenTheTrackInformationFeatureIsExecutedForTrackId(int trackId)
@@ -14,17 +18,18 @@ public class TrackInformationSteps
 
         var mediator = App.GetService<IMediator>();
 
-        track = await mediator.Send(request);
+        Track = await mediator.Send(request);
     }
 
     [Then(@"the title is ""(.*)"" from '(.*)' which is recorded in the year (.*)")]
     public void ThenTheTitleIsFromWhichIsRecordedInTheYear(string title, string artist, int recordedYear)
     {
+        
         using (new AssertionScope())
         {
-            track.Title.Should().Be(title);
-            track.Artist.Should().Be(artist);
-            track.RecordedYear.Should().Be(recordedYear);
+            Track.Title.Should().Be(title);
+            Track.Artist.Should().Be(artist);
+            Track.RecordedYear.Should().Be(recordedYear);
         }
     }
 
@@ -36,7 +41,7 @@ public class TrackInformationSteps
 
         foreach (var edition in editions)
         {
-            track.Listings.Single(x => x.Edition == edition.Edition).Status.Should().Be(status);
+            Track.Listings.Single(x => x.Edition == edition.Edition).Status.Should().Be(status);
         }
     }
 
@@ -44,19 +49,19 @@ public class TrackInformationSteps
     public void ThenTheListingIsListedAs(int edition, string statusAsString)
     {
         var status = (ListingStatus)Enum.Parse(typeof(ListingStatus), statusAsString);
-        track.Listings.Single(x => x.Edition == edition).Status.Should().Be(status);
+        Track.Listings.Single(x => x.Edition == edition).Status.Should().Be(status);
     }
 
     [Then(@"it could have been on the Top2000 for (.*) times")]
     public void ThenItCouldHaveBeenOnTheTopForTimes(int expected)
     {
-        track.AppearancesPossible.Should().Be(expected);
+        Track.AppearancesPossible.Should().Be(expected);
     }
 
     [Then(@"is it listed for (.*) times")]
     public void ThenIsItListedForTimes(int expected)
     {
-        track.Appearances.Should().Be(expected);
+        Track.Appearances.Should().Be(expected);
     }
 
     [Then(@"the record high is number (.*) on (.*)")]
@@ -64,8 +69,8 @@ public class TrackInformationSteps
     {
         using (new AssertionScope())
         {
-            track.Highest.Position.Should().Be(position);
-            track.Highest.Edition.Should().Be(year);
+            Track.Highest.Position.Should().Be(position);
+            Track.Highest.Edition.Should().Be(year);
         }
     }
 
@@ -74,8 +79,8 @@ public class TrackInformationSteps
     {
         using (new AssertionScope())
         {
-            track.Lowest.Position.Should().Be(position);
-            track.Lowest.Edition.Should().Be(year);
+            Track.Lowest.Position.Should().Be(position);
+            Track.Lowest.Edition.Should().Be(year);
         }
     }
 
@@ -84,8 +89,8 @@ public class TrackInformationSteps
     {
         using (new AssertionScope())
         {
-            track.Latest.Position.Should().Be(position);
-            track.Latest.Edition.Should().Be(year);
+            Track.Latest.Position.Should().Be(position);
+            Track.Latest.Edition.Should().Be(year);
         }
     }
 
@@ -94,8 +99,8 @@ public class TrackInformationSteps
     {
         using (new AssertionScope())
         {
-            track.First.Position.Should().Be(position);
-            track.First.Edition.Should().Be(year);
+            Track.First.Position.Should().Be(position);
+            Track.First.Edition.Should().Be(year);
         }
     }
 

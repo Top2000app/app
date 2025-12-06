@@ -5,8 +5,8 @@ public partial class View : Grid
 {
     public View()
     {
-        this.BindingContext = App.GetService<ViewModel>();
-        this.InitializeComponent();
+        BindingContext = App.GetService<ViewModel>();
+        InitializeComponent();
     }
 
     public ViewModel ViewModel => (ViewModel)this.BindingContext;

@@ -7,7 +7,7 @@ namespace Top2000.Features.Specs.Bindings;
 [Binding]
 public class AllListingsOfEditionSteps
 {
-    private HashSet<TrackListing> result;
+    private HashSet<TrackListing> result = [];
 
     [Then(@"an empty set is returned")]
     public void ThenAnEmptySetIsReturned()

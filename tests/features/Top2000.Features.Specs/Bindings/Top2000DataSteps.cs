@@ -1,12 +1,13 @@
-﻿using AwesomeAssertions;
-using Top2000.Data.ClientDatabase.Models;
-
-namespace Top2000.Features.Specs.Bindings;
+﻿namespace Top2000.Features.Specs.Bindings;
 
 [Binding]
 public class Top2000DataSteps
 {
-    private IGrouping<int, Listing> _latestEdition;
+    private IGrouping<int, Listing> LatestEdition
+    {
+        get { return field ?? throw new InvalidOperationException("Forget to set LatestEdition?"); }
+        set;
+    }
 
     [BeforeScenario]
     public void DeleteClientDatabase()
@@ -34,7 +35,7 @@ public class Top2000DataSteps
     }
 
     [Then(@"the listing table contains 2000 tracks for each edition ranging from 1 to 2000")]
-    public async Task ThenThePositionTableContainsTracksForEachEditionRangingFromTo()
+    public async Task ThenThePositionTableContainsTracksForEachEditionRangingFromToAsync()
     {
         var sql = App.GetService<SqliteConnection>();
         var lists = (await GetListingsAsync(sql))
@@ -43,7 +44,7 @@ public class Top2000DataSteps
             .OrderBy(x => x.Key)
             .ToList();
 
-        var expected = Enumerable.Range(1, 2000);
+        var expected = Enumerable.Range(1, 2000).ToList();
 
         for (var i = 0; i < lists.Count -1 ; i++)
         {
@@ -53,7 +54,7 @@ public class Top2000DataSteps
     }
 
     [Then(@"the listing table contains 10 or 2000 for the last edition ranging from 1 to 10/2000")]
-    public async Task ThenThePositionsTableContainsOrForTheLastYearRangingFromTo()
+    public async Task ThenThePositionsTableContainsOrForTheLastYearRangingFromToAsync()
     {
         var sql = App.GetService<SqliteConnection>();
         var list = (await GetListingsAsync(sql))
@@ -66,7 +67,7 @@ public class Top2000DataSteps
     }
 
     [Then(@"the listing table of edition 2023 has 2500 tracks")]
-    public async Task ThenTheListingTableOfEditionHasTracks()
+    public async Task ThenTheListingTableOfEditionHasTracksAsync()
     {
         var sql = App.GetService<SqliteConnection>();
         var list = (await GetListingsAsync(sql))
@@ -79,13 +80,13 @@ public class Top2000DataSteps
     }
 
     [When("the latest edition is queried")]
-    public async Task WhenTheLatestEditionIsQueried()
+    public async Task WhenTheLatestEditionIsQueriedAsync()
     {
         var sql = App.GetService<SqliteConnection>();
 
         var lastEdition = (await GetEditionsAsync(sql)).Last();
 
-        _latestEdition = (await GetListingsAsync(sql))
+        LatestEdition = (await GetListingsAsync(sql))
             .Where(x => x.Edition == lastEdition)
             .GroupBy(x => x.Edition)
             .OrderBy(x => x.Key)
@@ -95,11 +96,11 @@ public class Top2000DataSteps
     [Then("the latest edition contains either {int} or {int} items")]
     public void ThenTheLatestEditionContainsEitherOrOrItems(int p0, int p1)
     {
-        _latestEdition.Count().Should().BeOneOf(p0, p1);
+        LatestEdition.Count().Should().BeOneOf(p0, p1);
     }
 
     [Then(@"for each track in the listing table the PlayDateAndTime is the same to the previous track or has incremented by one hour")]
-    public async Task ThenForEachTrackInTheListingTableThePlayDateAndTimeIsTheSameToThePreviousTrackOrHasIncrementedByOneHour()
+    public async Task ThenForEachTrackInTheListingTableThePlayDateAndTimeIsTheSameToThePreviousTrackOrHasIncrementedByOneHourAsync()
     {
         var sql = App.GetService<SqliteConnection>();
         var listings = (await GetListingsAsync(sql))
@@ -117,12 +118,11 @@ public class Top2000DataSteps
 
             foreach (var track in listingForEdition)
             {
-                var differenceInHours = previous.PlayUtcDateAndTime - track.PlayUtcDateAndTime;
+                var differenceInHours = previous.PlayUtcDateAndTime - track.PlayUtcDateAndTime
+                    ?? throw new InvalidOperationException("Unable to calculate difference in hours when PlayUtcDateAndTime is null");
 
-                Assert.IsTrue(differenceInHours.Value.TotalMinutes == 0 || differenceInHours.Value.TotalMinutes == 60,
-                    $"For edition {listing.Key} the positions {previous.Position} and {track.Position} the PlayDateAndTime is incorrect, it is {differenceInHours.Value.TotalMinutes} and should be either 0 or 60"
-                    );
-
+                differenceInHours.TotalMinutes.Should().BeOneOf(0, 60);
+                
                 previous = track;
             }
         }
@@ -141,10 +141,9 @@ public class Top2000DataSteps
             {
                 items.Add(new Listing
                 {
-                    TrackId = reader.GetInt32(0),
                     Edition = reader.GetInt32(1),
                     Position = reader.GetInt32(2),
-                    PlayUtcDateAndTime = reader.IsDBNull(3) ? (DateTime?)null : reader.GetDateTime(3)
+                    PlayUtcDateAndTime = reader.IsDBNull(3) ? null : reader.GetDateTime(3)
                 });
             }
         }
@@ -178,12 +177,10 @@ public class Top2000DataSteps
 
     private class Listing
     {
-        public int TrackId { get; set; }
+        public int Edition { get; init; }
 
-        public int Edition { get; set; }
+        public int Position { get; init; }
 
-        public int Position { get; set; }
-
-        public DateTime? PlayUtcDateAndTime { get; set; }
+        public DateTime? PlayUtcDateAndTime { get; init; }
     }
 }

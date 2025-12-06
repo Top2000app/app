@@ -6,7 +6,7 @@ public class TracksSearchHandler : SearchHandler
 
     protected override async void OnQueryChanged(string oldValue, string newValue)
     {
-        if (ViewModel != null && newValue != null && newValue != oldValue)
+        if (ViewModel is not null && newValue is not null && newValue != oldValue)
         {
             ViewModel.QueryText = newValue;
             await ViewModel.ExceuteSearchAsync();

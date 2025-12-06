@@ -21,6 +21,8 @@ indent_size = 4
 csharp_style_namespace_declarations = file_scoped:suggestion
 csharp_indent_braces = false
 
+
+
 # use underscore for private fields (non-const, non-static readonly)
 dotnet_naming_rule.private_members_with_underscore.symbols = private_fields
 dotnet_naming_rule.private_members_with_underscore.style = prefix_underscore

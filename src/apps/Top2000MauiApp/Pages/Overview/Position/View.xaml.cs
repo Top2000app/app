@@ -72,10 +72,10 @@ public partial class View : ContentPage
         Shell.SetNavBarIsVisible(this, false);
         Shell.SetTabBarIsVisible(this, false);
 
-        await trackInformation.TranslateTo(this.Width * -1, 0, 0);
+        await trackInformation.TranslateToAsync(this.Width * -1, 0, 0);
 
         trackInformation.IsVisible = true;
-        await trackInformation.TranslateTo(0, 0);
+        await trackInformation.TranslateToAsync(0, 0);
 
         await infoTask;
     }
@@ -86,7 +86,7 @@ public partial class View : ContentPage
 
         Shell.SetTabBarIsVisible(this, true);
         Shell.SetNavBarIsVisible(this, true);
-        await trackInformation.TranslateTo(this.Width * -1, 0);
+        await trackInformation.TranslateToAsync(this.Width * -1, 0);
         trackInformation.IsVisible = false;
     }
 

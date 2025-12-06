@@ -1,4 +1,5 @@
-﻿using static Top2000MauiApp.MauiProgram;
+﻿using CommunityToolkit.Mvvm.ComponentModel.__Internals;
+using static Top2000MauiApp.MauiProgram;
 
 namespace Top2000MauiApp.Pages.Overview.Date;
 
@@ -19,7 +20,7 @@ public partial class View : ContentPage
         {
             Shell.SetTabBarIsVisible(this, true);
             Shell.SetNavBarIsVisible(this, true);
-            GroupFlyout.TranslateTo(this.Width * -1, 0);
+            GroupFlyout.TranslateToAsync(this.Width * -1, 0).GetAwaiter().GetResult();
             GroupFlyout.IsVisible = false;
 
             return true;

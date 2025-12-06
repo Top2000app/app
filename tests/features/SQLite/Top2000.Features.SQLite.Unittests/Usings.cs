@@ -1,3 +1,3 @@
-﻿global using AwesomeAssertions;
+﻿global using FluentAssertions;
 
 [assembly: Parallelize]

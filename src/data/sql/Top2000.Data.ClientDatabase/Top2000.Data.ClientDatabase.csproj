@@ -4,7 +4,6 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <UseRidGraph>false</UseRidGraph>
     <IsPackable>true</IsPackable>
     <Deterministic>true</Deterministic>
     <PackageId>RickNeeftDevelopment.Top2000App.Data</PackageId>
@@ -22,7 +21,7 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     <SourceLinkCreate>true</SourceLinkCreate>
-    <RepositoryUrl>https://github.com/Top2000app/data</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Top2000app/app</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
  

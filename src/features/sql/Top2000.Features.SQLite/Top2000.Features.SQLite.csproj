@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>true</IsPackable>
+    <Deterministic>true</Deterministic>
+    <PackageId>RickNeeftDevelopment.Top2000App.Features.SQLite</PackageId>
+    <Description>Top 2000 Features package using the SQLite database</Description>
+    <Copyright>Copyright (c) Rick Neeft Development 2024</Copyright>
+    <PackageProjectUrl>https://github.com/Top2000app/features</PackageProjectUrl>
+    <Version>2.2.0</Version>
+    <Authors>Rick Neeft</Authors>
+    <Product>Top2000App</Product>
+    <PackageIcon>nugeticon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>Top2000 Top2000App</PackageTags>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <SourceLinkCreate>true</SourceLinkCreate>
+    <RepositoryUrl>https://github.com/Top2000app/features</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="13.1.0" />
+    <PackageReference Include="RickNeeftDevelopment.Top2000App.Data" Version="2.2.0" />
+    <PackageReference Include="RickNeeftDevelopment.Top2000App.Features" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\..\docs\nugeticon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+
+</Project>

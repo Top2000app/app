@@ -1,0 +1,331 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About" xml:space="preserve">
+    <value>Over</value>
+  </data>
+  <data name="AboutThisApp" xml:space="preserve">
+    <value>Deze app toont de Top 2000 lijst sinds het jaar 1999 en toont statistieken van een plaat.</value>
+  </data>
+  <data name="Appearances" xml:space="preserve">
+    <value>Noteringen</value>
+  </data>
+  <data name="Artist" xml:space="preserve">
+    <value>Artiest</value>
+  </data>
+  <data name="AutomaticallyScroll" xml:space="preserve">
+    <value>Actuele positie tonen</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Annuleren</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Sluiten</value>
+  </data>
+  <data name="Copyright" xml:space="preserve">
+    <value>Copyright ©  All rechten voorbehouden</value>
+  </data>
+  <data name="DarkTheme" xml:space="preserve">
+    <value>Donker</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="DevelopedBy" xml:space="preserve">
+    <value>Ontwikkeld door Rick Neeft</value>
+  </data>
+  <data name="Disclaimer" xml:space="preserve">
+    <value>Disclaimer</value>
+  </data>
+  <data name="DisclaimerText" xml:space="preserve">
+    <value>DE MAKER VAN DEZE APP IS NIET AANSPRAKELIJK NOCH VERANTWOORDELIJK VOOR DE JUISTHEID VAN DE INFORMATIE GETOOND BINNEN DEZE APP. DIT IS GEEN OFFICELE APP VAN DE NEDERLANDSE PUBLIEKE OMROEP.</value>
+  </data>
+  <data name="Feedback" xml:space="preserve">
+    <value>Feedback</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>Algemeen</value>
+  </data>
+  <data name="GroupBy" xml:space="preserve">
+    <value>Groeperen op: {0}</value>
+  </data>
+  <data name="GroupByHeader" xml:space="preserve">
+    <value>Groeperen op:</value>
+  </data>
+  <data name="InTop2000" xml:space="preserve">
+    <value>In Top 2000</value>
+  </data>
+  <data name="JumpToGroup" xml:space="preserve">
+    <value>Kies een groep</value>
+  </data>
+  <data name="LanguageHeader" xml:space="preserve">
+    <value>Taal voorkeur</value>
+  </data>
+  <data name="LanguageText" xml:space="preserve">
+    <value>Selecteer de taal voor deze app.</value>
+  </data>
+  <data name="LastPosition" xml:space="preserve">
+    <value>Laatste positie</value>
+  </data>
+  <data name="LatestPlayTime" xml:space="preserve">
+    <value>Laatste notering in de Top 2000</value>
+  </data>
+  <data name="LightTheme" xml:space="preserve">
+    <value>Licht</value>
+  </data>
+  <data name="Live" xml:space="preserve">
+    <value>Live</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Niks</value>
+  </data>
+  <data name="OpenMenu" xml:space="preserve">
+    <value>Open Menu</value>
+  </data>
+  <data name="OrVisitFacebook" xml:space="preserve">
+    <value>of bezoek ons op Facebook op</value>
+  </data>
+  <data name="Overview" xml:space="preserve">
+    <value>Overzicht</value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>Positie</value>
+  </data>
+  <data name="Privacy" xml:space="preserve">
+    <value>Privacy</value>
+  </data>
+  <data name="RateIt" xml:space="preserve">
+    <value>Ja!</value>
+  </data>
+  <data name="RateNotNow" xml:space="preserve">
+    <value>Herinner het me later</value>
+  </data>
+  <data name="RateText" xml:space="preserve">
+    <value>Wij zouden heel graag willen weten wat u ervan vindt. Zou u even de tijd willen nemen om deze app te beoordelen en waarderen?</value>
+  </data>
+  <data name="RateTitle" xml:space="preserve">
+    <value>Bedankt voor het uitproberen van de Top 2000 App.</value>
+  </data>
+  <data name="RecordHigh" xml:space="preserve">
+    <value>Hoogste</value>
+  </data>
+  <data name="RecordLow" xml:space="preserve">
+    <value>Laagste</value>
+  </data>
+  <data name="ResultFoundHeader" xml:space="preserve">
+    <value>resultaten gevonden</value>
+  </data>
+  <data name="ResultNotFound" xml:space="preserve">
+    <value>Geen resultaten gevonden</value>
+  </data>
+  <data name="ResultsFound" xml:space="preserve">
+    <value>{0} resultaten gevonden</value>
+    <comment>{0} contains a number</comment>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Zoeken</value>
+  </data>
+  <data name="SearchTop2000" xml:space="preserve">
+    <value>Zoek in Top 2000</value>
+  </data>
+  <data name="SelectEdition" xml:space="preserve">
+    <value>Selecteer een editie</value>
+  </data>
+  <data name="SelectTheme" xml:space="preserve">
+    <value>Selecteer een thema</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Instellingen</value>
+  </data>
+  <data name="SettingsAbout" xml:space="preserve">
+    <value>Instellingen - Over</value>
+  </data>
+  <data name="SettingsGeneral" xml:space="preserve">
+    <value>Instellingen - Algemeen</value>
+  </data>
+  <data name="SettingsPrivacy" xml:space="preserve">
+    <value>Instellingen - Privacy</value>
+  </data>
+  <data name="SettingsThirdParty" xml:space="preserve">
+    <value>Instellingen - Third Party</value>
+  </data>
+  <data name="ShowCurrentGroup" xml:space="preserve">
+    <value>Toon huidige tijd</value>
+  </data>
+  <data name="ShowSelectedTrack" xml:space="preserve">
+    <value>Toon geselecteerde jaar</value>
+  </data>
+  <data name="SinceRelease" xml:space="preserve">
+    <value>Sinds ontstaan</value>
+  </data>
+  <data name="SortBy" xml:space="preserve">
+    <value>Sorteer op: {0}</value>
+  </data>
+  <data name="SortByHeader" xml:space="preserve">
+    <value>Sorteer op:</value>
+  </data>
+  <data name="SystemTheme" xml:space="preserve">
+    <value>Gebruik systeem instellingen</value>
+  </data>
+  <data name="TestedBy" xml:space="preserve">
+    <value>Getest door Bhavna Devi Ruttun</value>
+  </data>
+  <data name="ThemeMode" xml:space="preserve">
+    <value>Thema</value>
+  </data>
+  <data name="ThirdParty" xml:space="preserve">
+    <value>Third Party</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="ToContact" xml:space="preserve">
+    <value>Benader</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>We hebben een nieuwe Top 2000 lijst gedownload. Herstart de app om deze versie te gebruiken.</value>
+  </data>
+  <data name="UpdateAvailableHeader" xml:space="preserve">
+    <value>Nieuwe Top 2000 lijst beschikbaar</value>
+  </data>
+  <data name="UseDarkTheme" xml:space="preserve">
+    <value>Gebruik het donker thema</value>
+  </data>
+  <data name="ViewByDate" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="VisitTop2000Site" xml:space="preserve">
+    <value>Bezoek de officele NPO Top 2000 website op:</value>
+  </data>
+  <data name="WhatIsTop2000" xml:space="preserve">
+    <value>De Top 2000 is jaarlijks radioprogramma van Radio 2. Het wordt uitgezonden vanaf middernacht op Eerste Kerstdag tot oudjaarsnacht.  </value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Jaar</value>
+  </data>
+  <data name="YearsOverview" xml:space="preserve">
+    <value>Jaar overzicht</value>
+  </data>
+  <data name="Youtube" xml:space="preserve">
+    <value>Open YouTube</value>
+  </data>
+  <data name="SelectYear" xml:space="preserve">
+    <value>Selecteer een editie</value>
+  </data>
+</root>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Top2000MauiApp.Pages.TrackInformation.Controls.CircularProgressBar"
+             xmlns:local="clr-namespace:Top2000MauiApp.Pages.TrackInformation.Controls"
+             x:Name="this" HeightRequest="110" WidthRequest="110"
+             >
+    <GraphicsView x:Name="View" >
+        <GraphicsView.Drawable >
+            <local:CircularProgressBarDrawable
+                x:Name="ProgressBar"
+                Progress="{Binding Progress, Source={x:Reference this}}"
+                Size="110"
+                Thickness="10"
+                ProgressColor="{StaticResource Top2000Colour}"
+                ProgressLeftColor="{StaticResource RingBaseColor}"/>
+        </GraphicsView.Drawable>
+    </GraphicsView>
+</ContentView>

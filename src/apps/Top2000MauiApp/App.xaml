@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Top2000MauiApp.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <Color x:Key="Top2000Colour">#DA161C</Color>
+
+            <ResourceDictionary Source="Themes/Light.xaml" />
+
+            <Style TargetType="TabBar">
+                <Setter Property="Shell.BackgroundColor" Value="{DynamicResource NavigationBarColor}" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="{DynamicResource TabBarBackgroundColor}" />
+                <Setter Property="Shell.TabBarUnselectedColor" Value="{DynamicResource TabBarUnselectedColor}" />
+                <Setter Property="Shell.TabBarTitleColor" Value="{DynamicResource TabBarSelectedColor}" />
+                <Setter Property="Shell.ForegroundColor" Value="{DynamicResource ShellForegroundColor}" />
+                <Setter Property="Shell.TabBarForegroundColor" Value="{DynamicResource NavigationBarColor}" />
+            </Style>
+
+            <Style x:Key="ActionButtonWithShadow" TargetType="Button">
+                <Setter Property="Shadow.Opacity" Value="{DynamicResource Opacity}"/>
+                <Setter Property="BorderColor" Value="{DynamicResource Top2000Colour}" />
+                <Setter Property="BackgroundColor" Value="{DynamicResource Top2000Colour}" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="WidthRequest" Value="60" />
+                <Setter Property="FontFamily" Value="{OnPlatform Android=MaterialIcons}" />
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="HeightRequest" Value="60" />
+                <Setter Property="CornerRadius" Value="30" />
+            </Style>
+            
+            <Style x:Key="Separator" TargetType="BoxView">
+                <Setter Property="HeightRequest" Value="1" />
+                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+                <Setter Property="Color" Value="{DynamicResource SeparatorColor}" />
+                <Setter Property="Margin" Value="0, 5, 0, 5" />
+                <Setter Property="Opacity" Value="0.5" />
+            </Style>
+
+            <Style TargetType="NavigationPage">
+                <Setter Property="BarBackgroundColor" Value="{DynamicResource NavigationBarColor}" />
+                <Setter Property="BarTextColor" Value="{DynamicResource ShellForegroundColor}" />
+            </Style>
+
+            <Style TargetType="ContentPage">
+                <Setter Property="BackgroundColor" Value="{DynamicResource PageBackgroundColor}" />
+            </Style>
+
+            <Style x:Key="ButtonStyle" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{DynamicResource ButtonBackgroundColor}" />
+                <Setter Property="TextColor" Value="{DynamicResource TextColor}" />
+                <Setter Property="HeightRequest" Value="45" />
+                <Setter Property="WidthRequest" Value="190" />
+                <Setter Property="CornerRadius" Value="18" />
+            </Style>
+
+            <Style x:Key="LargeLabelStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="{DynamicResource TextColor}" />
+                <Setter Property="FontSize" Value="30" />
+            </Style>
+
+            <Style x:Key="MediumLabelStyle" TargetType="Label">
+                <Setter Property="LineBreakMode" Value="WordWrap" />
+                <Setter Property="TextColor" Value="{DynamicResource TextColor}" />
+                <Setter Property="FontSize" Value="20" />
+            </Style>
+
+            <Style x:Key="SmallLabelStyle" TargetType="Label">
+                <Setter Property="LineBreakMode" Value="WordWrap" />
+                <Setter Property="TextColor" Value="{DynamicResource TextColor}" />
+                <Setter Property="FontSize" Value="15" />
+            </Style>
+
+            <Style x:Key="Top2000SwitchStyle" TargetType="Switch">
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

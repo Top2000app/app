@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+    <PackageId>RickNeeftDevelopment.Top2000App.Data.SQLScripts</PackageId>
+    <Description>The SQLScripts containing the data for the Dutch Top2000 App</Description>
+    <Deterministic>true</Deterministic>
+    <Copyright>Copyright (c) Rick Neeft Development 2024</Copyright>
+    <PackageProjectUrl>https://github.com/Top2000app/data</PackageProjectUrl>
+    <Version>1.4.0</Version>
+    <Authors>Rick Neeft</Authors>
+    <Product>Top2000App Data</Product>
+    <PackageIcon>nugeticon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>Top2000 Top2000App SQL Scripts</PackageTags>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <SourceLinkCreate>true</SourceLinkCreate>
+    <RepositoryUrl>https://github.com/Top2000app/data</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="sql\*.sql" />
+    <EmbeddedResource Include="sql\*.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\docs\data\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\..\..\docs\nugeticon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

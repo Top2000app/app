@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseRidGraph>false</UseRidGraph>
+    <IsPackable>true</IsPackable>
+    <Deterministic>true</Deterministic>
+    <PackageId>RickNeeftDevelopment.Top2000App.Data</PackageId>
+    <Description>Create an auto upgradable client database based on Top2000 Data</Description>
+    <Copyright>Copyright (c) Rick Neeft Development 2024</Copyright>
+    <PackageProjectUrl>https://github.com/Top2000app/data</PackageProjectUrl>
+    <Version>2.2.0</Version>
+    <Authors>Rick Neeft</Authors>
+    <Product>Top2000App Data</Product>
+    <PackageIcon>nugeticon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>Top2000 Top2000App</PackageTags>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <SourceLinkCreate>true</SourceLinkCreate>
+    <RepositoryUrl>https://github.com/Top2000app/data</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+ 
+  <ItemGroup>
+    <Compile Include="..\Top2000.Data.SQLScripts\Top2000Data.cs" Link="Top2000Data.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\docs\data\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\..\..\docs\nugeticon.png" Pack="true" PackagePath="\" />
+    <EmbeddedResource Include="..\Top2000.Data.SQLScripts\sql\*.sql" LinkBase="sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
+    <PackageReference Include="morelinq" Version="4.4.0" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="sql\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="System.Collections.Immutable" />
+    <Using Include="Microsoft.Data.Sqlite" />
+    <Using Include="System.ComponentModel.DataAnnotations" />
+    
+  </ItemGroup>
+  
+</Project>

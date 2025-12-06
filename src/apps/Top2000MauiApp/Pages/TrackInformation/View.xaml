@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Grid xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+      xmlns:controls="clr-namespace:Top2000MauiApp.Pages.TrackInformation.Controls"
+      xmlns:g="clr-namespace:Top2000MauiApp.Themes"
+      x:Class="Top2000MauiApp.Pages.TrackInformation.View"
+      xmlns:res="clr-namespace:Top2000MauiApp.Globalisation"
+      BackgroundColor="{DynamicResource PageBackgroundColor}">
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <Grid HeightRequest="55" Padding="10,0" BackgroundColor="{StaticResource Top2000Colour}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <StackLayout Orientation="Horizontal">
+            <ImageButton Clicked="OnCloseButtonClick" BackgroundColor="Transparent">
+                <ImageButton.Source>
+                    <FontImageSource Glyph="{x:Static g:Symbols.Back}"
+                                     FontFamily="{OnPlatform Android=MaterialIcons}" />
+                </ImageButton.Source>
+            </ImageButton>
+        </StackLayout>
+
+        <StackLayout Orientation="Horizontal" Grid.Column="1">
+            <ImageButton Clicked="OnViewVideoClick" BackgroundColor="Transparent">
+                <ImageButton.Source>
+                    <FontImageSource Glyph="{x:Static g:Symbols.Video}"
+                                     FontFamily="{OnPlatform Android=MaterialIcons}" />
+                </ImageButton.Source>
+            </ImageButton>
+        </StackLayout>
+    </Grid>
+
+    <StackLayout  Margin="15,0" Grid.Row="1">
+        <Label Text="{Binding Title}" Style="{StaticResource MediumLabelStyle}"  FontSize="24" />
+        <Label Text="{Binding ArtistWithYear}" Style="{StaticResource MediumLabelStyle}"  TextColor="{StaticResource Top2000Colour}" />
+
+        <BoxView Style="{StaticResource Separator}" />
+    </StackLayout>
+
+    <ScrollView Grid.Row="2">
+        <StackLayout Margin="15,0">
+
+            <Label Text="{Binding [Appearances], Source={x:Static res:Translator.Instance}}" Style="{StaticResource SmallLabelStyle}" FontAttributes="Bold" Margin="0,5,0,0" />
+
+            <ScrollView Orientation="Horizontal" x:Name="positionsScroll" HorizontalScrollBarVisibility="Never">
+                <StackLayout BindableLayout.ItemsSource="{Binding Listings}" Orientation="Horizontal">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+
+                            <Grid RowSpacing="1" Margin="0,0,20,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <Label Text="{Binding Edition}" HorizontalOptions="Start" Style="{StaticResource MediumLabelStyle}" />
+
+                                <StackLayout Grid.Row="1" Orientation="Horizontal">
+
+                                    <Label Text="{Binding StatusSymbol}"
+                                               TextColor="{Binding TextColour}"
+                                               Style="{StaticResource MediumLabelStyle}"
+                                               FontFamily="{OnPlatform Android=MaterialIcons}"
+                                               HorizontalOptions="Start" />
+
+                                    <Label Text="{Binding Offset}"
+                                               Style="{StaticResource SmallLabelStyle}"
+                                               Opacity="0.5" />
+                                </StackLayout>
+
+                                <Label Text="{Binding Position}"
+                                           Style="{StaticResource MediumLabelStyle}"
+                                           Grid.Row="2" />
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+            </ScrollView>
+
+            <StackLayout Spacing="25" Orientation="Horizontal" Margin="0,20,0,0">
+                <StackLayout>
+                    <Label Text="{Binding [SinceRelease], Source={x:Static res:Translator.Instance}}" HorizontalOptions="CenterAndExpand"  Style="{StaticResource SmallLabelStyle}" FontAttributes="Bold" />
+                    <Grid>
+                        <controls:CircularProgressBar 
+                            Progress="{Binding AppearancesPossiblePercentage}" />
+
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label Style="{StaticResource MediumLabelStyle}" Text="{Binding Appearances}" />
+                            <Label Style="{StaticResource MediumLabelStyle}" Text="/" />
+                            <Label Style="{StaticResource MediumLabelStyle}" Text="{Binding AppearancesPossible}" />
+                        </StackLayout>
+                    </Grid>
+                </StackLayout>
+
+                <StackLayout>
+                    <Label Text="{Binding [InTop2000], Source={x:Static res:Translator.Instance}}" HorizontalOptions="CenterAndExpand" Style="{StaticResource SmallLabelStyle}" FontAttributes="Bold" />
+                    <Grid>
+                        <controls:CircularProgressBar Progress="{Binding TotalTop2000Percentage}" />
+
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label Style="{StaticResource MediumLabelStyle}" Text="{Binding Appearances}" />
+                            <Label Style="{StaticResource MediumLabelStyle}" Text="/" />
+                            <Label Style="{StaticResource MediumLabelStyle}" Text="{Binding TotalListings}" />
+                        </StackLayout>
+                    </Grid>
+                </StackLayout>
+            </StackLayout>
+
+            <FlexLayout Direction="Row" Wrap="Wrap" Margin="-20,0,0,0" >
+
+                <StackLayout Padding="20,0,0,0" Margin="0,10,10,0" >
+                    <Label Text="{Binding [RecordHigh], Source={x:Static res:Translator.Instance}}" Style="{StaticResource SmallLabelStyle}" FontAttributes="Bold" />
+                    <StackLayout Orientation="Horizontal" Margin="-1,-8,0,0">
+                        <Label Text="{Binding Highest.Position}" FontSize="40" Style="{StaticResource MediumLabelStyle}"  VerticalOptions="Start" HorizontalTextAlignment="End" />
+                        <Label Text="{Binding Highest.Edition, StringFormat=' ({0})'}" Margin="0,0,0,7" Style="{StaticResource SmallLabelStyle}" VerticalOptions="End" />
+                    </StackLayout>
+                </StackLayout>
+
+                <StackLayout Padding="20,0,0,0" Margin="0,10,10,0">
+                    <Label Text="{Binding [RecordLow], Source={x:Static res:Translator.Instance}}" Style="{StaticResource SmallLabelStyle}" FontAttributes="Bold" />
+                    <StackLayout Orientation="Horizontal" Margin="-1,-8,0,0">
+                        <Label Text="{Binding Lowest.Position}" FontSize="40" Style="{StaticResource MediumLabelStyle}"   VerticalOptions="Start" HorizontalTextAlignment="End" />
+                        <Label Text="{Binding Lowest.Edition, StringFormat=' ({0})'}" Margin="0,0,0,7" Style="{StaticResource SmallLabelStyle}"  VerticalOptions="End" />
+                    </StackLayout>
+                </StackLayout>
+
+                <StackLayout Padding="20,0,0,0" Margin="0,10,10,0">
+                    <Label Text="{Binding [LastPosition], Source={x:Static res:Translator.Instance}}" Style="{StaticResource SmallLabelStyle}" FontAttributes="Bold" />
+                    <StackLayout Orientation="Horizontal" Margin="-1,-8,0,0">
+                        <Label Text="{Binding Latest.Position}" FontSize="40" Style="{StaticResource MediumLabelStyle}" VerticalOptions="Start" HorizontalTextAlignment="End" />
+                        <Label Text="{Binding Latest.Edition, StringFormat=' ({0})'}" Margin="0,0,0,7" Style="{StaticResource SmallLabelStyle}"  VerticalOptions="End" />
+                    </StackLayout>
+                </StackLayout>
+            </FlexLayout>
+
+            <Label Text="{Binding [LatestPlayTime], Source={x:Static res:Translator.Instance}}"
+                   IsVisible="{Binding IsLatestListed}"  Margin="0,10,0,0" Style="{StaticResource SmallLabelStyle}" FontAttributes="Bold" />
+            <Label Text="{Binding LocalUtcDateAndTime}"
+                   IsVisible="{Binding IsLatestListed}" Style="{StaticResource MediumLabelStyle}" />
+        </StackLayout>
+    </ScrollView>
+</Grid>

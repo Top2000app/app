@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:g="clr-namespace:Top2000MauiApp.Themes"
+             xmlns:local="clr-namespace:Top2000MauiApp.Pages.Searching"
+             x:Class="Top2000MauiApp.Pages.Searching.View"
+             xmlns:trackInformation="clr-namespace:Top2000MauiApp.Pages.TrackInformation"
+             xmlns:res="clr-namespace:Top2000MauiApp.Globalisation"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
+    <Shell.SearchHandler >
+        <local:TracksSearchHandler Placeholder="{Binding [SearchTop2000], Source={x:Static res:Translator.Instance}}"
+                                   BackgroundColor="{DynamicResource PageBackgroundColor}"
+                                   PlaceholderColor="{DynamicResource ShellForegroundColor}"
+                                   Keyboard="Plain">
+            <local:TracksSearchHandler.QueryIcon>
+                <FontImageSource FontFamily="MaterialIcons" Glyph="{x:Static g:Symbols.Search}" Color="{DynamicResource Top2000Colour}" />
+            </local:TracksSearchHandler.QueryIcon>
+        </local:TracksSearchHandler>
+    </Shell.SearchHandler>
+
+    <ContentPage.Resources>
+        <Style TargetType="Grid">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="{DynamicResource PageBackgroundColor}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+
+        <ToolbarItem x:Name="OpenGroupAndSortBy" Clicked="ShowSortGroupLayout">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource Glyph="{x:Static g:Symbols.Options}" Color="White"
+                                 FontFamily="{OnPlatform Android=MaterialIcons}" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Content>
+        <Grid>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackLayout x:Name="GroupSortLayout" Padding="15,10,15,0" IsVisible="False">
+
+                <Button x:Name="GroupByButton" BackgroundColor="{DynamicResource ButtonBackgroundColor}" Text="{Binding [GroupByHeader], Source={x:Static res:Translator.Instance}}"
+                        TextColor="{DynamicResource ButtonTextColor}"
+                        Clicked="OnGroupByButtonClick" />
+
+                <Button x:Name="SortByButton" BackgroundColor="{DynamicResource ButtonBackgroundColor}" Text="{Binding [SortByHeader], Source={x:Static res:Translator.Instance}}"
+                        TextColor="{DynamicResource ButtonTextColor}" Margin="0,5,0,0"
+                        Clicked="OnSortByButtonClick" />
+            </StackLayout>
+
+            <CollectionView x:Name="listingsGrouped"
+                            Grid.Row="1"
+                            ItemsSource="{Binding Results}"
+                            SelectedItem="{Binding SelectedTrack, Mode=TwoWay}"
+                            IsVisible="{Binding IsGrouped}"
+                            IsGrouped="True"
+                            SelectionMode="Single">
+
+                <CollectionView.GroupHeaderTemplate>
+                    <DataTemplate>
+                        <StackLayout>
+                            <Label Text="{Binding Key}"
+                                   TextColor="{StaticResource Top2000Colour}"
+                                   Style="{StaticResource MediumLabelStyle}"
+                                   Margin="20,5,0,0" />
+                            <BoxView Style="{StaticResource Separator}" Margin="20, 0,20,5" />
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.GroupHeaderTemplate>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,0,0,5" RowSpacing="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Label Grid.Column="0" Grid.Row="0" Text="{Binding RecordedYear}" Style="{StaticResource MediumLabelStyle}" Margin="20,4,0,0" />
+
+                            <Label Grid.Column="1" Grid.Row="0" Text="{Binding Title}"  Style="{StaticResource MediumLabelStyle}" Margin="0,4,20,0" />
+                            <Label Grid.Column="1" Grid.Row="1" Text="{Binding Artist}" Opacity=".5" Style="{StaticResource SmallLabelStyle}" Margin="0,0,20,0" />
+
+                            <Label Grid.Column="1" Grid.Row="2" Text="{Binding PositionInLatestEdition}" Opacity=".5" Style="{StaticResource SmallLabelStyle}" Margin="0,0,20,0" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.EmptyViewTemplate>
+                    <DataTemplate>
+                        <Label Text="{Binding [ResultNotFound], Source={x:Static res:Translator.Instance}}" />
+                    </DataTemplate>
+                </CollectionView.EmptyViewTemplate>
+            </CollectionView>
+
+            <CollectionView x:Name="listingsFlat"
+                            Grid.Row="1"
+                            ItemsSource="{Binding ResultsFlat}"
+                            SelectedItem="{Binding SelectedTrack, Mode=TwoWay}"
+                            IsVisible="{Binding IsFlat}"
+                            IsGrouped="False"
+                            SelectionChanged="OnListingSelected"
+                            SelectionMode="Single">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,0,0,5" RowSpacing="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Label Grid.Column="0" Grid.Row="0" Text="{Binding RecordedYear}" Style="{StaticResource MediumLabelStyle}" Margin="20,4,0,0" />
+
+                            <Label Grid.Column="1" Grid.Row="0" Text="{Binding Title}"  Style="{StaticResource MediumLabelStyle}" Margin="0,4,20,0" />
+                            <Label Grid.Column="1" Grid.Row="1" Text="{Binding Artist}" Opacity=".5" Style="{StaticResource SmallLabelStyle}" Margin="0,0,20,0" />
+
+                            <Label Grid.Column="1" Grid.Row="2" Text="{Binding PositionInLatestEdition}" Opacity=".5" Style="{StaticResource SmallLabelStyle}" Margin="0,0,20,0" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.EmptyViewTemplate>
+                    <DataTemplate>
+                        <Label Text="{Binding [ResultNotFound], Source={x:Static res:Translator.Instance}}" />
+                    </DataTemplate>
+                </CollectionView.EmptyViewTemplate>
+            </CollectionView>
+
+            <trackInformation:View x:Name="trackInformation" IsVisible="False" Grid.RowSpan="2" />
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

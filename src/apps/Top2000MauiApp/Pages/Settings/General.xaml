@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:g="clr-namespace:Top2000MauiApp.Themes"
+             x:Class="Top2000MauiApp.Pages.Settings.General"
+             xmlns:res="clr-namespace:Top2000MauiApp.Globalisation"
+             BackgroundColor="{DynamicResource PageBackgroundColor}"
+             Title="{Binding [SettingsGeneral], Source={x:Static res:Translator.Instance}}">
+    <ContentPage.Content>
+        <StackLayout Margin="20,15">
+            <Label Text="{Binding [ThemeMode], Source={x:Static res:Translator.Instance}}"
+                   Style="{StaticResource SmallLabelStyle}" FontAttributes="Bold" />
+
+            <StackLayout Orientation="Horizontal">
+                <Label Text="{Binding [UseDarkTheme], Source={x:Static res:Translator.Instance}}" VerticalOptions="Center" Style="{StaticResource SmallLabelStyle}" />
+                <Switch x:Name="useDarkModeSwitch"
+                        Toggled="OnUseDarkModeSwitchToggled"
+                        OnColor="#B2B2B2"
+                        ThumbColor="{StaticResource Top2000Colour}" />
+            </StackLayout>
+
+            <BoxView Style="{StaticResource Separator}" />
+
+            <Label Text="{Binding [LanguageHeader], Source={x:Static res:Translator.Instance}}" Style="{StaticResource SmallLabelStyle}" FontAttributes="Bold" />
+
+            <StackLayout Orientation="Horizontal"  >
+                <Label x:Name="nl" Text="{x:Static g:Symbols.FilterList}" FontFamily="{OnPlatform Android=MaterialIcons}"
+                       FontSize="16" VerticalOptions="Center" Style="{StaticResource SmallLabelStyle}" Margin="0,5,5,5" />
+                <Image Source="Netherlands.png"  VerticalOptions="Center" Margin="0,5,5,5"  />
+                <Label Style="{StaticResource SmallLabelStyle}" Text="Nederlands (Nederland)" VerticalOptions="Center"  Margin="0,5,5,5" />
+
+                <StackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="ShowInDutch" />
+                </StackLayout.GestureRecognizers>
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" >
+                <Label x:Name="en" Text="{x:Static g:Symbols.FilterList}" Margin="0,5,5,5"  FontFamily="{OnPlatform Android=MaterialIcons}" FontSize="16" VerticalOptions="Center" Style="{StaticResource SmallLabelStyle}" />
+                <Image Source="UnitedKingdom.png" VerticalOptions="Center" Margin="0,5,5,5" />
+                <Label Style="{StaticResource SmallLabelStyle}" Text="English (United Kingdom)" VerticalOptions="Center" Margin="0,5,5,5"  />
+
+                <StackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="ShowInEnglish" />
+                </StackLayout.GestureRecognizers>
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal"  >
+                <Label x:Name="fr" Text="{x:Static g:Symbols.FilterList}" Margin="0,5,5,5"  FontFamily="{OnPlatform Android=MaterialIcons}" FontSize="16" VerticalOptions="Center" Style="{StaticResource SmallLabelStyle}" />
+                <Image Source="France.png" VerticalOptions="Center" Margin="0,5,5,5"  />
+                <Label Style="{StaticResource SmallLabelStyle}" Text="Français (France)" VerticalOptions="Center" Margin="0,5,5,5"  />
+
+                <StackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="ShowInFrench" />
+                </StackLayout.GestureRecognizers>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

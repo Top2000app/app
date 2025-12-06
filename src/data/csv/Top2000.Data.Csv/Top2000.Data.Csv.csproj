@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <Deterministic>true</Deterministic>
+    <PackageId>RickNeeftDevelopment.Top2000App.ClientDatabase.CSV</PackageId>
+    <Description>Client database based on an embedded CSV file.</Description>
+    <Copyright>Copyright (c) Rick Neeft Development 2024</Copyright>
+    <PackageProjectUrl>https://github.com/Top2000app/data</PackageProjectUrl>
+    <Version>1.1.0-prerelease2</Version>
+    <Authors>Rick Neeft</Authors>
+    <Product>Top2000App</Product>
+    <PackageIcon>nugeticon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>Top2000 Top2000App</PackageTags>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <SourceLinkCreate>true</SourceLinkCreate>
+    <RepositoryUrl>https://github.com/Top2000app/data</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+
+  <Target Name="GenerateCsvFile" BeforeTargets="BeforeBuild">
+    <Exec Command="dotnet run --project ../Top2000.Data.CsvCreator/Top2000.Data.CsvCreator.csproj" />
+  </Target>
+
+  <ItemGroup>
+    <None Remove="*.db" />
+    <None Remove="*.csv" />
+    <EmbeddedResource Include="*.csv" />
+    <None Include="..\..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\..\docs\nugeticon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

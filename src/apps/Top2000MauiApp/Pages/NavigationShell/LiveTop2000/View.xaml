@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:g="clr-namespace:Top2000MauiApp.Themes"
+       xmlns:position="clr-namespace:Top2000MauiApp.Pages.Overview.Position"
+       xmlns:dates="clr-namespace:Top2000MauiApp.Pages.Overview.Date"
+       xmlns:searching="clr-namespace:Top2000MauiApp.Pages.Searching"
+       xmlns:settings="clr-namespace:Top2000MauiApp.Pages.Settings"
+       xmlns:res="clr-namespace:Top2000MauiApp.Globalisation"
+       x:Class="Top2000MauiApp.Pages.NavigationShell.LiveTop2000.View">
+
+    <TabBar x:Name="ShellTabBar">
+        <Tab x:Name="ViewByDateTab" Title="Live!">
+            <Tab.Icon>
+                <FontImageSource FontFamily="{OnPlatform Android=MaterialIcons}" Glyph="{x:Static g:Symbols.Clock}" />
+            </Tab.Icon>
+
+            <ShellContent Route="ViewByDate" ContentTemplate="{DataTemplate dates:View}" />
+        </Tab>
+
+        <Tab x:Name="OverviewTab" Title="{Binding [Overview], Source={x:Static res:Translator.Instance}}">
+            <Tab.Icon>
+                <FontImageSource FontFamily="{OnPlatform Android=MaterialIcons}" Glyph="{x:Static g:Symbols.Overview}" />
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate position:View}" />
+        </Tab>
+
+        <Tab x:Name="SearchTab" Title="{Binding [Search], Source={x:Static res:Translator.Instance}}">
+            <Tab.Icon>
+                <FontImageSource FontFamily="{OnPlatform Android=MaterialIcons}" Glyph="{x:Static g:Symbols.Search}" />
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate searching:View}" />
+        </Tab>
+
+        <Tab x:Name="SettingsTab" Title="{Binding [Settings], Source={x:Static res:Translator.Instance}}">
+            <Tab.Icon>
+                <FontImageSource FontFamily="{OnPlatform Android=MaterialIcons}" Glyph="{x:Static g:Symbols.Settings}" />
+            </Tab.Icon>
+            <ShellContent x:Name="GeneralTab" Title="{Binding [General], Source={x:Static res:Translator.Instance}}"
+                          ContentTemplate="{DataTemplate settings:General}" />
+            <ShellContent x:Name="AboutTab" Title="{Binding [About], Source={x:Static res:Translator.Instance}}"
+                          ContentTemplate="{DataTemplate settings:About}" />
+        </Tab>
+    </TabBar>
+</Shell>

@@ -1,0 +1,81 @@
+﻿{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Top2000 App Data",
+    "version": "1.0.0",
+    "description": "This is the API documentation for the updatable Top2000 App Data",
+    "license": {
+      "name": "GPL-3.0",
+      "url": "https://github.com/Top2000app/data/blob/main/LICENSE"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:5501/"
+    }
+  ],
+  "paths": {
+    "/versions/{int}/upgrades": {
+      "get": {
+        "summary": "Get Upgrades",
+        "description": "Returns an array of strings representing the upgrades for the given version.",
+        "parameters": [
+          {
+            "name": "int",
+            "in": "path",
+            "required": true,
+            "description": "The version number to get upgrades for.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of upgrades",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sql/{string}": {
+      "get": {
+        "summary": "Get SQL File",
+        "description": "Returns a SQL file for the given string.",
+        "parameters": [
+          {
+            "name": "string",
+            "in": "path",
+            "required": true,
+            "description": "The string to get the SQL file for.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A SQL file",
+            "content": {
+              "application/sql": {
+                "schema": {
+                  "type": "string",
+                  "format": "text"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

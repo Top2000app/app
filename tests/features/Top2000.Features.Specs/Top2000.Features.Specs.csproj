@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ReqnrollObsoleteCodeBehindFiles Remove="Features\AllEditions.feature.cs" />
+    <ReqnrollObsoleteCodeBehindFiles Remove="Features\AllListingsOfEdition.feature.cs" />
+    <ReqnrollObsoleteCodeBehindFiles Remove="Features\ClientDatabase.feature.cs" />
+    <ReqnrollObsoleteCodeBehindFiles Remove="Features\Search.feature.cs" />
+    <ReqnrollObsoleteCodeBehindFiles Remove="Features\Top2000Data.feature.cs" />
+    <ReqnrollObsoleteCodeBehindFiles Remove="Features\TrackInformation.feature.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="FluentAssertions" Version="8.8.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.0.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.0.2" />
+    <PackageReference Include="Reqnroll.MsTest" Version="3.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SQLite\Top2000.Features.SQLite\Top2000.Features.SQLite.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
+</Project>

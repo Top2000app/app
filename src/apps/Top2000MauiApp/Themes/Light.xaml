@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Top2000MauiApp.Themes.Light">
+
+    <Color x:Key="PageBackgroundColor">#F7F7F7</Color>
+    <Color x:Key="SelectedItemBackgroundColor">#E5E5E5</Color>
+    <Color x:Key="NavigationBarColor">#DA161C</Color>
+    <Color x:Key="SeparatorColor">#737373</Color>
+
+    <Color x:Key="TabBarBackgroundColor">#F2F2F2</Color>
+    <Color x:Key="TabBarUnselectedColor">#717171</Color>
+    <Color x:Key="TabBarSelectedColor">#DA161C</Color>
+
+    <Color x:Key="ShellForegroundColor">White</Color>
+    <Color x:Key="ButtonBackgroundColor">#DA161C</Color>
+    <Color x:Key="ButtonTextColor">White</Color>
+    <Color x:Key="RingBaseColor">#CCC</Color>
+    <Color x:Key="TextColor">#717171</Color>
+
+    <x:Boolean x:Key="IsLight">false</x:Boolean>
+    <x:Boolean x:Key="IsDark">true</x:Boolean>
+</ResourceDictionary>

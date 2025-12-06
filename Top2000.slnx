@@ -15,9 +15,12 @@
   </Folder>
   <Folder Name="/features/">
     <Project Path="src/features/Top2000.Features/Top2000.Features.csproj" />
+    <Project Path="tests/features/Top2000.Features.Specs/Top2000.Features.Specs.csproj" />
     <Project Path="tests/features/Top2000.Features.Tests/Top2000.Features.Tests.csproj" />
   </Folder>
-  <Folder Name="/features/sql/" />
+  <Folder Name="/features/sql/">
+    <Project Path="src/features/sql/Top2000.Features.SQLite/Top2000.Features.SQLite.csproj" />
+  </Folder>
   <Folder Name="/SolutionFiles/">
     <File Path=".editorconfig" />
   </Folder>

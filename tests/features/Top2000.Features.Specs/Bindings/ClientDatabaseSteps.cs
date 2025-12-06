@@ -1,10 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using SQLite;
-using Top2000.Data;
-using Top2000.Data.ClientDatabase;
-
-
-namespace Top2000.Features.Specs.Bindings;
+﻿namespace Top2000.Features.Specs.Bindings;
 
 [Binding]
 public class ClientDatabaseSteps
@@ -21,7 +15,7 @@ public class ClientDatabaseSteps
     [AfterScenario]
     public void CloseDatabaseConnections()
     {
-        SQLiteAsyncConnection.ResetPool();
+        SqliteConnection.ClearAllPools();
     }
 
     [Given(@"A new install of the application")]
@@ -51,12 +45,25 @@ public class ClientDatabaseSteps
     [Then(@"the client database is created with the scripts from the top2000 data assembly")]
     public async Task ThenTheClientDatabaseIsCreatedWithTheScriptsFromTheTopDataAssembly()
     {
-        var database = App.GetService<SQLiteAsyncConnection>();
+        var database = App.GetService<SqliteConnection>();
         var top2000AssemblyData = App.GetService<ITop2000AssemblyData>();
 
-        var scripts = (await database.Table<Journal>().ToListAsync())
-            .Select(x => x.ScriptName)
-            .ToList();
+        var scripts = new List<string>();
+        await database.OpenAsync();
+        try
+        {
+            await using var cmd = database.CreateCommand();
+            cmd.CommandText = "SELECT ScriptName FROM Journal";
+            await using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                scripts.Add(reader.GetString(0));
+            }
+        }
+        finally
+        {
+            await database.CloseAsync();
+        }
 
         var expected = top2000AssemblyData.GetAllSqlFiles()
             .ToList();
@@ -96,12 +103,25 @@ public class ClientDatabaseSteps
         // since the data on the website must be the same as on the Assembly
         // we can assert here
 
-        var database = App.GetService<SQLiteAsyncConnection>();
+        var database = App.GetService<SqliteConnection>();
         var top2000AssemblyData = App.GetService<ITop2000AssemblyData>();
 
-        var scripts = (await database.Table<Journal>().ToListAsync())
-            .Select(x => x.ScriptName)
-            .ToList();
+        var scripts = new List<string>();
+        await database.OpenAsync();
+        try
+        {
+            await using var cmd = database.CreateCommand();
+            cmd.CommandText = "SELECT ScriptName FROM Journal";
+            await using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                scripts.Add(reader.GetString(0));
+            }
+        }
+        finally
+        {
+            await database.CloseAsync();
+        }
 
         var expected = top2000AssemblyData.GetAllSqlFiles()
             .ToList();

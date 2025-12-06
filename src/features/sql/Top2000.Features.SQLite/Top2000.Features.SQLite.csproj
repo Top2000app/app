@@ -22,20 +22,28 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     <SourceLinkCreate>true</SourceLinkCreate>
-    <RepositoryUrl>https://github.com/Top2000app/features</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Top2000app/app</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="13.1.0" />
-    <PackageReference Include="RickNeeftDevelopment.Top2000App.Data" Version="2.2.0" />
-    <PackageReference Include="RickNeeftDevelopment.Top2000App.Features" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\..\README.md" Pack="true" PackagePath="\" />
-    <None Include="..\..\..\docs\nugeticon.png" Pack="true" PackagePath="\" />
+    <None Include="..\..\..\..\docs\features\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\..\..\docs\nugeticon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\data\sql\Top2000.Data.ClientDatabase\Top2000.Data.ClientDatabase.csproj" />
+    <ProjectReference Include="..\..\Top2000.Features\Top2000.Features.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="MediatR" />
+    <Using Include="Microsoft.Data.Sqlite" />
+  </ItemGroup>
 
 </Project>

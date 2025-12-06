@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using Top2000.Features.AllEditions;
-using Top2000.Features.Searching;
+﻿using Top2000.Features.Searching;
 
 namespace Top2000.Features.Specs.Bindings;
 

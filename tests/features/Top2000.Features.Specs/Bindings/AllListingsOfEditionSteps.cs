@@ -15,7 +15,7 @@ public class AllListingsOfEditionSteps
     }
 
     [When(@"the AllListingOfEdition feature is executed with year (.*)")]
-    public async Task WhenTheAllListingOfEditionFeatureIsExecutedWithYear(int year)
+    public async Task WhenTheAllListingOfEditionFeatureIsExecutedWithYearAsync(int year)
     {
         var request = new AllListingsOfEditionRequest { Year = year };
         var mediator = App.GetService<IMediator>();

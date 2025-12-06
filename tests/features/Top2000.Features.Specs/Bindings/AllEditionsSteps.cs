@@ -1,16 +1,12 @@
-﻿using System.Collections.Immutable;
-using Top2000.Data.ClientDatabase;
-using Top2000.Features.AllEditions;
-
-namespace Top2000.Features.Specs.Bindings;
+﻿namespace Top2000.Features.Specs.Bindings;
 
 [Binding]
 public class AllEditionsSteps
 {
-    private SortedSet<Edition> editions;
+    private SortedSet<Edition> _editions;
 
     [Given(@"All data scripts")]
-    public Task GivenAllDataScripts()
+    public Task GivenAllDataScriptsAsync()
     {
         var assemblySource = App.GetService<Top2000AssemblyDataSource>();
         var update = App.GetService<IUpdateClientDatabase>();
@@ -19,21 +15,21 @@ public class AllEditionsSteps
     }
 
     [When(@"the feature is executed")]
-    public async Task WhenTheFeatureIsExecuted()
+    public async Task WhenTheFeatureIsExecutedAsync()
     {
         var request = new AllEditionsRequest();
 
         var mediator = App.GetService<IMediator>();
 
-        editions = await mediator.Send(request);
+        _editions = await mediator.Send(request);
     }
 
     [Then(@"a sorted set is returned started with the highest year")]
     public void ThenASortedSetIsReturnedStartedWithTheHighestYear()
     {
-        var firstEdition = editions.First();
+        var firstEdition = _editions.First();
 
-        foreach (var edition in editions)
+        foreach (var edition in _editions)
         {
             edition.Year.Should().BeLessThanOrEqualTo(firstEdition.Year);
         }
@@ -42,7 +38,7 @@ public class AllEditionsSteps
     [Then(@"the latest year is (.*)")]
     public void ThenTheLatestYearIs(int year)
     {
-        var lastestEdition = editions.Last();
+        var lastestEdition = _editions.Last();
 
         lastestEdition.Year.Should().Be(year);
     }
@@ -52,7 +48,7 @@ public class AllEditionsSteps
     {
         var offset = TimeZoneInfo.Local.BaseUtcOffset;
 
-        foreach (var edition in editions)
+        foreach (var edition in _editions)
         {
             TimeZoneInfo.Local.GetUtcOffset(edition.LocalStartDateAndTime).Should().Be(offset);
             TimeZoneInfo.Local.GetUtcOffset(edition.LocalEndDateAndTime).Should().Be(offset);
@@ -66,7 +62,7 @@ public class AllEditionsSteps
 
         foreach (var item in items)
         {
-            var edition = editions.Single(x => x.Year == item.Year);
+            var edition = _editions.Single(x => x.Year == item.Year);
 
             edition.LocalStartDateAndTime.ToUniversalTime().Should().Be(item.UTCStartdate);
         }

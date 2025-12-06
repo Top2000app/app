@@ -8,7 +8,7 @@ public class TrackListing
 
     public int? Delta { get; init; }
 
-    public required bool IsRecurring { get; init; }
+    public required bool IsRecurring { get; set; }
 
     public DateTime PlayUtcDateAndTime { get; init; }
 

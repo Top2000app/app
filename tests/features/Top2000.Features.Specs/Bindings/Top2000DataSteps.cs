@@ -1,15 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using SQLite;
-using Top2000.Data.ClientDatabase;
-using Top2000.Data.ClientDatabase.Models;
-
+﻿using Top2000.Data.ClientDatabase.Models;
 
 namespace Top2000.Features.Specs.Bindings;
 
 [Binding]
 public class Top2000DataSteps
 {
-    private IGrouping<int, Listing> latestEdition;
+    private IGrouping<int, Listing> _latestEdition;
 
     [BeforeScenario]
     public void DeleteClientDatabase()
@@ -23,7 +19,7 @@ public class Top2000DataSteps
     [AfterScenario]
     public void CloseDatabaseConnections()
     {
-        SQLiteAsyncConnection.ResetPool();
+        SqliteConnection.ClearAllPools();
     }
 
     [When(@"the client database is created")]
@@ -39,8 +35,8 @@ public class Top2000DataSteps
     [Then(@"the listing table contains 2000 tracks for each edition ranging from 1 to 2000")]
     public async Task ThenThePositionTableContainsTracksForEachEditionRangingFromTo()
     {
-        var sql = App.GetService<SQLiteAsyncConnection>();
-        var lists = (await sql.Table<Listing>().ToListAsync())
+        var sql = App.GetService<SqliteConnection>();
+        var lists = (await GetListingsAsync(sql))
             .Where(x => x.Edition != 2023)
             .GroupBy(x => x.Edition)
             .OrderBy(x => x.Key)
@@ -58,8 +54,9 @@ public class Top2000DataSteps
     [Then(@"the listing table contains 10 or 2000 for the last edition ranging from 1 to 10/2000")]
     public async Task ThenThePositionsTableContainsOrForTheLastYearRangingFromTo()
     {
-        var sql = App.GetService<SQLiteAsyncConnection>();
-        var list = (await sql.Table<Listing>().Where(x => x.Edition != 2023).ToListAsync())
+        var sql = App.GetService<SqliteConnection>();
+        var list = (await GetListingsAsync(sql))
+            .Where(x => x.Edition != 2023)
             .GroupBy(x => x.Edition)
             .OrderBy(x => x.Key)
             .Last();
@@ -70,8 +67,8 @@ public class Top2000DataSteps
     [Then(@"the listing table of edition 2023 has 2500 tracks")]
     public async Task ThenTheListingTableOfEditionHasTracks()
     {
-        var sql = App.GetService<SQLiteAsyncConnection>();
-        var list = (await sql.Table<Listing>().ToListAsync())
+        var sql = App.GetService<SqliteConnection>();
+        var list = (await GetListingsAsync(sql))
             .Where(x => x.Edition == 2023)
             .GroupBy(x => x.Edition)
             .OrderBy(x => x.Key)
@@ -83,12 +80,11 @@ public class Top2000DataSteps
     [When("the latest edition is queried")]
     public async Task WhenTheLatestEditionIsQueried()
     {
-        var sql = App.GetService<SQLiteAsyncConnection>();
+        var sql = App.GetService<SqliteConnection>();
 
-        var lastEdition = (await sql.Table<Edition>().ToArrayAsync())
-            .Last().Year;
+        var lastEdition = (await GetEditionsAsync(sql)).Last();
 
-        latestEdition = (await sql.Table<Listing>().ToListAsync())
+        _latestEdition = (await GetListingsAsync(sql))
             .Where(x => x.Edition == lastEdition)
             .GroupBy(x => x.Edition)
             .OrderBy(x => x.Key)
@@ -98,14 +94,15 @@ public class Top2000DataSteps
     [Then("the latest edition contains either {int} or {int} items")]
     public void ThenTheLatestEditionContainsEitherOrOrItems(int p0, int p1)
     {
-        latestEdition.Count().Should().BeOneOf(p0, p1);
+        _latestEdition.Count().Should().BeOneOf(p0, p1);
     }
 
     [Then(@"for each track in the listing table the PlayDateAndTime is the same to the previous track or has incremented by one hour")]
     public async Task ThenForEachTrackInTheListingTableThePlayDateAndTimeIsTheSameToThePreviousTrackOrHasIncrementedByOneHour()
     {
-        var sql = App.GetService<SQLiteAsyncConnection>();
-        var listings = (await sql.Table<Listing>().Where(x => x.Edition > 2015).ToListAsync())
+        var sql = App.GetService<SqliteConnection>();
+        var listings = (await GetListingsAsync(sql))
+            .Where(x => x.Edition > 2015)
             .OrderBy(x => x.Position)
             .GroupBy(x => x.Edition)
             .OrderBy(x => x.Key)
@@ -128,6 +125,54 @@ public class Top2000DataSteps
                 previous = track;
             }
         }
+    }
+
+    private async Task<List<Listing>> GetListingsAsync(SqliteConnection connection)
+    {
+        var items = new List<Listing>();
+        await connection.OpenAsync();
+        try
+        {
+            await using var cmd = connection.CreateCommand();
+            cmd.CommandText = "SELECT TrackId, Edition, Position, PlayUtcDateAndTime FROM Listing";
+            await using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                items.Add(new Listing
+                {
+                    TrackId = reader.GetInt32(0),
+                    Edition = reader.GetInt32(1),
+                    Position = reader.GetInt32(2),
+                    PlayUtcDateAndTime = reader.IsDBNull(3) ? (DateTime?)null : reader.GetDateTime(3)
+                });
+            }
+        }
+        finally
+        {
+            await connection.CloseAsync();
+        }
+        return items;
+    }
+
+    private async Task<int[]> GetEditionsAsync(SqliteConnection connection)
+    {
+        var years = new List<int>();
+        await connection.OpenAsync();
+        try
+        {
+            await using var cmd = connection.CreateCommand();
+            cmd.CommandText = "SELECT Year FROM Edition ORDER BY Year";
+            await using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                years.Add(reader.GetInt32(0));
+            }
+        }
+        finally
+        {
+            await connection.CloseAsync();
+        }
+        return years.ToArray();
     }
 
     private class Listing

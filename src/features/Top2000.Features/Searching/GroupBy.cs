@@ -2,7 +2,7 @@
 
 public static class GroupBy
 {
-    private static readonly IGroup defaultGroup = new GroupByNothing();
+    private static readonly IGroup DefaultGroup = new GroupByNothing();
 
-    public static IGroup Default => defaultGroup;
+    public static IGroup Default => DefaultGroup;
 }

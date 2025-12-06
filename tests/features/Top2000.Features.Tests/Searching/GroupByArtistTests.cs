@@ -8,11 +8,46 @@ public class GroupByArtistTests
     [TestMethod]
     public void GroupByArtistGroupsTracksByArtist()
     {
-        var trackA_1 = new SearchedTrack { Artist = "A" };
-        var trackA_2 = new SearchedTrack { Artist = "A" };
-        var trackC_1 = new SearchedTrack { Artist = "C" };
-        var trackD_1 = new SearchedTrack { Artist = "D" };
-        var trackD_2 = new SearchedTrack { Artist = "D" };
+        var trackA_1 = new SearchedTrack
+        {
+            Artist = "A",
+            Id = 0,
+            Title = "A",
+            RecordedYear = 0,
+            LatestEdition = 0
+        };
+        var trackA_2 = new SearchedTrack
+        {
+            Artist = "A",
+            Id = 0,
+            Title = "A",
+            RecordedYear = 0,
+            LatestEdition = 0
+        };
+        var trackC_1 = new SearchedTrack
+        {
+            Artist = "C",
+            Id = 0,
+            Title =  "C",
+            RecordedYear = 0,
+            LatestEdition = 0
+        };
+        var trackD_1 = new SearchedTrack
+        {
+            Artist = "D",
+            Id = 0,
+            Title = "D",
+            RecordedYear = 0,
+            LatestEdition = 0
+        };
+        var trackD_2 = new SearchedTrack
+        {
+            Artist = "D",
+            Id = 0,
+            Title = "D",
+            RecordedYear = 0,
+            LatestEdition = 0
+        };
 
         var tracks = new[] { trackD_2, trackA_1, trackA_2, trackC_1, trackD_1 };
         var actual = new GroupByArtist().Group(tracks);

@@ -4,8 +4,6 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
-
     <IsPackable>true</IsPackable>
     <Deterministic>true</Deterministic>
     <PackageId>RickNeeftDevelopment.Top2000App.Features</PackageId>
@@ -31,9 +29,13 @@
     <PackageReference Include="MediatR.Contracts" Version="2.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\..\docs\features\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\..\docs\nugeticon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
-    <None Include="..\..\docs\nugeticon.png" Pack="true" PackagePath="\" />
+    <Using Include="MediatR" />
   </ItemGroup>
+  
 </Project>

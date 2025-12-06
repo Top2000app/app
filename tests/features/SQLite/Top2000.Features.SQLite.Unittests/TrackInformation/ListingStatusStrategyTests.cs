@@ -14,7 +14,7 @@ public class ListingStatusStrategyTests
     }
 
     [TestMethod]
-    public void Status_is_NotAvailable_when_the_track_is_not_recorded()
+    public void StatusIsNotAvailableWhenTheTrackIsNotRecorded()
     {
         var listing = new ListingInformation { Edition = 2000 };
 
@@ -22,7 +22,7 @@ public class ListingStatusStrategyTests
     }
 
     [TestMethod]
-    public void Status_is_NotListed_when_track_has_recorded_but_position_is_null()
+    public void StatusIsNotListedWhenTrackHasRecordedButPositionIsNull()
     {
         var listing = new ListingInformation { Edition = 2002 };
 
@@ -30,7 +30,7 @@ public class ListingStatusStrategyTests
     }
 
     [TestMethod]
-    public void Status_is_New_when_track_has_position_is_filled_and_not_been_set()
+    public void StatusIsNewWhenTrackHasPositionIsFilledAndNotBeenSet()
     {
         var listing = new ListingInformation { Edition = 2002, Position = 12 };
 
@@ -38,7 +38,7 @@ public class ListingStatusStrategyTests
     }
 
     [TestMethod]
-    public void Status_is_Back_when_previous_status_is_NotListed_and_new_has_been_set()
+    public void StatusIsBackWhenPreviousStatusIsNotListedAndNewHasBeenSet()
     {
         new List<ListingInformation>
         {
@@ -56,7 +56,7 @@ public class ListingStatusStrategyTests
     }
 
     [TestMethod]
-    public void Status_is_Unchanged_when_offset_0()
+    public void StatusIsUnchangedWhenOffset0()
     {
         new List<ListingInformation>
         {
@@ -72,7 +72,7 @@ public class ListingStatusStrategyTests
     }
 
     [TestMethod]
-    public void Status_is_Increased_when_offset_negative()
+    public void StatusIsIncreasedWhenOffsetNegative()
     {
         new List<ListingInformation>
         {
@@ -88,7 +88,7 @@ public class ListingStatusStrategyTests
     }
 
     [TestMethod]
-    public void Status_is_Decreased_when_offset_positive()
+    public void StatusIsDecreasedWhenOffsetPositive()
     {
         new List<ListingInformation>
         {

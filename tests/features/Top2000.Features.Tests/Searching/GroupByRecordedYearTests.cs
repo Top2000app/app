@@ -8,11 +8,11 @@ public class GroupByRecordedYearTests
     [TestMethod]
     public void GroupByRecordedYearGroupsTrackOnTheRecordedYear()
     {
-        var track2016_1 = new SearchedTrack { RecordedYear = 2016 };
-        var track2016_2 = new SearchedTrack { RecordedYear = 2016 };
-        var track2017_1 = new SearchedTrack { RecordedYear = 2017 };
-        var track2018_1 = new SearchedTrack { RecordedYear = 2018 };
-        var track2018_2 = new SearchedTrack { RecordedYear = 2018 };
+        var track2016_1 = new SearchedTrack { Title = "A", Artist ="A", Id = 1, LatestEdition = 1, RecordedYear = 2016 };
+        var track2016_2 = new SearchedTrack { Title = "A", Artist ="A", Id = 1, LatestEdition = 1, RecordedYear = 2016 };
+        var track2017_1 = new SearchedTrack { Title = "A", Artist ="A", Id = 1, LatestEdition = 1, RecordedYear = 2017 };
+        var track2018_1 = new SearchedTrack { Title = "A", Artist ="A", Id = 1, LatestEdition = 1, RecordedYear = 2018 };
+        var track2018_2 = new SearchedTrack { Title = "A", Artist ="A", Id = 1, LatestEdition = 1, RecordedYear = 2018 };
 
         var tracks = new[] { track2018_2, track2016_1, track2016_2, track2017_1, track2018_1 };
         var actual = new GroupByRecordedYear().Group(tracks);

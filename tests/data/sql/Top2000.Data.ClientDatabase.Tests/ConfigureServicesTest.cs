@@ -34,7 +34,7 @@ public class ConfigureServicesTest
     }
 
     [TestMethod]
-    public void EnablingOnlineUpdatesGivesAnOtherOption()
+    public void EnablingOnlineUpdatesGivesAnotherOption()
     {
         var serviceCollection = new ServiceCollection()
             .AddTop2000(configure =>

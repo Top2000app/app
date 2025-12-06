@@ -2,17 +2,17 @@
 
 public class TrackListing
 {
-    public int TrackId { get; set; }
+    public required int TrackId { get; init; }
 
-    public int Position { get; set; }
+    public required int Position { get; init; }
 
-    public int? Delta { get; set; }
+    public int? Delta { get; init; }
 
-    public bool IsRecurring { get; set; }
+    public required bool IsRecurring { get; init; }
 
-    public DateTime PlayUtcDateAndTime { get; set; }
+    public DateTime PlayUtcDateAndTime { get; init; }
 
-    public string Title { get; set; } = string.Empty;
+    public required string Title { get; init; }
 
-    public string Artist { get; set; } = string.Empty;
+    public required string Artist { get; init; }
 }

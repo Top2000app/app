@@ -1,28 +1,28 @@
 ﻿using Top2000.Features.AllEditions;
+[assembly: Parallelize]
 
 namespace Top2000.Features.Tests.AllEditions;
 
 [TestClass]
 public class EditionTests
 {
-    private readonly Edition sut;
-
-    public EditionTests()
+    private readonly Edition _sut = new()
     {
-        sut = new Edition();
-    }
+        Year = 2023,
+        StartUtcDateAndTime = DateTime.UtcNow,
+        EndUtcDateAndTime = DateTime.UtcNow,
+        HasPlayDateAndTime = true
+    };
 
     [TestMethod]
     public void LocalStartDateAndTimeTransformsTheUtc()
     {
-        sut.StartUtcDateAndTime = DateTime.UtcNow;
-        sut.LocalStartDateAndTime.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(1));
+        _sut.LocalStartDateAndTime.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(1));
     }
 
     [TestMethod]
     public void LocalEndDateAndTimeTransformsFromUtc()
     {
-        sut.EndUtcDateAndTime = DateTime.UtcNow;
-        sut.LocalEndDateAndTime.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(1));
+        _sut.LocalEndDateAndTime.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(1));
     }
 }

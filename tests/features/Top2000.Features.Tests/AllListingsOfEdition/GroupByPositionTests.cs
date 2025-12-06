@@ -6,7 +6,7 @@ namespace Top2000.Features.Tests.AllListingsOfEdition;
 public class GroupByPositionTests
 {
     [TestMethod]
-    public void Position1IsPutInThe1_100Group()
+    public void Position1IsPutInThe1100Group()
     {
         var list = new HashSet<TrackListing> { CreateNewTrackListingWithPosition(1) };
 
@@ -18,7 +18,7 @@ public class GroupByPositionTests
     }
 
     [TestMethod]
-    public void Poisition99IsPutInThe1_100Group()
+    public void Position99IsPutInThe1100Group()
     {
         var list = new HashSet<TrackListing> { CreateNewTrackListingWithPosition(99) };
 
@@ -30,7 +30,7 @@ public class GroupByPositionTests
     }
 
     [TestMethod]
-    public void Position100IsPutInThe100_101Group()
+    public void Position100IsPutInThe100101Group()
     {
         var list = new HashSet<TrackListing> { CreateNewTrackListingWithPosition(100) };
 
@@ -42,7 +42,7 @@ public class GroupByPositionTests
     }
 
     [TestMethod]
-    public void Position2000IsPutInThe1999_2000Group()
+    public void Position2000IsPutInThe19992000Group()
     {
         var list = new HashSet<TrackListing> { CreateNewTrackListingWithPosition(2000) };
 
@@ -54,7 +54,7 @@ public class GroupByPositionTests
     }
 
     [TestMethod]
-    public void Position2000IsPutInThe2000_2100GroupWhenMoreThen2000Tracks()
+    public void Position2000IsPutInThe20002100GroupWhenMoreThen2000Tracks()
     {
         var tracks = Enumerable
             .Range(1, 2005)
@@ -73,7 +73,7 @@ public class GroupByPositionTests
     }
 
     [TestMethod]
-    public void Position2500IsPutInThe2400_2500Group()
+    public void Position2500IsPutInThe24002500Group()
     {
         var tracks = Enumerable
            .Range(1, 2501)

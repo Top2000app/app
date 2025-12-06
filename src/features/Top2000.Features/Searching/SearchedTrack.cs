@@ -2,17 +2,17 @@
 
 public class SearchedTrack
 {
-    public int Id { get; set; }
+    public required int Id { get; init; }
 
-    public string Title { get; set; } = string.Empty;
+    public required string Title { get; init; }
 
-    public string Artist { get; set; } = string.Empty;
+    public required string Artist { get; init; }
 
-    public int RecordedYear { get; set; }
+    public required int RecordedYear { get; init; }
 
-    public int? Position { get; set; }
+    public int? Position { get; init; }
 
-    public int LatestEdition { get; set; }
+    public required int LatestEdition { get; init; }
 
     public string PositionInLatestEdition => $"{LatestEdition}: {Position?.ToString() ?? "-"}";
 }

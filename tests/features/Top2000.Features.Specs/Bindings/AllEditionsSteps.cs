@@ -48,7 +48,7 @@ public class AllEditionsSteps
     }
 
     [Then(@"the Start- and EndDateTime is in local time")]
-    public void ThenTheStart_AndEndDateTimeIsInLocalTime()
+    public void ThenTheStartAndEndDateTimeIsInLocalTime()
     {
         var offset = TimeZoneInfo.Local.BaseUtcOffset;
 
@@ -60,7 +60,7 @@ public class AllEditionsSteps
     }
 
     [Then(@"the UTC Start date is as follow:")]
-    public void Then_TheUTCStartDateIsAsFollow(Table table)
+    public void ThenTheUtcStartDateIsAsFollow(Table table)
     {
         var items = table.CreateSet<YearTimeCombo>();
 

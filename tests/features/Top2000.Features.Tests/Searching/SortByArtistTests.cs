@@ -8,10 +8,10 @@ public class SortByArtistTests
     [TestMethod]
     public void SortByArtistSortTrackByTheNameOfTheArtistAlphabetically()
     {
-        var trackA = new SearchedTrack { Artist = "A" };
-        var trackB = new SearchedTrack { Artist = "B" };
-        var trackC = new SearchedTrack { Artist = "C" };
-        var trackD = new SearchedTrack { Artist = "D" };
+        var trackA = new SearchedTrack { Title = "A", Artist ="A", Id = 1, LatestEdition = 1, RecordedYear = 2016 };
+        var trackB = new SearchedTrack { Title = "B", Artist ="B", Id = 1, LatestEdition = 1, RecordedYear = 2016 };
+        var trackC = new SearchedTrack { Title = "C", Artist ="C", Id = 1, LatestEdition = 1, RecordedYear = 2017 };
+        var trackD = new SearchedTrack { Title = "D", Artist ="D", Id = 1, LatestEdition = 1, RecordedYear = 2018 };
 
         var tracks = new[] { trackB, trackD, trackC, trackA };
 

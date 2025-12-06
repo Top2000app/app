@@ -13,6 +13,11 @@
     <Project Path="tests/data/sql/Top2000.Data.ClientDatabase.Tests/Top2000.Data.ClientDatabase.Tests.csproj" />
     <Project Path="tests/data/sql/Top2000.Data.SQLScripts.Unittests/Top2000.Data.SQLScripts.Unittests.csproj" />
   </Folder>
+  <Folder Name="/features/">
+    <Project Path="src/features/Top2000.Features/Top2000.Features.csproj" />
+    <Project Path="tests/features/Top2000.Features.Tests/Top2000.Features.Tests.csproj" />
+  </Folder>
+  <Folder Name="/features/sql/" />
   <Folder Name="/SolutionFiles/">
     <File Path=".editorconfig" />
   </Folder>

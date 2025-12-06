@@ -1,7 +1,7 @@
 ﻿namespace Top2000.Data.ClientDatabase.Tests;
 
 [TestClass]
-public class SqlScriptTest
+public class SqlScriptTests
 {
     [TestMethod]
     public void ScriptSectionReturnsContentSplitOnSemicolon()

@@ -6,7 +6,7 @@ public class Top2000ServiceBuilderTests
     private readonly Top2000ServiceBuilder _sut = new();
 
     [TestMethod]
-    public void DefaultValues_ShouldBeSetCorrectly()
+    public void DefaultValuesShouldBeSetCorrectly()
     {
         _sut.Directory.Should().Be(AppDomain.CurrentDomain.BaseDirectory);
         _sut.Name.Should().Be("Top2000v2.db");
@@ -15,7 +15,7 @@ public class Top2000ServiceBuilderTests
     }
 
     [TestMethod]
-    public void DatabaseDirectory_ShouldSetCorrectly()
+    public void DatabaseDirectoryShouldSetCorrectly()
     {
         const string customDirectory = "/custom/directory";
 
@@ -25,7 +25,7 @@ public class Top2000ServiceBuilderTests
     }
 
     [TestMethod]
-    public void DatabaseName_ShouldSetCorrectly()
+    public void DatabaseNameShouldSetCorrectly()
     {
         const string customName = "CustomDatabase.db";
 
@@ -35,7 +35,7 @@ public class Top2000ServiceBuilderTests
     }
 
     [TestMethod]
-    public void EnableOnlineUpdates_ShouldEnableFeature()
+    public void EnableOnlineUpdatesShouldEnableFeature()
     {
         _sut.EnableOnlineUpdates();
 
@@ -43,7 +43,7 @@ public class Top2000ServiceBuilderTests
     }
 
     [TestMethod]
-    public void EnableOnlineUpdates_ShouldDisableFeature()
+    public void EnableOnlineUpdatesShouldDisableFeature()
     {
         _sut.EnableOnlineUpdates(false);
 
@@ -51,7 +51,7 @@ public class Top2000ServiceBuilderTests
     }
 
     [TestMethod]
-    public void EnableOnlineUpdates_WithCustomUri_ShouldSetCorrectly()
+    public void EnableOnlineUpdatesWithCustomUriShouldSetCorrectly()
     {
         var customUri = new Uri("https://custom.uri/");
 

@@ -2,7 +2,7 @@
 
 public static class SortBy
 {
-    private static readonly ISort defaultSort = new SortByTitle();
+    private static readonly ISort DefaultSort = new SortByTitle();
 
-    public static ISort Default => defaultSort;
+    public static ISort Default => DefaultSort;
 }

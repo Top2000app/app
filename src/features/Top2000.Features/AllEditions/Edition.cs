@@ -2,15 +2,15 @@
 
 public class Edition
 {
-    public int Year { get; set; }
+    public required int Year { get; init; }
 
     public DateTime LocalStartDateAndTime => DateTime.SpecifyKind(StartUtcDateAndTime, DateTimeKind.Utc).ToLocalTime();
 
     public DateTime LocalEndDateAndTime => DateTime.SpecifyKind(EndUtcDateAndTime, DateTimeKind.Utc).ToLocalTime();
 
-    public DateTime StartUtcDateAndTime { get; set; }
+    public required DateTime StartUtcDateAndTime { get; init; }
 
-    public DateTime EndUtcDateAndTime { get; set; }
+    public required DateTime EndUtcDateAndTime { get; init; }
 
-    public bool HasPlayDateAndTime { get; set; }
+    public required bool HasPlayDateAndTime { get; init; }
 }

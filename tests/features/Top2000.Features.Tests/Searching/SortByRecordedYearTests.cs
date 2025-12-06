@@ -8,10 +8,10 @@ public class SortByRecordedYearTests
     [TestMethod]
     public void SortByRecordedYearSortsTrackByRecordedYear()
     {
-        var trackA = new SearchedTrack { RecordedYear = 2016 };
-        var trackB = new SearchedTrack { RecordedYear = 2017 };
-        var trackC = new SearchedTrack { RecordedYear = 2018 };
-        var trackD = new SearchedTrack { RecordedYear = 2019 };
+        var trackA = new SearchedTrack { Title = "A", Artist ="A", Id = 1, LatestEdition = 1, RecordedYear = 2016 };
+        var trackB = new SearchedTrack { Title = "B", Artist ="A", Id = 1, LatestEdition = 1, RecordedYear = 2017 };
+        var trackC = new SearchedTrack { Title = "C", Artist ="A", Id = 1, LatestEdition = 1, RecordedYear = 2018 };
+        var trackD = new SearchedTrack { Title = "D", Artist ="A", Id = 1, LatestEdition = 1, RecordedYear = 2019 };
 
         var tracks = new[] { trackB, trackD, trackC, trackA };
 

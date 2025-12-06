@@ -22,7 +22,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="AwesomeAssertions" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="MSTest.TestAdapter" />
@@ -33,13 +33,15 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\features\sql\Top2000.Features.SQLite\Top2000.Features.SQLite.csproj" />
   </ItemGroup>
-
+  
   <ItemGroup>
+    <Using Include="AwesomeAssertions" />
+    <Using Include="AwesomeAssertions.Execution" />
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
     <Using Include="Microsoft.Data.Sqlite" />
     <Using Include="Top2000.Data" />
     <Using Include="Top2000.Data.ClientDatabase" />
-    <Using Include="Top2000.Features.AllEditions" />
+    <Using Include="Reqnroll" />
+    <Using Include="MediatR" />
   </ItemGroup>
-
 </Project>

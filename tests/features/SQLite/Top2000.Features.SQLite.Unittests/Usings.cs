@@ -1,3 +1,3 @@
-﻿﻿global using Shouldly;
+﻿global using AwesomeAssertions;
 
 [assembly: Parallelize]

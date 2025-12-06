@@ -1,4 +1,6 @@
-﻿namespace Top2000.Features.Specs.Bindings;
+﻿using AwesomeAssertions;
+
+namespace Top2000.Features.Specs.Bindings;
 
 [Binding]
 public class ClientDatabaseSteps

@@ -19,7 +19,7 @@ public class TrackListingComparerTests
         var track1 = new TrackListing { Position = 1 };
         var track2 = new TrackListing { Position = 1 };
 
-        sut.Equals(track1, track2).ShouldBeTrue();
+        sut.Equals(track1, track2).Should().BeTrue();
     }
 
     [TestMethod]
@@ -27,6 +27,6 @@ public class TrackListingComparerTests
     {
         var track = new TrackListing { Position = 1392 };
 
-        sut.GetHashCode(track).ShouldBe(track.Position.GetHashCode());
+        sut.GetHashCode(track).Should().Be(track.Position.GetHashCode());
     }
 }

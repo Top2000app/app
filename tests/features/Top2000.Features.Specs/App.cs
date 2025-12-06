@@ -4,6 +4,7 @@ using Top2000.Data.ClientDatabase;
 using Top2000.Features.SQLite;
 
 [assembly: TestCategory("SkipWhenLiveUnitTesting")]
+[assembly: DoNotParallelize]
 
 namespace Top2000.Features.Specs;
 

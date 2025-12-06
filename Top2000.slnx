@@ -26,5 +26,6 @@
   </Folder>
   <Folder Name="/SolutionFiles/">
     <File Path=".editorconfig" />
+    <File Path="Directory.Packages.props" />
   </Folder>
 </Solution>

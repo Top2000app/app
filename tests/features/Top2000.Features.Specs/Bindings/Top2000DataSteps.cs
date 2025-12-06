@@ -1,4 +1,5 @@
-﻿using Top2000.Data.ClientDatabase.Models;
+﻿using AwesomeAssertions;
+using Top2000.Data.ClientDatabase.Models;
 
 namespace Top2000.Features.Specs.Bindings;
 

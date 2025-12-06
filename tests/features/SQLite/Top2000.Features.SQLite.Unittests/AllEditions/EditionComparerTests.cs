@@ -19,7 +19,7 @@ public class EditionComparerTests
         var edition1 = new Edition { Year = 2018 };
         var edition2 = new Edition { Year = 2018 };
 
-        sut.Compare(edition1, edition2).ShouldBe(0);
+        sut.Compare(edition1, edition2).Should().Be(0);
     }
 
     [TestMethod]
@@ -28,7 +28,7 @@ public class EditionComparerTests
         var edition1 = new Edition { Year = 2018 };
         var edition2 = new Edition { Year = 2019 };
 
-        sut.Compare(edition1, edition2).ShouldBe(1);
+        sut.Compare(edition1, edition2).Should().Be(1);
     }
 
     [TestMethod]
@@ -37,6 +37,6 @@ public class EditionComparerTests
         var edition1 = new Edition { Year = 2001 };
         var edition2 = new Edition { Year = 2000 };
 
-        sut.Compare(edition1, edition2).ShouldBe(-1);
+        sut.Compare(edition1, edition2).Should().Be(-1);
     }
 }

@@ -1,105 +1,71 @@
-﻿using Top2000.Features.SQLite.TrackInformation;
-using Top2000.Features.TrackInformation;
+﻿using Top2000.Features.TrackInformation;
+using Top2000.Features.SQLite.TrackInformation;
 
 namespace Top2000.Features.SQLite.Unittests.TrackInformation;
 
 [TestClass]
 public class ListingStatusStrategyTests
 {
-    private readonly ListingStatusStrategy sut;
-
-    public ListingStatusStrategyTests()
+    [TestMethod]
+    public void NotAvailableWhenListingInformationIsNull()
     {
-        sut = new ListingStatusStrategy(2002);
+        var sut = new ListingStatusStrategy();
+        var listing = (ListingInformation?)null;
+
+        sut.Determine(listing).Should().Be(ListingStatus.NotAvailable);
     }
 
     [TestMethod]
-    public void StatusIsNotAvailableWhenTheTrackIsNotRecorded()
+    public void NotListedWhenListingInformationIsNotSet()
     {
-        var listing = new ListingInformation { Edition = 2000 };
+        var sut = new ListingStatusStrategy();
+        var listing = new ListingInformation();
 
-        sut.Determine(listing).ShouldBe(ListingStatus.NotAvailable);
+        sut.Determine(listing).Should().Be(ListingStatus.NotListed);
     }
 
     [TestMethod]
-    public void StatusIsNotListedWhenTrackHasRecordedButPositionIsNull()
+    public void NewWhenListingInformationIsNew()
     {
-        var listing = new ListingInformation { Edition = 2002 };
+        var sut = new ListingStatusStrategy();
+        var listing = new ListingInformation { Edition = 2023, PreviousEdition = 0 };
 
-        sut.Determine(listing).ShouldBe(ListingStatus.NotListed);
+        sut.Determine(listing).Should().Be(ListingStatus.New);
     }
 
     [TestMethod]
-    public void StatusIsNewWhenTrackHasPositionIsFilledAndNotBeenSet()
+    public void BackWhenListingInformationBack()
     {
-        var listing = new ListingInformation { Edition = 2002, Position = 12 };
+        var sut = new ListingStatusStrategy();
+        var listing = new ListingInformation { Edition = 2023, PreviousEdition = 2012, PreviousPosition = 100 };
 
-        sut.Determine(listing).ShouldBe(ListingStatus.New);
+        sut.Determine(listing).Should().Be(ListingStatus.Back);
     }
 
     [TestMethod]
-    public void StatusIsBackWhenPreviousStatusIsNotListedAndNewHasBeenSet()
+    public void UnchangedWhenPositionIsTheSame()
     {
-        new List<ListingInformation>
-        {
-            new() { Edition = 1999, Status = ListingStatus.NotAvailable},
-            new() { Edition = 2000, Status = ListingStatus.NotAvailable},
-            new() { Edition = 2001, Status = ListingStatus.NotAvailable},
-            new() { Edition = 2002, Position = 1, Status = ListingStatus.New},
-            new() { Edition = 2003, Status = ListingStatus.NotListed},
-        }
-        .ForEach(x => sut.Determine(x));
+        var sut = new ListingStatusStrategy();
+        var current = new ListingInformation { Position = 100, PreviousPosition = 100 };
 
-        var listing = new ListingInformation { Edition = 2004, Position = 12 };
-
-        sut.Determine(listing).ShouldBe(ListingStatus.Back);
+        sut.Determine(current).Should().Be(ListingStatus.Unchanged);
     }
 
     [TestMethod]
-    public void StatusIsUnchangedWhenOffset0()
+    public void IncreasedWhenPositionIsLower()
     {
-        new List<ListingInformation>
-        {
-            new() { Edition = 1999, Status = ListingStatus.NotAvailable},
-            new() { Edition = 2000, Status = ListingStatus.NotAvailable},
-            new() { Edition = 2001, Status = ListingStatus.NotAvailable},
-            new() { Edition = 2002, Position = 2, Status = ListingStatus.New},
-        }
-        .ForEach(x => sut.Determine(x));
+        var sut = new ListingStatusStrategy();
+        var current = new ListingInformation { Position = 10, PreviousPosition = 100 };
 
-        var current = new ListingInformation { Edition = 2003, Position = 2, Offset = 0 };
-        sut.Determine(current).ShouldBe(ListingStatus.Unchanged);
+        sut.Determine(current).Should().Be(ListingStatus.Increased);
     }
 
     [TestMethod]
-    public void StatusIsIncreasedWhenOffsetNegative()
+    public void DecreasedWhenPositionIsHigher()
     {
-        new List<ListingInformation>
-        {
-            new() { Edition = 1999, Status = ListingStatus.NotAvailable},
-            new() { Edition = 2000, Status = ListingStatus.NotAvailable},
-            new() { Edition = 2001, Status = ListingStatus.NotAvailable},
-            new() { Edition = 2002, Position = 2, Status = ListingStatus.New},
-        }
-      .ForEach(x => sut.Determine(x));
+        var sut = new ListingStatusStrategy();
+        var current = new ListingInformation { Position = 100, PreviousPosition = 10 };
 
-        var current = new ListingInformation { Edition = 2003, Position = 1, Offset = -1 };
-        sut.Determine(current).ShouldBe(ListingStatus.Increased);
-    }
-
-    [TestMethod]
-    public void StatusIsDecreasedWhenOffsetPositive()
-    {
-        new List<ListingInformation>
-        {
-            new() { Edition = 1999, Status = ListingStatus.NotAvailable},
-            new() { Edition = 2000, Status = ListingStatus.NotAvailable},
-            new() { Edition = 2001, Status = ListingStatus.NotAvailable},
-            new() { Edition = 2002, Position = 2, Status = ListingStatus.New},
-        }
-      .ForEach(x => sut.Determine(x));
-
-        var current = new ListingInformation { Edition = 2003, Position = 3, Offset = 1 };
-        sut.Determine(current).ShouldBe(ListingStatus.Decreased);
+        sut.Determine(current).Should().Be(ListingStatus.Decreased);
     }
 }

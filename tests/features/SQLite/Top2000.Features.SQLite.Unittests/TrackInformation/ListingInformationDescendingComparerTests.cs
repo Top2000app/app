@@ -14,7 +14,7 @@ public class ListingInformationDescendingComparerTests
 
         var sut = new ListingInformationDescendingComparer();
 
-        sut.Compare(listing1, listing2).ShouldBe(0);
+        sut.Compare(listing1, listing2).Should().Be(0);
     }
 
     [TestMethod]
@@ -25,7 +25,7 @@ public class ListingInformationDescendingComparerTests
 
         var sut = new ListingInformationDescendingComparer();
 
-        sut.Compare(listing1, listing2).ShouldBe(1);
+        sut.Compare(listing1, listing2).Should().Be(1);
     }
 
     [TestMethod]
@@ -36,6 +36,6 @@ public class ListingInformationDescendingComparerTests
 
         var sut = new ListingInformationDescendingComparer();
 
-        sut.Compare(listing1, listing2).ShouldBe(-1);
+        sut.Compare(listing1, listing2).Should().Be(-1);
     }
 }

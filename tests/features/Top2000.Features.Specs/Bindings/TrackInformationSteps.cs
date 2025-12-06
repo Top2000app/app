@@ -1,7 +1,4 @@
-﻿using FluentAssertions.Execution;
-using Microsoft.Extensions.DependencyInjection;
-using Top2000.Features.TrackInformation;
-
+﻿using Top2000.Features.TrackInformation;
 
 namespace Top2000.Features.Specs.Bindings;
 

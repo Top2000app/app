@@ -1,4 +1,6 @@
-﻿namespace Top2000.Features.Specs.Bindings;
+﻿using Top2000.Features.AllEditions;
+
+namespace Top2000.Features.Specs.Bindings;
 
 [Binding]
 public class AllEditionsSteps

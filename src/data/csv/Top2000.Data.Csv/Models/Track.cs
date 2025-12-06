@@ -1,4 +1,6 @@
-﻿namespace Top2000.Data.Csv.Models;
+﻿using System;
+
+namespace Top2000.Data.Csv.Models;
 
 public class Track
 {

@@ -3,7 +3,9 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
     <Deterministic>true</Deterministic>
+    <ImplicitUsings>enable</ImplicitUsings>
     <PackageId>RickNeeftDevelopment.Top2000App.ClientDatabase.CSV</PackageId>
     <Description>Client database based on an embedded CSV file.</Description>
     <Copyright>Copyright (c) Rick Neeft Development 2024</Copyright>
@@ -32,8 +34,8 @@
     <None Remove="*.db" />
     <None Remove="*.csv" />
     <EmbeddedResource Include="*.csv" />
-    <None Include="..\..\..\README.md" Pack="true" PackagePath="\" />
-    <None Include="..\..\..\docs\nugeticon.png" Pack="true" PackagePath="\" />
+    <None Include="..\..\..\..\docs\data\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\..\..\docs\nugeticon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

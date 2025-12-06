@@ -1,9 +1,15 @@
 <Solution>
   <Folder Name="/data/">
+    <Project Path="src/data/sql/Top2000.Data.StaticDataSiteGenerator/Top2000.Data.StaticDataSiteGenerator.csproj" />
+  </Folder>
+  <Folder Name="/data/csv/">
+    <Project Path="src/data/csv/Top2000.Data.Csv/Top2000.Data.Csv.csproj" />
+    <Project Path="src/data/csv/Top2000.Data.CsvCreator/Top2000.Data.CsvCreator.csproj" />
+  </Folder>
+  <Folder Name="/data/sql/">
     <Project Path="src/data/sql/Top2000.Data.ClientDatabase/Top2000.Data.ClientDatabase.csproj" />
     <Project Path="src/data/sql/Top2000.Data.LocalDb/Top2000.Data.LocalDb.csproj" />
     <Project Path="src/data/sql/Top2000.Data.SQLScripts/Top2000.Data.SQLScripts.csproj" />
-    <Project Path="src/data/sql/Top2000.Data.StaticDataSiteGenerator/Top2000.Data.StaticDataSiteGenerator.csproj" />
     <Project Path="tests/data/sql/Top2000.Data.ClientDatabase.Tests/Top2000.Data.ClientDatabase.Tests.csproj" />
     <Project Path="tests/data/sql/Top2000.Data.SQLScripts.Unittests/Top2000.Data.SQLScripts.Unittests.csproj" />
   </Folder>

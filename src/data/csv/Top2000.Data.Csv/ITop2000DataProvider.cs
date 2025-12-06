@@ -4,11 +4,6 @@ using Top2000.Data.Csv.Models;
 
 namespace Top2000.Data.Csv;
 
-public interface ITop2000DataProvider
-{
-
-}
-
 public class Top2000DataProvider
 {
     private const int ColumnCountBeforeEditions = 5;
@@ -31,7 +26,7 @@ public class Top2000DataProvider
             var id = int.Parse(items[0]);
             DateTime? lastPlayUtc = null;
             var firstEdition = -1;
-            if (DateTime.TryParseExact(items[4], "dd-MM-yyyy HH:mm:ss'Z'", CultureInfo.InvariantCulture, DateTimeStyles.None, out var playTime))
+            if (DateTime.TryParseExact(items[4], "dd-MM-yyyy HH:mm:ssZ'", CultureInfo.InvariantCulture, DateTimeStyles.None, out var playTime))
             {
                 lastPlayUtc = playTime;
             }
@@ -73,10 +68,10 @@ public class Top2000DataProvider
 
     private async Task<string> GetDataFromAssemblyAsync()
     {
-        using var csvFileStream = Assembly
-            .GetAssembly(this.GetType())?
-            .GetManifestResourceStream("top2000.csv")
-            ?? throw new InvalidOperationException("Unable to find 'top2000.csv' in assembly");
+        await using var csvFileStream = Assembly 
+                                            .GetAssembly(this.GetType())?
+                                            .GetManifestResourceStream("top2000.csv") 
+                                        ?? throw new InvalidOperationException("Unable to find 'top2000.csv' in assembly");
 
         using var streamReader = new StreamReader(csvFileStream);
         return await streamReader.ReadToEndAsync();

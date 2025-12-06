@@ -82,10 +82,10 @@ public partial class View : ContentPage, ISortGroupNameProvider
         Shell.SetNavBarIsVisible(this, false);
         Shell.SetTabBarIsVisible(this, false);
 
-        await trackInformation.TranslateTo(this.Width * -1, 0, 0);
+        await trackInformation.TranslateToAsync(this.Width * -1, 0, 0);
 
         trackInformation.IsVisible = true;
-        await trackInformation.TranslateTo(0, 0);
+        await trackInformation.TranslateToAsync(0, 0);
 
         await infoTask;
     }
@@ -96,7 +96,7 @@ public partial class View : ContentPage, ISortGroupNameProvider
 
         Shell.SetTabBarIsVisible(this, true);
         Shell.SetNavBarIsVisible(this, true);
-        await trackInformation.TranslateTo(this.Width * -1, 0);
+        await trackInformation.TranslateToAsync(this.Width * -1, 0);
         trackInformation.IsVisible = false;
     }
 
@@ -104,7 +104,7 @@ public partial class View : ContentPage, ISortGroupNameProvider
     {
         var groups = this.ViewModel.GroupByOptions.Select(x => x.Name).ToArray();
 
-        var toGroup = await this.DisplayActionSheet(AppResources.GroupByHeader, AppResources.Cancel, null, groups);
+        var toGroup = await this.DisplayActionSheetAsync(AppResources.GroupByHeader, AppResources.Cancel, null, groups);
 
         if (!string.IsNullOrEmpty(toGroup) && toGroup != AppResources.Cancel)
         {
@@ -123,7 +123,7 @@ public partial class View : ContentPage, ISortGroupNameProvider
     {
         var sortings = this.ViewModel.SortByOptions.Select(x => x.Name).ToArray();
 
-        var toSort = await this.DisplayActionSheet(AppResources.SortByHeader, AppResources.Cancel, null, sortings);
+        var toSort = await this.DisplayActionSheetAsync(AppResources.SortByHeader, AppResources.Cancel, null, sortings);
 
         if (!string.IsNullOrEmpty(toSort) && toSort != AppResources.Cancel)
         {

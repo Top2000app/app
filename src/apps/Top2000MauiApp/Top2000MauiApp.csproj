@@ -38,11 +38,7 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android34.0|AnyCPU'">
-	  <AndroidPackageFormat>apk</AndroidPackageFormat>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android35.0|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-android36.0|AnyCPU'">
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	</PropertyGroup>
 
@@ -68,7 +64,6 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.11" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.11" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
-		<PackageReference Include="RickNeeftDevelopment.Top2000App.Features.SQLite" Version="2.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -137,6 +132,15 @@
 	  </None>
 	</ItemGroup>
 
+  <ItemGroup>
+    <Using Include="MediatR" />
+    <Using Include="CommunityToolkit.Mvvm.ComponentModel" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\features\sql\Top2000.Features.SQLite\Top2000.Features.SQLite.csproj" />
+  </ItemGroup>
+  
 	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionTop2000MauiAppHideInfoBar="True" /></VisualStudio></ProjectExtensions>
 
 </Project>

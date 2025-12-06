@@ -46,7 +46,7 @@ public partial class View : Shell, IMainShell
             var strings = Translator.Instance;
             MainThread.BeginInvokeOnMainThread(async () =>
             {
-                var rateIt = await DisplayAlert(strings["RateTitle"], strings["RateText"], strings["RateIt"], strings["RateNotNow"]);
+                var rateIt = await DisplayAlertAsync(strings["RateTitle"], strings["RateText"], strings["RateIt"], strings["RateNotNow"]);
 
                 if (rateIt)
                 {

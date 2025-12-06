@@ -66,19 +66,19 @@ public partial class View : ContentPage
         Shell.SetNavBarIsVisible(this, false);
         Shell.SetTabBarIsVisible(this, false);
 
-        await GroupFlyout.TranslateTo(this.Width * -1, 0, 0);
+        await GroupFlyout.TranslateToAsync(this.Width * -1, 0, 0);
 
         GroupFlyout.IsVisible = true;
-        await GroupFlyout.TranslateTo(0, 0);
+        await GroupFlyout.TranslateToAsync(0, 0);
     }
 
-    private void OnGroupSelected(object sender, SelectionChangedEventArgs e)
+    private async void OnGroupSelected(object sender, SelectionChangedEventArgs e)
     {
         if (dates.SelectedItem is DateTime date)
         {
             Shell.SetTabBarIsVisible(this, true);
             Shell.SetNavBarIsVisible(this, true);
-            GroupFlyout.TranslateTo(this.Width * -1, 0);
+            await GroupFlyout.TranslateToAsync(this.Width * -1, 0);
             GroupFlyout.IsVisible = false;
 
             this.JumpToSelectedDateTime(date);
@@ -121,10 +121,10 @@ public partial class View : ContentPage
         Shell.SetNavBarIsVisible(this, false);
         Shell.SetTabBarIsVisible(this, false);
 
-        await trackInformation.TranslateTo(this.Width * -1, 0, 0);
+        await trackInformation.TranslateToAsync(this.Width * -1, 0, 0);
 
         trackInformation.IsVisible = true;
-        await trackInformation.TranslateTo(0, 0);
+        await trackInformation.TranslateToAsync(0, 0);
 
         await infoTask;
     }
@@ -135,7 +135,7 @@ public partial class View : ContentPage
 
         Shell.SetTabBarIsVisible(this, true);
         Shell.SetNavBarIsVisible(this, true);
-        await trackInformation.TranslateTo(this.Width * -1, 0);
+        await trackInformation.TranslateToAsync(this.Width * -1, 0);
         trackInformation.IsVisible = false;
     }
 }

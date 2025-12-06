@@ -45,7 +45,7 @@ public partial class View : ContentPage
         var groups = this.ViewModel.Listings.Select(x => x.Key)
                                         .ToArray();
 
-        var result = await this.DisplayActionSheet(AppResources.JumpToGroup, AppResources.Cancel, null, groups);
+        var result = await this.DisplayActionSheetAsync(AppResources.JumpToGroup, AppResources.Cancel, null, groups);
 
         if (!string.IsNullOrWhiteSpace(result) && result != AppResources.Cancel)
         {

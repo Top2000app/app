@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/apps/">
+    <Project Path="src/apps/Top2000MauiApp/Top2000MauiApp.csproj" />
+  </Folder>
   <Folder Name="/data/">
     <Project Path="src/data/sql/Top2000.Data.StaticDataSiteGenerator/Top2000.Data.StaticDataSiteGenerator.csproj" />
   </Folder>

@@ -1,8 +1,5 @@
 ﻿namespace Top2000MauiApp.Globalisation;
 
-/// <summary>
-/// https://forums.xamarin.com/discussion/82458/binding-indexername-and-binding-providevalue-in-xamarin-forms
-/// </summary>
 public class TranslateExtension : IMarkupExtension<BindingBase>
 {
     public TranslateExtension(string text)

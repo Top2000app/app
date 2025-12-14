@@ -1,0 +1,12 @@
+@page "/"
+@using Top2000.BlazorApp.Services
+@inject NavigationManager Nav
+@inject EditionService EditionService
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var latestYear = await EditionService.GetLatestEditionAsync();
+        Nav.NavigateTo($"/{latestYear}", replace: true);
+    }
+}

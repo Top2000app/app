@@ -1,0 +1,25 @@
+@using Top2000.BlazorApp.Services
+@inject TrackService TrackService
+
+@if (Track is null)
+{
+    <p>Loading…</p>
+}
+else
+{
+    <h2>@Track.Title</h2>
+    <p><strong>Artist:</strong> @Track.Artist</p>
+    <p><strong>Rank:</strong> @Track.Number</p>
+}
+
+@code {
+    [Parameter] public int Year { get; set; }
+    [Parameter] public int TrackNumber { get; set; }
+
+    Track? Track;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Track = await TrackService.GetTrackAsync(Year, TrackNumber);
+    }
+}

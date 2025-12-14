@@ -1,5 +1,7 @@
 <Solution>
   <Folder Name="/apps/">
+    <Project Path="src/apps/Top2000.Apps.CLI/Top2000.Apps.CLI.csproj" />
+    <Project Path="src/apps/Top2000.BlazorApp/Top2000.BlazorApp.csproj" />
     <Project Path="src/apps/Top2000MauiApp/Top2000MauiApp.csproj" />
   </Folder>
   <Folder Name="/data/">

@@ -36,10 +36,10 @@ public partial class App : Application
 
     public static Task EnsureDatabaseIsCreatedAsync()
     {
-        var databaseGen = GetService<IUpdateClientDatabase>();
-        var top2000 = GetService<Top2000AssemblyDataSource>();
+            var databaseGen = GetService<IUpdateClientDatabase>();
+            var top2000 = GetService<Top2000AssemblyDataSource>();
 
-        return databaseGen.RunAsync(top2000);
+            return databaseGen.RunAsync(top2000);
     }
 
     public static async Task CheckForOnlineUpdates()

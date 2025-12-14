@@ -1,0 +1,14 @@
+<div class="layout">
+    <div class="list">
+        @List
+    </div>
+
+    <div class="detail">
+        @Detail
+    </div>
+</div>
+
+@code {
+    [Parameter] public RenderFragment? List { get; set; }
+    [Parameter] public RenderFragment? Detail { get; set; }
+}

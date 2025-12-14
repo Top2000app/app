@@ -1,0 +1,25 @@
+@using Top2000.BlazorApp.Services
+@inject TrackService TrackService
+
+<ul class="track-list">
+    @foreach (var track in Tracks)
+    {
+        <li class="@(track.Number == SelectedTrack ? "selected" : "")"
+            @onclick="() => OnSelect.InvokeAsync(track.Number)">
+            #{track.Number} – @track.Title
+        </li>
+    }
+</ul>
+
+@code {
+    [Parameter] public int Year { get; set; }
+    [Parameter] public int? SelectedTrack { get; set; }
+    [Parameter] public EventCallback<int> OnSelect { get; set; }
+
+    List<Track> Tracks = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Tracks = await TrackService.GetTracksAsync(Year);
+    }
+}

@@ -1,0 +1,40 @@
+@page "/{Year:int}"
+@page "/{Year:int}/{TrackNumber:int}"
+@using Top2000.BlazorApp.Services
+
+@inject TrackService TrackService
+@inject NavigationManager Nav
+
+<PageTitle>Top2000 @Year</PageTitle>
+
+<ResponsiveLayout>
+    <List>
+        <TrackList
+            Year="Year"
+            SelectedTrack="TrackNumber"
+            OnSelect="OnTrackSelected" />
+    </List>
+
+    <Detail>
+        @if (TrackNumber.HasValue)
+        {
+            <TrackDetail
+                Year="Year"
+                TrackNumber="TrackNumber.Value" />
+        }
+        else
+        {
+            <p class="placeholder">Select a track</p>
+        }
+    </Detail>
+</ResponsiveLayout>
+
+@code {
+    [Parameter] public int Year { get; set; }
+    [Parameter] public int? TrackNumber { get; set; }
+
+    void OnTrackSelected(int trackNumber)
+    {
+        Nav.NavigateTo($"/{Year}/{trackNumber}");
+    }
+}

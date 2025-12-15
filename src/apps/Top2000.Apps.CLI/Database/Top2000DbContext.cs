@@ -46,6 +46,7 @@ public class Listing
     public required Edition Edition { get; init; }
 }
 
+
 public class Top2000DbContext : DbContext
 {
     private readonly Top2000ServiceBuilder _top2000ServiceBuilder;

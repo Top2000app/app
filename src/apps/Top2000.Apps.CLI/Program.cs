@@ -7,6 +7,7 @@ using Top2000.Apps.CLI.Commands.Show;
 using Top2000.Apps.CLI.Commands.Export;
 using Top2000.Apps.CLI.Commands;
 using Top2000.Apps.CLI.Commands.Export.csv;
+using Top2000.Apps.CLI.Commands.Export.json;
 using Top2000.Apps.CLI.Commands.Search;
 using Top2000.Apps.CLI.Database;
 using Top2000.Data.ClientDatabase;
@@ -19,7 +20,7 @@ host.Services
     .AddDbContext<Top2000DbContext>()
 
     .AddSingleton<ExportCsvCommandHandler>()
-    .AddSingleton<ExportCommandHandler>()
+    .AddSingleton<ExportJsonCommandHandler>()
     .AddSingleton<ICommand, ExportCommands>()
 
     .AddSingleton<ShowCommandHandler>()

@@ -1,42 +1,25 @@
 using Top2000.Apps.CLI.Commands.Export.csv;
+using Top2000.Apps.CLI.Commands.Export.json;
 
 namespace Top2000.Apps.CLI.Commands.Export;
 
 public class ExportCommands : ICommand
 {
-    private readonly ExportCommandHandler _handler;
+    private readonly ExportJsonCommandHandler _jsonCommandHandler;
     private readonly ExportCsvCommandHandler _csvCommandHandler;
 
-    public ExportCommands(ExportCommandHandler handler, ExportCsvCommandHandler csvCommandHandler)
+    public ExportCommands(ExportJsonCommandHandler jsonCommandHandler, ExportCsvCommandHandler csvCommandHandler)
     {
-        _handler = handler;
+        _jsonCommandHandler = jsonCommandHandler;
         _csvCommandHandler = csvCommandHandler;
     }
     
     public Command Create()
     {
-        var exportCommand = new Command("export", "Export data to various formats");
-        
-        var csvCommand = CreateCsvCommand();
-       // var jsonCommand = CreateJsonCommand(_handler);
-        
-        exportCommand.Add(csvCommand);
-     //   exportCommand.Add(jsonCommand);
-        
-        return exportCommand;
-    }
-    
-    private Command CreateCsvCommand()
-    {
-        var csvCommand = new Command("csv", "Export to CSV format");
-        var outputOption = new Option<string>(name: "--output", "-o", "/o")
+        return new Command("export", "Export data to various formats")
         {
-            Description = "Output file path",
+            ExportCsvCommand.CreateCommand(_csvCommandHandler),
+            ExportJsonCommand.CreateCommand(_jsonCommandHandler)
         };
-        csvCommand.Add(outputOption);
-        
-        csvCommand.SetAction(_csvCommandHandler.HandleExportCsvAsync);
-
-        return csvCommand;
     }
 }

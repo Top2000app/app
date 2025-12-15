@@ -1,0 +1,84 @@
+name: .NET
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 10.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore
+
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+    
+    - name: Pack
+      run: dotnet pack -o '${{github.workspace}}/nupkg'
+
+    - name: Run
+      run: dotnet run --no-build --verbosity normal --project ${{github.workspace}}/src/sql/Top2000.Data.StaticDataSiteGenerator/
+    
+    - name: Pull from external repository
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Configure git with token authentication
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        
+        # Clone or pull from the external repository using token
+        if [ ! -d "external-repo" ]; then
+          git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/top2000app/REPO-NAME.git external-repo
+        else
+          cd external-repo
+          git pull origin main
+          cd ..
+        fi
+    
+    - name: Copy files from external repository
+      run: |
+        # Copy files from external repo to desired location
+        # Adjust source and destination paths as needed
+        cp -r external-repo/SOURCE_PATH/* DESTINATION_PATH/
+        
+    - name: Commit and push changes
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Configure git with token for pushing
+        git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+        
+        # Add changes to git
+        git add .
+        
+        # Check if there are changes to commit
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          # Commit changes
+          git commit -m "Update files from external repository"
+          
+          # Push changes
+          git push origin main
+        fi
+    

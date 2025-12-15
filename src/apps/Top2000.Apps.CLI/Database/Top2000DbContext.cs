@@ -1,51 +1,7 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using Top2000.Data.ClientDatabase;
 
 namespace Top2000.Apps.CLI.Database;
-
-public class Edition
-{
-    [Key]
-    public required int Year { get; init; }
-    public required DateTime StartUtcDateAndTime { get; init; }
-    public required DateTime EndUtcDateAndTime { get; init; }
-    public required bool HasPlayDateAndTime { get; init; }
-    
-    public ICollection<Listing> Listings { get; init; } = [];
-}
-
-public class Track
-{
-    [Key]
-    public required int Id { get; init; }
-    [MaxLength(100)]
-    public required string Title { get; init; }
-    [MaxLength(100)]
-    public required string Artist { get; init; }
-    public required int RecordedYear { get; init; }
-
-    [MaxLength(100)]
-    public string? SearchTitle { get; init; }
-    
-    [MaxLength(100)]
-    public string? SearchArtist { get; init; }
-    
-    public ICollection<Listing> Listings { get; init; } = [];
-}
-
-public class Listing
-{
-    public required int TrackId { get; init; }
-    
-    public required int EditionId { get; init; }
-    public required int Position { get; init; }
-    public DateTime? PlayUtcDateAndTime { get; init; }
-    
-    public required Track Track { get; init; }
-    public required Edition Edition { get; init; }
-}
-
 
 public class Top2000DbContext : DbContext
 {

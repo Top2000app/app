@@ -12,9 +12,4 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="wwwroot\lib\" />
-      <Folder Include="wwwroot\sample-data\" />
-    </ItemGroup>
-
 </Project>

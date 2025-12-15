@@ -6,7 +6,7 @@ using Top2000.Apps.CLI.Database;
 using Top2000.Features.AllListingsOfEdition;
 using Top2000.Features.TrackInformation;
 
-namespace Top2000.Apps.CLI.Commands.Export.json;
+namespace Top2000.Apps.CLI.Commands.Export.Json;
 
 public class ExportJsonCommandHandler
 {

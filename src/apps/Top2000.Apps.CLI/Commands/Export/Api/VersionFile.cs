@@ -1,4 +1,6 @@
-﻿namespace Top2000.Data.StaticApiGenerator;
+using System.Diagnostics;
+
+namespace Top2000.Apps.CLI.Commands.Export.Api;
 
 [DebuggerDisplay("{FileName}")]
 public sealed class VersionFile

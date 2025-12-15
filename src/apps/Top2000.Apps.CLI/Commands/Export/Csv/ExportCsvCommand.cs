@@ -1,4 +1,4 @@
-namespace Top2000.Apps.CLI.Commands.Export.csv;
+namespace Top2000.Apps.CLI.Commands.Export.Csv;
 
 public static class ExportCsvCommand
 {

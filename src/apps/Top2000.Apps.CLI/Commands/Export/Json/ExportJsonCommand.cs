@@ -1,4 +1,4 @@
-namespace Top2000.Apps.CLI.Commands.Export.json;
+namespace Top2000.Apps.CLI.Commands.Export.Json;
 
 public  static class ExportJsonCommand
 {

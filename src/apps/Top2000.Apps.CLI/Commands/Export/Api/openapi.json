@@ -11,22 +11,22 @@
   },
   "servers": [
     {
-      "url": "http://127.0.0.1:5501/"
+      "url": "https://data.top2000.app/"
     }
   ],
   "paths": {
-    "/versions/{int}/upgrades": {
+    "/versions/{version}/upgrades": {
       "get": {
         "summary": "Get Upgrades",
         "description": "Returns an array of strings representing the upgrades for the given version.",
         "parameters": [
           {
-            "name": "int",
+            "name": "version",
             "in": "path",
             "required": true,
             "description": "The version number to get upgrades for.",
             "schema": {
-              "type": "integer"
+              "type": "string"
             }
           }
         ],

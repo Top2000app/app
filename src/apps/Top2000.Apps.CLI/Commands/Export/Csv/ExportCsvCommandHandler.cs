@@ -2,7 +2,7 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Top2000.Apps.CLI.Database;
 
-namespace Top2000.Apps.CLI.Commands.Export.csv;
+namespace Top2000.Apps.CLI.Commands.Export.Csv;
 
 public class ExportCsvCommandHandler
 {

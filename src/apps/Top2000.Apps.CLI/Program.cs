@@ -1,13 +1,11 @@
-﻿using System.CommandLine;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Top2000.Apps.CLI.Commands.Show;
 using Top2000.Apps.CLI.Commands.Export;
 using Top2000.Apps.CLI.Commands;
-using Top2000.Apps.CLI.Commands.Export.csv;
-using Top2000.Apps.CLI.Commands.Export.json;
+using Top2000.Apps.CLI.Commands.Export.Api;
+using Top2000.Apps.CLI.Commands.Export.Csv;
+using Top2000.Apps.CLI.Commands.Export.Json;
 using Top2000.Apps.CLI.Commands.Search;
 using Top2000.Apps.CLI.Database;
 using Top2000.Data.ClientDatabase;
@@ -19,6 +17,7 @@ host.Services
     .AddTop2000Features()
     .AddDbContext<Top2000DbContext>()
 
+    .AddSingleton<ExportApiCommandHandler>()
     .AddSingleton<ExportCsvCommandHandler>()
     .AddSingleton<ExportJsonCommandHandler>()
     .AddSingleton<ICommand, ExportCommands>()

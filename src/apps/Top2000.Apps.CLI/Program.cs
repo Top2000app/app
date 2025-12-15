@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Top2000.Apps.CLI.Commands.Show;
 using Top2000.Apps.CLI.Commands.Export;
 using Top2000.Apps.CLI.Commands;
+using Top2000.Apps.CLI.Commands.Export.csv;
 using Top2000.Apps.CLI.Commands.Search;
 using Top2000.Apps.CLI.Database;
 using Top2000.Data.ClientDatabase;
@@ -17,6 +18,7 @@ host.Services
     .AddTop2000Features()
     .AddDbContext<Top2000DbContext>()
 
+    .AddSingleton<ExportCsvCommandHandler>()
     .AddSingleton<ExportCommandHandler>()
     .AddSingleton<ICommand, ExportCommands>()
 
@@ -24,7 +26,8 @@ host.Services
     .AddSingleton<ICommand, ShowCommands>()
 
     .AddSingleton<SearchCommandHandler>()
-    .AddSingleton<ICommand, SearchCommand>();
+    .AddSingleton<ICommand, SearchCommand>()
+
 
     ;
 var app = host.Build();

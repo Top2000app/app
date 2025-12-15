@@ -1,12 +1,16 @@
+using Top2000.Apps.CLI.Commands.Export.csv;
+
 namespace Top2000.Apps.CLI.Commands.Export;
 
 public class ExportCommands : ICommand
 {
     private readonly ExportCommandHandler _handler;
+    private readonly ExportCsvCommandHandler _csvCommandHandler;
 
-    public ExportCommands(ExportCommandHandler handler)
+    public ExportCommands(ExportCommandHandler handler, ExportCsvCommandHandler csvCommandHandler)
     {
         _handler = handler;
+        _csvCommandHandler = csvCommandHandler;
     }
     
     public Command Create()
@@ -31,35 +35,8 @@ public class ExportCommands : ICommand
         };
         csvCommand.Add(outputOption);
         
-        csvCommand.SetAction(_handler.HandleExportCsvAsync);
+        csvCommand.SetAction(_csvCommandHandler.HandleExportCsvAsync);
 
         return csvCommand;
     }
-/*
-    private static Command CreateJsonCommand(ExportCommandHandler handler)
-    {
-        var jsonCommand = new Command("json", "Export to JSON format");
-        
-        var outputOption = new Option<string>(
-            name: "--output",
-            description: "Output file path");
-        outputOption.AddAlias("-o");
-        
-        var typeOption = new Option<string>(
-            name: "--type",
-            description: "Type of data to export (songs, artists, all)",
-            getDefaultValue: () => "songs");
-        typeOption.AddAlias("-t");
-
-        jsonCommand.AddOption(outputOption);
-        jsonCommand.AddOption(typeOption);
-        
-        jsonCommand.SetHandler(async (string? output, string type) =>
-        {
-            await handler.HandleExportJsonAsync(output ?? "top2000_export.json", type);
-        }, outputOption, typeOption);
-        
-        return jsonCommand;
-    }
-    */
 }

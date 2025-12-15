@@ -31,27 +31,7 @@ var lines = new List<string>
     $"Id;Title;Artist;SearchTitle;SearchArtist;RecordedYear;LastPlayTimeUtc;{string.Join(';', allEditions)}"
 };
 
-foreach (var track in allTracks)
-{
-    var trackListings = allListings
-        .Where(x => x.TrackId == track.Id)
-        .ToList();
 
-    var line = new StringBuilder($"{track.Id};{track.Title};{track.Artist};{track.SearchTitle ?? ""};{track.SearchArtist ?? ""};{track.RecordedYear};");
-
-    var lastPlayUtcDateAndTime = trackListings.Find(x => x.Edition == lastYear)?.PlayUtcDateAndTime;
-    line.Append(lastPlayUtcDateAndTime?.ToString("dd-MM-yyyy HH:mm:ss'Z'") ?? string.Empty);
-
-    foreach (var edition in allEditions)
-    {
-        var listing = trackListings.Find(x => x.Edition == edition);
-        var position = listing?.Position.ToString() ?? "";
-        line.Append($";{position}");
-    }
-
-    lines.Add(line.ToString());
-
-}
 
 await File.WriteAllLinesAsync("top2000.csv", lines, encoding: Encoding.UTF8);
 return;

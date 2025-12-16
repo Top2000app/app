@@ -33,6 +33,7 @@ host.Services
 var app = host.Build();
 var databaseGen = app.Services.GetRequiredService<IUpdateClientDatabase>();
 var top2000 = app.Services.GetRequiredService<Top2000AssemblyDataSource>();
+//var onlineStore = app.Services.GetRequiredService<OnlineDataSource>();
 
 await AnsiConsole.Status()
     .StartAsync("Initialising database...", async ctx =>

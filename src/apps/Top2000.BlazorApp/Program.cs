@@ -8,8 +8,14 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped<EditionService>();
-builder.Services.AddScoped<TrackService>();
+builder.Services.AddSingleton<TrackService>();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-await builder.Build().RunAsync();
+var app = builder.Build();
+
+// Initialize TrackService before running the app
+var trackService = app.Services.GetRequiredService<TrackService>();
+await trackService.InitializeAsync();
+
+await app.RunAsync();

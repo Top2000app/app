@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Top2000",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

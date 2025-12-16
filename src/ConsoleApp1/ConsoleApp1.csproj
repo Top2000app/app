@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Update="2025.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\data\sql\Top2000.Data.ClientDatabase\Top2000.Data.ClientDatabase.csproj" />
+      <ProjectReference Include="..\features\sql\Top2000.Features.SQLite\Top2000.Features.SQLite.csproj" />
+      <ProjectReference Include="..\features\Top2000.Features\Top2000.Features.csproj" />
+    </ItemGroup>
+
+</Project>

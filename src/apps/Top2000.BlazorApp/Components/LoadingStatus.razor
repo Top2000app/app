@@ -1,0 +1,34 @@
+@using Top2000.BlazorApp.Services
+@inject TrackService TrackService
+@implements IDisposable
+
+@if (TrackService.IsBackgroundLoading)
+{
+    <div class="alert alert-info d-flex align-items-center" role="alert">
+        <div class="spinner-border spinner-border-sm me-2" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div>
+            Loading additional years in background... 
+            (@TrackService.LoadedEditionsCount/@TrackService.TotalEditionsCount)
+        </div>
+    </div>
+}
+
+@code {
+    private Timer? _timer;
+
+    protected override void OnInitialized()
+    {
+        // Refresh the component every 2 seconds to show progress updates
+        _timer = new Timer(async _ =>
+        {
+            await InvokeAsync(StateHasChanged);
+        }, null, TimeSpan.Zero, TimeSpan.FromSeconds(2));
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+    }
+}

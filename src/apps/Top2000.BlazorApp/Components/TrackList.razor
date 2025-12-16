@@ -1,25 +1,54 @@
 @using Top2000.BlazorApp.Services
+@using Top2000.Features.AllListingsOfEdition
 @inject TrackService TrackService
 
-<ul class="track-list">
-    @foreach (var track in Tracks)
-    {
-        <li class="@(track.Number == SelectedTrack ? "selected" : "")"
-            @onclick="() => OnSelect.InvokeAsync(track.Number)">
-            #{track.Number} – @track.Title
-        </li>
-    }
-</ul>
+@if (_isLoading)
+{
+    <div class="text-center p-4">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading tracks...</span>
+        </div>
+        <p class="mt-2">Loading @Year tracks...</p>
+    </div>
+}
+else if (_tracks.Count == 0)
+{
+    <div class="text-center p-4">
+        <p class="text-muted">No tracks found for @Year</p>
+    </div>
+}
+else
+{
+    <ul class="track-list">
+        @foreach (var track in _tracks)
+        {
+            <li class="@(track.TrackId == SelectedTrack ? "selected" : "")"
+                @onclick="() => OnSelect.InvokeAsync(track.TrackId)">
+                #{track.Position} – @track.Title by @track.Artist
+            </li>
+        }
+    </ul>
+}
 
 @code {
     [Parameter] public int Year { get; set; }
     [Parameter] public int? SelectedTrack { get; set; }
     [Parameter] public EventCallback<int> OnSelect { get; set; }
 
-    List<Track> Tracks = new();
+    List<TrackListing> _tracks = [];
+    bool _isLoading = false;
 
     protected override async Task OnParametersSetAsync()
     {
-        Tracks = await TrackService.GetTracksAsync(Year);
+        _isLoading = true;
+        try
+        {
+            _tracks = await TrackService.GetTracksAsync(Year);
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
     }
 }

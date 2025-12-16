@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+ <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -50,7 +50,6 @@
     <Using Include="System.Collections.Immutable" />
     <Using Include="Microsoft.Data.Sqlite" />
     <Using Include="System.ComponentModel.DataAnnotations" />
-    
   </ItemGroup>
   
 </Project>

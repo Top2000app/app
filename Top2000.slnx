@@ -26,4 +26,7 @@
     <File Path=".editorconfig" />
     <File Path="Directory.Packages.props" />
   </Folder>
+  <Folder Name="/temp/">
+    <Project Path="src/ConsoleApp1/ConsoleApp1.csproj" />
+  </Folder>
 </Solution>

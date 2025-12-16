@@ -50,7 +50,7 @@ public class UpdateDatabase : IUpdateClientDatabase
             await insertCmd.ExecuteNonQueryAsync();
             await transaction.CommitAsync();
         }
-        catch
+        catch(Exception ex)
         {
             await transaction.RollbackAsync();
         }

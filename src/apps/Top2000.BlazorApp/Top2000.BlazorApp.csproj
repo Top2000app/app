@@ -12,4 +12,12 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\data\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\features\Top2000.Features\Top2000.Features.csproj" />
+    </ItemGroup>
+
 </Project>

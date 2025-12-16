@@ -1,4 +1,5 @@
 @using Top2000.BlazorApp.Services
+@using Top2000.BlazorApp.Models
 @inject TrackService TrackService
 
 @if (Track is null)
@@ -9,7 +10,7 @@ else
 {
     <h2>@Track.Title</h2>
     <p><strong>Artist:</strong> @Track.Artist</p>
-    <p><strong>Rank:</strong> @Track.Number</p>
+    <p><strong>Rank:</strong> #@Track.Number</p>
 }
 
 @code {

@@ -92,8 +92,8 @@ Scenario: 'Since release' is the statistic that shows how many times the tracks 
 Given the client database is created
 When the track information feature is executed for TrackId 3966
 Then the title is "Hello" from 'Adele' which is recorded in the year 2015
-And it could have been on the Top2000 for 10 times
-And is it listed for 10 times
+And it could have been on the Top2000 for 11 times
+And is it listed for 11 times
 
 Scenario: Record high shows the highest listing for the track
 Given the client database is created
@@ -105,13 +105,13 @@ Scenario: Record low shows the lowest listing for the track
 Given the client database is created
 When the track information feature is executed for TrackId 1496
 Then the title is "Imagine" from 'John Lennon' which is recorded in the year 1971
-And the record low is number 52 in 2022
+And the record low is number 54 in 2025
 
 Scenario: Last postion shows the position of latest edition where the track was listed
 Given the client database is created
 When the track information feature is executed for TrackId 1496
 Then the title is "Imagine" from 'John Lennon' which is recorded in the year 1971
-And the Lastest position is number 46 in 2024
+And the Lastest position is number 54 in 2025
 
 Scenario: First position shows the position of the first edition where the track was listed
 Given the client database is created

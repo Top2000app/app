@@ -9,23 +9,13 @@
             <span class="visually-hidden">Loading...</span>
         </div>
         <div>
-            Loading additional years in background... 
-            (@TrackService.LoadedEditionsCount/@TrackService.TotalEditionsCount)
+            Loading additional editions in background... 
         </div>
     </div>
 }
 
 @code {
     private Timer? _timer;
-
-    protected override void OnInitialized()
-    {
-        // Refresh the component every 2 seconds to show progress updates
-        _timer = new Timer(async _ =>
-        {
-            await InvokeAsync(StateHasChanged);
-        }, null, TimeSpan.Zero, TimeSpan.FromSeconds(2));
-    }
 
     public void Dispose()
     {

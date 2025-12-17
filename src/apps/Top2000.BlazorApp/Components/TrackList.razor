@@ -24,7 +24,41 @@ else
         {
             <li class="@(track.TrackId == SelectedTrack ? "selected" : "")"
                 @onclick="() => OnSelect.InvokeAsync(track.TrackId)">
-                #{track.Position} – @track.Title by @track.Artist
+                <h4 style="text-align: left; margin: 0; display: flex; align-items: center;">
+                    <span style="min-width: 60px; display: inline-block;">@track.Position</span>
+                    <span style="margin-left: 10px;">@track.Title</span>
+                </h4>
+                <h5 style="text-align: left; margin: 0; display: flex; align-items: center;">
+                    <span style="min-width: 60px; display: inline-block;">
+                        @switch (track.Delta)
+                        {
+                            case null:
+                                <span title="New" style="color: #28a745; font-weight: bold;"><i class="bi bi-plus-square-fill"></i></span>
+                                break;
+                            case < 0:
+                                <span title="Down" style="color: #dc3545;"><i class="bi bi-chevron-down"></i> @Math.Abs(track.Delta.Value)</span>
+                                break;
+                            case > 0:
+                                <span title="Up" style="color: #28a745;"><i class="bi bi-chevron-up"></i> @track.Delta</span>
+                                break;
+                            default:
+                            {
+                                switch (track)
+                                {
+                                    case { Delta: 0, IsRecurring: true }:
+                                        <span title="Recurring" style="color: #6c757d;"><i class="bi bi-arrow-counterclockwise"></i></span>
+                                        break;
+                                    case { Delta: 0, IsRecurring: false }:
+                                        <span title="No change" style="color: #adb5bd;"><i class="bi bi-dash"></i></span>
+                                        break;
+                                }
+
+                                break;
+                            }
+                        }
+                    </span>
+                    <span style="margin-left: 10px;">@track.Artist</span>
+                </h5>
             </li>
         }
     </ul>
@@ -38,12 +72,12 @@ else
     List<TrackListing> _tracks = [];
     bool _isLoading = false;
 
-    protected override async Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
         _isLoading = true;
         try
         {
-            _tracks = await TrackService.GetTracksAsync(Year);
+            _tracks = TrackService.ByEdition(Year);
         }
         finally
         {

@@ -42,20 +42,23 @@ public partial class App : Application
             return databaseGen.RunAsync(top2000);
     }
 
-    public static async Task CheckForOnlineUpdates()
+    public static void CheckForOnlineUpdates()
     {
-        try
+        _ = Task.Run(async () =>
         {
-            await Task.Delay(3_000);
-            var databasGen = GetService<IUpdateClientDatabase>();
-            var onlineStore = GetService<OnlineDataSource>();
+            try
+            {
+                await Task.Delay(3_000).ConfigureAwait(false);
+                var databaseGen = GetService<IUpdateClientDatabase>();
+                var onlineStore = GetService<OnlineDataSource>();
 
-            await databasGen.RunAsync(onlineStore);
-        }
-        catch
-        {
-            // I don't want a crash here, just continue. 
-        }
+                await databaseGen.RunAsync(onlineStore).ConfigureAwait(false);
+            }
+            catch
+            {
+                // I don't want a crash here, just continue. 
+            }
+        });
     }
 
     private static void SetCulture()

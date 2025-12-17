@@ -33,7 +33,7 @@ host.Services
 var app = host.Build();
 var databaseGen = app.Services.GetRequiredService<IUpdateClientDatabase>();
 var top2000 = app.Services.GetRequiredService<Top2000AssemblyDataSource>();
-//var onlineStore = app.Services.GetRequiredService<OnlineDataSource>();
+var onlineStore = app.Services.GetRequiredService<OnlineDataSource>();
 
 await AnsiConsole.Status()
     .StartAsync("Initialising database...", async ctx =>
@@ -42,6 +42,7 @@ await AnsiConsole.Status()
         ctx.SpinnerStyle(Style.Parse("green"));
         
         await databaseGen.RunAsync(top2000);
+        await databaseGen.RunAsync(onlineStore);
         
         ctx.Status("Database ready!");
         await Task.Delay(500); // Brief pause to show completion

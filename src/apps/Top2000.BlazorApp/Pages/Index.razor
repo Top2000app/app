@@ -1,7 +1,7 @@
 @page "/"
 @using Top2000.BlazorApp.Services
 @inject NavigationManager Nav
-@inject EditionService EditionService
+@inject TrackService TrackService
 
 <PageTitle>Top2000 - Loading...</PageTitle>
 
@@ -16,9 +16,9 @@
 </div>
 
 @code {
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        var latestYear = await EditionService.GetLatestEditionAsync();
+        var latestYear = TrackService.LatestEdition;
         Nav.NavigateTo($"/{latestYear}", replace: true);
     }
 }

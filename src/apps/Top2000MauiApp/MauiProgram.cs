@@ -64,6 +64,9 @@ public static partial class MauiProgram
         App.ServiceProvider = serviceProvider.Services;
         App.EnsureDatabaseIsCreatedAsync().GetAwaiter().GetResult();
 
+        // Kick off online update check, but don't wait for it.
+        App.CheckForOnlineUpdates();
+
         return serviceProvider;
     }
 }

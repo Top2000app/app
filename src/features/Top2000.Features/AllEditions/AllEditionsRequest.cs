@@ -3,3 +3,8 @@
 public sealed class AllEditionsRequest : IRequest<SortedSet<Edition>>
 {
 }
+
+public interface IAllEditions
+{
+    
+}

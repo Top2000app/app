@@ -1,4 +1,4 @@
-﻿namespace Top2000.Features.AllEditions;
+﻿namespace Top2000.Features.Editions;
 
 public class Edition
 {

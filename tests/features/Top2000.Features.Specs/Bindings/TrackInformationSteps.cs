@@ -12,13 +12,9 @@ public class TrackInformationSteps
     }
 
     [When(@"the track information feature is executed for TrackId (.*)")]
-    public async Task WhenTheTrackInformationFeatureIsExecutedForTrackId(int trackId)
+    public async Task WhenTheTrackInformationFeatureIsExecutedForTrackIdAsync(int trackId)
     {
-        var request = new TrackInformationRequest { TrackId = trackId };
-
-        var mediator = App.GetService<IMediator>();
-
-        Track = await mediator.Send(request);
+        Track = await App.Top2000Services.TrackDetailsAsync(trackId);
     }
 
     [Then(@"the title is ""(.*)"" from '(.*)' which is recorded in the year (.*)")]

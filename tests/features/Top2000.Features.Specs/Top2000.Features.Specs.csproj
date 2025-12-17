@@ -42,6 +42,5 @@
     <Using Include="Top2000.Data" />
     <Using Include="Top2000.Data.ClientDatabase" />
     <Using Include="Reqnroll" />
-    <Using Include="MediatR" />
   </ItemGroup>
 </Project>

@@ -1,38 +1,37 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Top2000.Data.ClientDatabase;
 
 public static class ConfigureServices
 {
-    public static IServiceCollection AddTop2000(this IServiceCollection services,
-        Action<Top2000ServiceBuilder>? configure = null)
+    extension(IServiceCollection services)
     {
-        var builder = new Top2000ServiceBuilder();
-
-        configure?.Invoke(builder);
-
-        services
-            .AddTransient<Top2000AssemblyDataSource>()
-            .AddTransient<IUpdateClientDatabase, UpdateDatabase>()
-            .AddTransient<ITop2000AssemblyData, Top2000Data>()
-            .AddSingleton(builder);
-
-        services.AddTransient<SqliteConnection>(provider =>
+        public IServiceCollection AddTop2000ClientDatabase(
+            ConfigurationManager configurationManager,
+            Action<Top2000ServiceBuilder>? configure = null)
         {
-            var top2000Builder = provider.GetRequiredService<Top2000ServiceBuilder>();
-            var databasePath = Path.Combine(top2000Builder.Directory, top2000Builder.Name);
-            var connectionString = $"Data Source={databasePath}";
+            var builder = new Top2000ServiceBuilder();
+            configure?.Invoke(builder);
+            var connectionString = $"Data Source={Path.Combine(builder.Directory, builder.Name)}";
 
-            return new SqliteConnection(connectionString);
-        });
+            configurationManager["ConnectionStrings:Top2000"] = connectionString;
 
-        if (builder.OnlineUpdatesEnabled)
-        {
             services
-                .AddTransient<OnlineDataSource>()
-                .AddHttpClient("top2000", client => { client.BaseAddress = builder.UpdateUri; });
-        }
+                .Configure<Top2000DataOptions>(configurationManager.GetRequiredSection("ConnectionStrings:Top2000"))
+                .AddTransient<Top2000AssemblyDataSource>()
+                .AddTransient<IUpdateClientDatabase, UpdateDatabase>()
+                .AddTransient<ITop2000AssemblyData, Top2000Data>()
+                .AddTransient<SqliteConnection>(x => new SqliteConnection(connectionString))
+                .AddSingleton(builder);
 
-        return services;
+            if (builder.OnlineUpdatesEnabled)
+            {
+                services
+                    .AddHttpClient<OnlineDataSource>(client => { client.BaseAddress = builder.UpdateUri; });
+            }
+
+            return services;
+        }
     }
 }

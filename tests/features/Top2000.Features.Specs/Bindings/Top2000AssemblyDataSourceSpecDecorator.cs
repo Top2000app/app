@@ -10,8 +10,8 @@ public class Top2000AssemblyDataSourceSpecDecorator : ISource
 
     public Top2000AssemblyDataSourceSpecDecorator(Top2000AssemblyDataSource component, int skip)
     {
-        this._component = component;
-        this._skip = skip;
+        _component = component;
+        _skip = skip;
     }
 
     public async Task<ImmutableSortedSet<string>> ExecutableScriptsAsync(ImmutableSortedSet<string> journals)

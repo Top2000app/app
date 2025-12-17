@@ -1,14 +1,14 @@
 ﻿using Microsoft.Data.Sqlite;
 
-namespace Top2000.Features.SQLite.AllListingsOfEdition;
+namespace Top2000.Features.SQLite.Listings;
 
 public class TrackCountHolder
 {
-    private readonly Dictionary<int, List<TrackCounter>> counters = [];
+    private readonly Dictionary<int, List<TrackCounter>> _counters = [];
 
     public async Task<List<TrackCounter>> CountTrackCountForEditionAsync(SqliteConnection connection, int edition)
     {
-        if (!counters.TryGetValue(edition, out var value))
+        if (!_counters.TryGetValue(edition, out var value))
         {
             await connection.OpenAsync();
             var sql = "SELECT TrackId, COUNT(TrackId) AS TrackCount " +
@@ -31,7 +31,7 @@ public class TrackCountHolder
                 }
             }
             value = list;
-            counters.Add(edition, value);
+            _counters.Add(edition, value);
         }
 
         return value;

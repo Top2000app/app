@@ -27,7 +27,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.Data.Sqlite" />
   </ItemGroup>
 
@@ -42,7 +41,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="MediatR" />
     <Using Include="Microsoft.Data.Sqlite" />
   </ItemGroup>
 

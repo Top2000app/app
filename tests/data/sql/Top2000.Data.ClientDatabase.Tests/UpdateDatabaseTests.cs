@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Options;
 
 namespace Top2000.Data.ClientDatabase.Tests;
 
@@ -14,7 +15,10 @@ public class UpdateDatabaseTests
     {
         _databaseFileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".db");
         _connection = new SqliteConnection($"Data Source={_databaseFileName}");
-        _sut = new UpdateDatabase(_connection);
+        _sut = new UpdateDatabase(Options.Create(new Top2000DataOptions()
+        {
+            ConnectionString = $"Data Source={_databaseFileName}"
+        }));
         _sourceMock = new Mock<ISource>();
     }
 

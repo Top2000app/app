@@ -4,29 +4,28 @@ using Top2000.Features.TrackInformation;
 
 namespace Top2000.Features.SQLite.TrackInformation;
 
-public class TrackInformationRequestHandler : IRequestHandler<TrackInformationRequest, TrackDetails>
+public class TrackInformationFeature : ITrackInformation
 {
-    private readonly SqliteConnection connection;
+    private readonly SqliteConnection _connection;
 
-    public TrackInformationRequestHandler(SqliteConnection connection)
+    public TrackInformationFeature(SqliteConnection connection)
     {
-        this.connection = connection;
+        this._connection = connection;
     }
-
-    public async Task<TrackDetails> Handle(TrackInformationRequest request, CancellationToken cancellationToken)
+    
+    public async Task<TrackDetails> TrackDetailsAsync(int trackId, CancellationToken cancellationToken = default)
     {
-        await connection.OpenAsync(cancellationToken);
+        await _connection.OpenAsync(cancellationToken);
 
         var listings = new List<ListingInformation>();
-        var sql =
-            "SELECT Year AS Edition, Position, PlayUtcDateAndTime " +
-            "FROM Edition LEFT JOIN Listing " +
-            "ON Listing.Edition = Edition.Year AND Listing.TrackId = $trackId";
+        const string sql = "SELECT Year AS Edition, Position, PlayUtcDateAndTime " +
+                           "FROM Edition LEFT JOIN Listing " +
+                           "ON Listing.Edition = Edition.Year AND Listing.TrackId = $trackId";
 
-        await using (var cmd = connection.CreateCommand())
+        await using (var cmd = _connection.CreateCommand())
         {
             cmd.CommandText = sql;
-            cmd.Parameters.AddWithValue("$trackId", request.TrackId);
+            cmd.Parameters.AddWithValue("$trackId", trackId);
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             while (await reader.ReadAsync(cancellationToken))
             {
@@ -40,14 +39,14 @@ public class TrackInformationRequestHandler : IRequestHandler<TrackInformationRe
         }
 
         Track track;
-        await using (var cmd = connection.CreateCommand())
+        await using (var cmd = _connection.CreateCommand())
         {
             cmd.CommandText = "SELECT Id, Title, Artist, RecordedYear FROM Track WHERE Id = $trackId";
-            cmd.Parameters.AddWithValue("$trackId", request.TrackId);
+            cmd.Parameters.AddWithValue("$trackId", trackId);
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             if (!await reader.ReadAsync(cancellationToken))
             {
-                throw new InvalidOperationException($"Track with Id {request.TrackId} not found");
+                throw new InvalidOperationException($"Track with Id {trackId} not found");
             }
             track = new Track
             {
@@ -63,7 +62,7 @@ public class TrackInformationRequestHandler : IRequestHandler<TrackInformationRe
 
         foreach (var listing in listings.OrderBy(x => x.Edition))
         {
-            if (previous is not null && previous.Position.HasValue && listing.Position.HasValue)
+            if (previous?.Position != null && listing.Position.HasValue)
             {
                 listing.Offset = listing.Position - previous.Position;
             }

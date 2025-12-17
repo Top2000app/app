@@ -1,22 +1,22 @@
-﻿using Microsoft.Data.Sqlite;
-using Top2000.Features.AllEditions;
+﻿using Top2000.Features.Editions;
 
-namespace Top2000.Features.SQLite.AllEditions;
+namespace Top2000.Features.SQLite.Editions;
 
-public class AllEditionsRequestHandler : IRequestHandler<AllEditionsRequest, SortedSet<Edition>>
+public class EditionFeature : IEditions
 {
-    private readonly SqliteConnection connection;
+    private readonly SqliteConnection _connection;
 
-    public AllEditionsRequestHandler(SqliteConnection connection)
+    public EditionFeature(SqliteConnection connection)
     {
-        this.connection = connection;
+        _connection = connection;
     }
-
-    public async Task<SortedSet<Edition>> Handle(AllEditionsRequest request, CancellationToken cancellationToken)
+    
+    public async Task<SortedSet<Edition>> AllEditionsAsync(CancellationToken cancellationToken = default)
     {
         var editions = new List<Edition>();
-        await connection.OpenAsync(cancellationToken);
-        await using var cmd = connection.CreateCommand();
+        
+        await _connection.OpenAsync(cancellationToken);
+        await using var cmd = _connection.CreateCommand();
         cmd.CommandText = "SELECT Year, StartUtcDateAndTime, EndUtcDateAndTime, HasPlayDateAndTime FROM Edition";
         await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
         while (await reader.ReadAsync(cancellationToken))

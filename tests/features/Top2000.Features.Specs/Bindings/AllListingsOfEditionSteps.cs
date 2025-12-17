@@ -1,38 +1,33 @@
-﻿using System.Collections.Generic;
-using AwesomeAssertions;
-using Top2000.Features.AllListingsOfEdition;
+﻿using Top2000.Features.Listing;
 
 namespace Top2000.Features.Specs.Bindings;
 
 [Binding]
 public class AllListingsOfEditionSteps
 {
-    private HashSet<TrackListing> result = [];
+    private HashSet<TrackListing> _result = [];
 
     [Then(@"an empty set is returned")]
     public void ThenAnEmptySetIsReturned()
     {
-        result.Should().BeEmpty();
+        _result.Should().BeEmpty();
     }
 
     [When(@"the AllListingOfEdition feature is executed with year (.*)")]
     public async Task WhenTheAllListingOfEditionFeatureIsExecutedWithYearAsync(int year)
     {
-        var request = new AllListingsOfEditionRequest { Year = year };
-        var mediator = App.GetService<IMediator>();
-
-        result = await mediator.Send(request);
+        _result = await App.Top2000Services.AllListingsOfEditionAsync(year);
     }
 
     [Then("the start of the list is {int}")]
     public void ThenTheStartOfTheListIs(int first)
     {
-        result.First().Position.Should().Be(first);
+        _result.First().Position.Should().Be(first);
     }
 
     [Then("the end of the list is {int}")]
     public void ThenTheEndOfTheListIs(int last)
     {
-        result.Last().Position.Should().Be(last);
+        _result.Last().Position.Should().Be(last);
     }
 }

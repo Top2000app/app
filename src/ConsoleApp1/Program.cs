@@ -1,13 +1,18 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Top2000.Apps.CLI.Database;
 using Top2000.Data.ClientDatabase;
+using Top2000.Features;
 using Top2000.Features.SQLite;
+
+var adapter = new SqliteFeatureAdapter();
+var configurationManager = new ConfigurationManager();
 
 var services = new ServiceCollection()
     .AddDbContext<Top2000DbContext>()
-    .AddTop2000Features()
+    .AddTop2000Features(configurationManager, adapter)
     .BuildServiceProvider();
 
 var databaseGen = services.GetRequiredService<IUpdateClientDatabase>();

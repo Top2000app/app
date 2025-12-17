@@ -1,4 +1,5 @@
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 [assembly: Parallelize]
@@ -12,9 +13,10 @@ public class ConfigureServicesTest
     public void CanConfigureServices()
     {
         Top2000ServiceBuilder builder = new();
+        var configurationManager = new ConfigurationManager();
         
         var serviceCollection = new ServiceCollection()
-            .AddTop2000(configure => builder = configure)
+            .AddTop2000ClientDatabase(configurationManager, configure => builder = configure)
             .BuildServiceProvider();
 
         serviceCollection.GetService<Top2000AssemblyDataSource>()
@@ -26,9 +28,6 @@ public class ConfigureServicesTest
         serviceCollection.GetService<ITop2000AssemblyData>()
             .Should().NotBeNull();
         
-        serviceCollection.GetService<SqliteConnection>()
-            .Should().NotBeNull();
-
         serviceCollection.GetService<Top2000ServiceBuilder>()
             .Should().Be(builder);
     }
@@ -36,8 +35,9 @@ public class ConfigureServicesTest
     [TestMethod]
     public void EnablingOnlineUpdatesGivesAnotherOption()
     {
+        var configManager = new ConfigurationManager();
         var serviceCollection = new ServiceCollection()
-            .AddTop2000(configure =>
+            .AddTop2000ClientDatabase(configManager, configure =>
             {
                 configure.EnableOnlineUpdates();
             })

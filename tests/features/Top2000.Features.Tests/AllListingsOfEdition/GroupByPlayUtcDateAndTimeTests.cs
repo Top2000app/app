@@ -1,4 +1,4 @@
-﻿using Top2000.Features.AllListingsOfEdition;
+﻿using Top2000.Features.Listing;
 
 namespace Top2000.Features.Tests.AllListingsOfEdition;
 
@@ -42,7 +42,7 @@ public class GroupByPlayUtcDateAndTimeTests
 
     private static TrackListing CreateNewTrackListingWithPosition(DateTime playUtcDateAndTime)
     {
-        return new()
+        return new TrackListing
         {
             Artist = "UnitTest",
             Delta = 0,

@@ -1,4 +1,5 @@
-﻿using Top2000.Features.AllEditions;
+﻿using Top2000.Features.Editions;
+
 [assembly: Parallelize]
 
 namespace Top2000.Features.Tests.AllEditions;

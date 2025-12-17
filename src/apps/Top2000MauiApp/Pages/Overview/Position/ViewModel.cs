@@ -1,16 +1,16 @@
-﻿using Top2000.Features.AllEditions;
-using Top2000.Features.AllListingsOfEdition;
+﻿using Top2000.Features;
+using Top2000.Features.Editions;
 using Top2000MauiApp.Common;
 
 namespace Top2000MauiApp.Pages.Overview.Position;
 
 public partial class ViewModel : ObservableObject
 {
-    private readonly IMediator mediator;
+    private readonly Top2000Services _top2000Services;
 
-    public ViewModel(IMediator mediator)
+    public ViewModel(Top2000Services top2000Services)
     {
-        this.mediator = mediator;
+        _top2000Services = top2000Services;
         this.Listings = [];
         this.Editions = [];
     }
@@ -33,7 +33,7 @@ public partial class ViewModel : ObservableObject
 
     public async Task InitialiseViewModelAsync()
     {
-        var editions = await mediator.Send(new AllEditionsRequest());
+        var editions = await _top2000Services.AllEditionsAsync();
         this.SelectedEdition = editions.First();
         this.SelectedEditionYear = this.SelectedEdition.Year;
         this.Editions.ClearAddRange(editions);
@@ -56,7 +56,7 @@ public partial class ViewModel : ObservableObject
             return;
         }
 
-        var result = await mediator.Send(new AllListingsOfEditionRequest { Year = this.SelectedEdition.Year });
+        var result = await _top2000Services.AllListingsOfEditionAsync(this.SelectedEditionYear);
 
         var listings = result
             .Select(x => new TrackListingViewModel

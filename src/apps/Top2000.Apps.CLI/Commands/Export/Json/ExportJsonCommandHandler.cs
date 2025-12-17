@@ -1,153 +1,123 @@
-using System.ComponentModel.Design.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Top2000.Apps.CLI.Database;
-using Top2000.Features.AllListingsOfEdition;
-using Top2000.Features.TrackInformation;
+using Spectre.Console;
 
 namespace Top2000.Apps.CLI.Commands.Export.Json;
 
 public class ExportJsonCommandHandler
 {
     private readonly Top2000DbContext _dbContext;
-    private readonly IMediator _mediator;
     private readonly JsonSerializerOptions _jsonOptions;
 
-    public ExportJsonCommandHandler(Top2000DbContext dbContext, IMediator mediator)
+    public ExportJsonCommandHandler(Top2000DbContext dbContext)
     {
         _dbContext = dbContext;
-        _mediator = mediator;
         _jsonOptions = new JsonSerializerOptions
         {
-            WriteIndented = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = false,
+            PropertyNamingPolicy = new ShortNameNamingPolicy(),
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
     }
-    
+
     public async Task<int> HandleExportJsonAsync(ParseResult result, CancellationToken token)
     {
         var outputPath = result.GetValue<string>("--output") ?? "json";
-        // Ensure output directory exists
         if (!Directory.Exists(outputPath))
         {
             Directory.CreateDirectory(outputPath);
         }
-        
-        
-        AnsiConsole.Write(new Rule("[green]Top2000 JSON Export[/]").RuleStyle("grey").LeftJustified());
-        AnsiConsole.WriteLine();
 
-        // Load all editions first
-        var editions = await _dbContext.Editions
-            .OrderBy(e => e.Year)
-            .Select(e => e.Year)
-            .ToListAsync(token);
+        List<Edition> editions = new();
+        List<Listing> listings = new();
+        List<Track> tracks = new();
 
-        var trackIds = await _dbContext.Tracks
-            .Select(x => x.Id)
-            .ToListAsync(token);
+        string? jsonString = null;
+        string path = Path.Combine(outputPath, "top2000.json");
 
-        AnsiConsole.MarkupLine($"[blue]Found {editions.Count} editions to export: {editions.First()}-{editions.Last()}[/]");
-        AnsiConsole.WriteLine();
-
-        var exportedFiles = new List<string>();
-        var totalTracks = 0;
-
+        // Single Progress session to avoid concurrency issues
         await AnsiConsole.Progress()
-            .StartAsync(async ctx =>
+            .AutoRefresh(true)
+            .HideCompleted(true)
+            .Columns(new ProgressColumn[]
             {
-                var mainTask = ctx.AddTask("[green]Exporting editions to JSON[/]", maxValue: editions.Count);
-                
-                foreach (var edition in editions)
+                new TaskDescriptionColumn(),
+                new ProgressBarColumn(),
+                new PercentageColumn(),
+                new SpinnerColumn(Spinner.Known.Dots)
+            })
+            .StartAsync(async progressCtx =>
+            {
+                var taskEditions = progressCtx.AddTask("Loading editions", autoStart: true);
+                var taskListings = progressCtx.AddTask("Loading listings", autoStart: false);
+                var taskTracks = progressCtx.AddTask("Loading tracks", autoStart: false);
+                var taskSerialize = progressCtx.AddTask("Serializing JSON", autoStart: false);
+                var taskWrite = progressCtx.AddTask("Writing file", autoStart: false);
+
+                // Editions
+                editions = await _dbContext.Editions
+                    .AsNoTracking()
+                    .ToListAsync(token);
+                taskEditions.Value = 100;
+
+                // Listings
+                taskListings.StartTask();
+                listings = await _dbContext.Listings
+                    .AsNoTracking()
+                    .ToListAsync(token);
+                taskListings.Value = 100;
+
+                // Tracks
+                taskTracks.StartTask();
+                tracks = await _dbContext.Tracks
+                    .AsNoTracking()
+                    .ToListAsync(token);
+                taskTracks.Value = 100;
+
+                // Serialize
+                taskSerialize.StartTask();
+                var dataContext = new Top2000DataContext
                 {
-                    var editionTask = ctx.AddTask($"[blue]Processing {edition}...[/]");
-                    editionTask.StartTask();
-                    
-                    // Get listings for this edition
-                    var allListings = await _mediator.Send(new AllListingsOfEditionRequest
-                    {
-                        Year = edition
-                    }, token);
+                    Editions = editions,
+                    Listings = listings,
+                    Tracks = tracks
+                };
+                jsonString = JsonSerializer.Serialize(dataContext, _jsonOptions);
+                taskSerialize.Value = 100;
 
-                    // Convert HashSet to List for better JSON serialization and ordering
-                    var sortedListings = allListings
-                        .OrderBy(x => x.Position)
-                        .ToList();
-                    
-                    editionTask.Description = $"[blue]Serializing {edition} ({sortedListings.Count:N0} tracks)...[/]";
-
-                    // Serialize to JSON
-                    var jsonString = JsonSerializer.Serialize(sortedListings, _jsonOptions);
-                    
-                    // Determine output path
-                    var fileName = $"{edition}.json";
-                    var filePath = Path.Combine(outputPath, fileName);
-
-                    // Write JSON file
-                    await File.WriteAllTextAsync(filePath, jsonString, token);
-                    
-                    exportedFiles.Add(Path.GetFullPath(filePath));
-                    totalTracks += sortedListings.Count;
-                    
-                    editionTask.Value = 100;
-                    mainTask.Increment(1);
-                    
-                    AnsiConsole.MarkupLine($"✓ [green]{edition}.json[/] - [cyan]{sortedListings.Count:N0} tracks[/] - [yellow]{GetFileSize(filePath)}[/]");
-                }
-                
-                mainTask.Value = editions.Count;
+                // Write
+                taskWrite.StartTask();
+                await File.WriteAllTextAsync(path, jsonString, token);
+                taskWrite.Value = 100;
             });
 
-        
-        var versionInfo = new
+        // Summary panel
+        var table = new Table().Border(TableBorder.Rounded).BorderColor(Color.Green);
+        table.AddColumn(new TableColumn("Dataset").Centered());
+        table.AddColumn(new TableColumn("Count").Centered());
+        table.AddRow("Editions", editions.Count.ToString());
+        table.AddRow("Listings", listings.Count.ToString());
+        table.AddRow("Tracks", tracks.Count.ToString());
+
+        var panel = new Panel(table)
         {
-            LatestEdition = editions.Last(),
-            Editions = editions.ToList(),
-            Version = 63
+            Header = new PanelHeader("Export complete"),
+            Border = BoxBorder.Rounded,
+            Padding = new Padding(1, 1, 1, 1)
         };
 
-        var versionFilePath = Path.Combine(outputPath, "version.json");
-        var versionJsonString = JsonSerializer.Serialize(versionInfo, _jsonOptions);
-        await File.WriteAllTextAsync(versionFilePath, versionJsonString, token);
-        
-        exportedFiles.Add(Path.GetFullPath(versionFilePath));
-        AnsiConsole.MarkupLine($"✓ [green]version.json[/] - [cyan]metadata[/] - [yellow]{GetFileSize(versionFilePath)}[/]");
-        
-        // Success summary
-        AnsiConsole.WriteLine();
-        var summaryContent = $"[green]✓ JSON export completed successfully![/]\n\n" +
-                           $"[bold]Files exported:[/] [cyan]{exportedFiles.Count}[/] ([cyan]{exportedFiles.Count - 1}[/] editions + [cyan]1[/] version file)\n" +
-                           $"[bold]Total tracks:[/] [cyan]{totalTracks:N0}[/]\n" +
-                           $"[bold]Output directory:[/] [yellow]{Path.GetFullPath(outputPath)}[/]\n\n" +
-                           $"[bold]Exported files:[/]\n" + 
-                           string.Join("\n", exportedFiles.Select(f => $"  • [yellow]{Path.GetFileName(f)}[/]"));
-
-        var panel = new Panel(summaryContent)
-            .Header("[green]Export Complete[/]")
-            .BorderColor(Color.Green);
-        
         AnsiConsole.Write(panel);
+        AnsiConsole.MarkupLine($"[grey]Output:[/] [bold]{path}[/]");
 
-        return 1;
+        return 0;
     }
+}
 
-    private static string GetFileSize(string filePath)
-    {
-        var fileInfo = new FileInfo(filePath);
-        var bytes = fileInfo.Length;
-        
-        string[] sizes = ["B", "KB", "MB", "GB"];
-        int order = 0;
-        double size = bytes;
-        
-        while (size >= 1024 && order < sizes.Length - 1)
-        {
-            order++;
-            size /= 1024;
-        }
-        
-        return $"{size:0.##} {sizes[order]}";
-    }
+public class Top2000DataContext
+{
+    public required List<Track> Tracks { get; init; }
+    public required List<Listing> Listings { get; init; }
+    public required List<Edition> Editions { get; init; }
 }

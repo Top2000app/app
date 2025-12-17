@@ -1,4 +1,5 @@
-﻿using Top2000.Features.AllListingsOfEdition;
+﻿
+using Top2000.Features.Listing;
 
 namespace Top2000.Features.Tests.AllListingsOfEdition;
 

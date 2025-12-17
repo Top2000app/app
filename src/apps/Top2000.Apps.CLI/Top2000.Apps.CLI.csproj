@@ -21,7 +21,6 @@
   <ItemGroup>
     <Using Include="System.CommandLine" />
     <Using Include="Spectre.Console" />
-    <Using Include="MediatR" />
   </ItemGroup>
   
   <ItemGroup>

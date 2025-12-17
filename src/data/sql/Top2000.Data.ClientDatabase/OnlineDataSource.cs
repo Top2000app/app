@@ -4,11 +4,11 @@ namespace Top2000.Data.ClientDatabase;
 
 public class OnlineDataSource : ISource
 {
-    private readonly IHttpClientFactory httpClientFactory;
+    private readonly HttpClient _httpClient;
 
-    public OnlineDataSource(IHttpClientFactory httpClientFactory)
+    public OnlineDataSource(HttpClient httpClient)
     {
-        this.httpClientFactory = httpClientFactory;
+        _httpClient = httpClient;
     }
 
     public async Task<ImmutableSortedSet<string>> ExecutableScriptsAsync(ImmutableSortedSet<string> journals)
@@ -21,7 +21,7 @@ public class OnlineDataSource : ISource
         var latestVersion = journals[^1]
             .Split('-')[0];
 
-        var content = await TryGetAsyncForUpgrades(latestVersion).ConfigureAwait(false);
+        var content = await TryGetAsyncForUpgradesAsync(latestVersion).ConfigureAwait(false);
 
         if (content is null)
         {
@@ -35,10 +35,9 @@ public class OnlineDataSource : ISource
 
     public async Task<SqlScript> ScriptContentsAsync(string scriptName)
     {
-        var httpClient = httpClientFactory.CreateClient("top2000");
         var requestUri = $"sql/{scriptName}";
 
-        var response = await httpClient.GetAsync(requestUri).ConfigureAwait(false);
+        var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
 
         var contents = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -46,13 +45,12 @@ public class OnlineDataSource : ISource
         return new SqlScript(scriptName, contents);
     }
 
-    private async Task<string?> TryGetAsyncForUpgrades(string latestVersion)
+    private async Task<string?> TryGetAsyncForUpgradesAsync(string latestVersion)
     {
         try
         {
-            var httpClient = httpClientFactory.CreateClient("top2000");
             var requestUri = $"versions/{latestVersion}/upgrades";
-            var response = await httpClient.GetAsync(requestUri).ConfigureAwait(false);
+            var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
 

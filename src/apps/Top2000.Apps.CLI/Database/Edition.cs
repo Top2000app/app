@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Top2000.Apps.CLI.Database;
 
@@ -10,5 +11,6 @@ public class Edition
     public required DateTime EndUtcDateAndTime { get; init; }
     public required bool HasPlayDateAndTime { get; init; }
     
+    [JsonIgnore]
     public ICollection<Listing> Listings { get; init; } = [];
 }

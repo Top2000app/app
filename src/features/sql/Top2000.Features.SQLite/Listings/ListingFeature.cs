@@ -1,23 +1,23 @@
-﻿using Microsoft.Data.Sqlite;
-using Top2000.Features.AllListingsOfEdition;
+﻿using Microsoft.Extensions.Options;
+using Top2000.Data.ClientDatabase;
+using Top2000.Features.Listing;
 
-namespace Top2000.Features.SQLite.AllListingsOfEdition;
+namespace Top2000.Features.SQLite.Listings;
 
-public class AllListingsOfEditionRequestHandler : IRequestHandler<AllListingsOfEditionRequest, HashSet<TrackListing>>
+public class ListingFeature : IListings
 {
     private readonly SqliteConnection _connection;
     private readonly TrackCountHolder _trackCountHolder;
 
-    public AllListingsOfEditionRequestHandler(SqliteConnection connection, TrackCountHolder trackCountHolder)
+    public ListingFeature(SqliteConnection connection, TrackCountHolder trackCountHolder)
     {
         _connection = connection;
         _trackCountHolder = trackCountHolder;
     }
-
-    public async Task<HashSet<TrackListing>> Handle(AllListingsOfEditionRequest request, CancellationToken cancellationToken)
+    
+    public async Task<HashSet<TrackListing>> AllListingsOfEditionAsync(int edition, CancellationToken cancellationToken = default)
     {
-        var counters = await _trackCountHolder.CountTrackCountForEditionAsync(_connection, request.Year);
-
+        var counters = await _trackCountHolder.CountTrackCountForEditionAsync(_connection, edition);
         await _connection.OpenAsync(cancellationToken);
         const string sql = "SELECT Listing.TrackId, Listing.Position, (p.Position - Listing.Position) AS Delta, Listing.PlayUtcDateAndTime, Title, Artist " +
                            "FROM Listing JOIN Track ON Listing.TrackId = Id " +
@@ -28,8 +28,8 @@ public class AllListingsOfEditionRequestHandler : IRequestHandler<AllListingsOfE
         var items = new List<TrackListing>();
         await using var cmd = _connection.CreateCommand();
         cmd.CommandText = sql;
-        cmd.Parameters.AddWithValue("$prevEdition", request.Year - 1);
-        cmd.Parameters.AddWithValue("$edition", request.Year);
+        cmd.Parameters.AddWithValue("$prevEdition", edition - 1);
+        cmd.Parameters.AddWithValue("$edition", edition);
         await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
         while (await reader.ReadAsync(cancellationToken))
         {

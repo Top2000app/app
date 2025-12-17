@@ -1,6 +1,4 @@
-﻿using AwesomeAssertions;
-using Top2000.Features.AllEditions;
-using Top2000.Features.Searching;
+﻿using Top2000.Features.Searching;
 
 namespace Top2000.Features.Specs.Bindings;
 
@@ -10,36 +8,21 @@ public class SearchSteps
     private List<IGrouping<string, SearchedTrack>> result = [];
     private readonly IGroup _grouping = new GroupByNothing();
     private readonly ISort _sorting = new SortByTitle();
-    private readonly IMediator _mediator = App.GetService<IMediator>();
 
     [When(@"searching for (.*)")]
     public async Task WhenSearchingForAsync(string queryString)
     {
         var latestEdition = await GetLatestEditionAsync();
-        var request = new SearchTrackRequest
-        {
-            QueryString = queryString,
-            LatestYear = latestEdition,
-            Sorting = _sorting,
-            Grouping = _grouping,
-        };
 
-        result = await _mediator.Send(request);
+        result = App.Top2000Services.SearchAsync(queryString, latestEdition, _sorting, _grouping).Result;
     }
 
     [When(@"searching without a query")]
     public async Task WhenSearchingWithoutAQueryAsync()
     {
         var latestEdition = await GetLatestEditionAsync();
-        var request = new SearchTrackRequest
-        {
-            QueryString = string.Empty,
-            LatestYear = latestEdition,
-            Sorting = _sorting,
-            Grouping = _grouping,
-        };
 
-        result = await _mediator.Send(request);
+        result = App.Top2000Services.SearchAsync(string.Empty, latestEdition, _sorting, _grouping).Result;
     }
 
     [Then(@"the following tracks are found:")]
@@ -72,7 +55,7 @@ public class SearchSteps
 
     private async Task<int> GetLatestEditionAsync()
     {
-        var allEditions = await _mediator.Send(new AllEditionsRequest());
+        var allEditions = await App.Top2000Services.AllEditionsAsync();
         return allEditions.Last().Year;
     }
 

@@ -3,23 +3,15 @@
 [TestClass]
 public class OnlineDataSourceTests
 {
-    private readonly Mock<IHttpClientFactory> _factory;
-    private readonly OnlineDataSource _sut;
-    private readonly Mock<HttpMessageHandler> _messageMock;
-
-    public OnlineDataSourceTests()
-    {
-        _factory = new Mock<IHttpClientFactory>();
-        _messageMock = new Mock<HttpMessageHandler>();
-        _sut = new OnlineDataSource(_factory.Object);
-    }
+    private readonly Mock<HttpMessageHandler> _messageMock = new();
 
     [TestMethod]
     public async Task WithoutJournalsThisOnlineSourceShouldNotBeUsedThusNoExecutableScriptAreReturned()
     {
         var noJournals = ImmutableSortedSet<string>.Empty;
 
-        var scripts = await _sut.ExecutableScriptsAsync(noJournals);
+        var sut = new OnlineDataSource(httpClient: new HttpClient(_messageMock.Object));
+        var scripts = await sut.ExecutableScriptsAsync(noJournals);
 
         scripts.Should().BeEmpty();
     }
@@ -34,8 +26,9 @@ public class OnlineDataSourceTests
         response.Content = new StringContent("ERROR");
 
         using var httpClient = SetupMocksWithResponse(response);
-        _factory.Setup(x => x.CreateClient("top2000")).Returns(httpClient);
-        var scripts = await _sut.ExecutableScriptsAsync(journals);
+        var sut = new OnlineDataSource(httpClient);
+        
+        var scripts = await sut.ExecutableScriptsAsync(journals);
 
         scripts.Should().BeEmpty();
     }
@@ -52,9 +45,9 @@ public class OnlineDataSourceTests
         response.Content = new StringContent(content);
         
         using var httpClient = SetupMocksWithResponse(response);
-        _factory.Setup(x => x.CreateClient("top2000")).Returns(httpClient);
+        var sut = new OnlineDataSource(httpClient);
 
-        var scripts = await _sut.ExecutableScriptsAsync(journals);
+        var scripts = await sut.ExecutableScriptsAsync(journals);
 
         var expectedUri = new Uri("http://unittest:2000/versions/002/upgrades");
 
@@ -76,9 +69,8 @@ public class OnlineDataSourceTests
         response.Content = new StringContent("CREATE TABLE table(Id INT NOT NULL);");
         
         using var httpClient = SetupMocksWithResponse(response);
-        _factory.Setup(x => x.CreateClient("top2000")).Returns(httpClient);
-
-        var script = await _sut.ScriptContentsAsync("002-Script2.sql");
+        var sut = new OnlineDataSource(httpClient);
+        var script = await sut.ScriptContentsAsync("002-Script2.sql");
 
         var expectedUri = new Uri("http://unittest:2000/sql/002-Script2.sql");
 

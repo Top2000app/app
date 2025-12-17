@@ -1,4 +1,5 @@
-﻿using Top2000.Features.TrackInformation;
+﻿using Top2000.Features;
+using Top2000.Features.TrackInformation;
 using Top2000MauiApp.Common;
 using Top2000MauiApp.Themes;
 
@@ -6,12 +7,12 @@ namespace Top2000MauiApp.Pages.TrackInformation;
 
 public partial class ViewModel : ObservableObject
 {
-    private readonly IMediator _mediator;
+    private readonly Top2000Services _top2000Services;
 
-    public ViewModel(IMediator mediator)
+    public ViewModel(Top2000Services top2000Services)
     {
-        this._mediator = mediator;
-        this.Listings = [];
+        _top2000Services = top2000Services;
+        Listings = [];
     }
 
     [ObservableProperty]
@@ -67,7 +68,7 @@ public partial class ViewModel : ObservableObject
 
     public async Task LoadTrackDetailsAsync(int trackId)
     {
-        var track = await _mediator.Send(new TrackInformationRequest { TrackId = trackId });
+        var track = await _top2000Services.TrackDetailsAsync(trackId);
 
         this.Title = track.Title;
         this.ArtistWithYear = $"{track.Artist} ({track.RecordedYear})";

@@ -1,4 +1,4 @@
-﻿namespace Top2000.Features.AllListingsOfEdition;
+﻿namespace Top2000.Features.Listing;
 
 public class TrackListing
 {

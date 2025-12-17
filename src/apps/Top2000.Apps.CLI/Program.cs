@@ -9,12 +9,15 @@ using Top2000.Apps.CLI.Commands.Export.Json;
 using Top2000.Apps.CLI.Commands.Search;
 using Top2000.Apps.CLI.Database;
 using Top2000.Data.ClientDatabase;
+using Top2000.Features;
 using Top2000.Features.SQLite;
 
 var host = Host.CreateApplicationBuilder(args);
 
+var adapter = new SqliteFeatureAdapter();
+
 host.Services
-    .AddTop2000Features()
+    .AddTop2000Features(host.Configuration, adapter)
     .AddDbContext<Top2000DbContext>()
 
     .AddSingleton<ExportApiCommandHandler>()

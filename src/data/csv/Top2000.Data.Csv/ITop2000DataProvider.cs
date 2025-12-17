@@ -26,7 +26,7 @@ public class Top2000DataProvider
             var id = int.Parse(items[0]);
             DateTime? lastPlayUtc = null;
             var firstEdition = -1;
-            if (DateTime.TryParseExact(items[4], "dd-MM-yyyy HH:mm:ssZ'", CultureInfo.InvariantCulture, DateTimeStyles.None, out var playTime))
+            if (DateTime.TryParseExact(items[4], "dd-MM-yyyy HH:mm:ss'Z'", CultureInfo.InvariantCulture, DateTimeStyles.None, out var playTime))
             {
                 lastPlayUtc = playTime;
             }

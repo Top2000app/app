@@ -20,7 +20,7 @@ public partial class View : ContentPage
         {
             Shell.SetTabBarIsVisible(this, true);
             Shell.SetNavBarIsVisible(this, true);
-            GroupFlyout.TranslateToAsync(this.Width * -1, 0).GetAwaiter().GetResult();
+            GroupFlyout.TranslateToAsync(this.Width * -1, 0);
             GroupFlyout.IsVisible = false;
 
             return true;

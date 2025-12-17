@@ -137,7 +137,6 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <Using Include="MediatR" />
     <Using Include="CommunityToolkit.Mvvm.ComponentModel" />
   </ItemGroup>
 

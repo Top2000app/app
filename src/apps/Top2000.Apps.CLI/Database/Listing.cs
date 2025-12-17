@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Top2000.Apps.CLI.Database;
 
 public class Listing
@@ -8,6 +10,9 @@ public class Listing
     public required int Position { get; init; }
     public DateTime? PlayUtcDateAndTime { get; init; }
     
-    public required Track Track { get; init; }
-    public required Edition Edition { get; init; }
+    [JsonIgnore]
+    public Track? Track { get; init; }
+    
+    [JsonIgnore]
+    public Edition? Edition { get; init; }
 }

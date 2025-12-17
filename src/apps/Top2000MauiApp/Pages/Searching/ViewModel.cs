@@ -1,4 +1,4 @@
-﻿using Top2000.Features.AllEditions;
+﻿using Top2000.Features;
 using Top2000.Features.Searching;
 using Top2000MauiApp.Common;
 
@@ -6,13 +6,13 @@ namespace Top2000MauiApp.Pages.Searching;
 
 public partial class ViewModel : ObservableObject
 {
-    private readonly IMediator _mediator;
+    private readonly Top2000Services _top2000Services;
     private readonly IEnumerable<IGroup> _groupOptions;
     private readonly IEnumerable<ISort> _sortOptions;
 
-    public ViewModel(IMediator mediator, IEnumerable<IGroup> groupOptions, IEnumerable<ISort> sortOptions)
+    public ViewModel(Top2000Services top2000Services, IEnumerable<IGroup> groupOptions, IEnumerable<ISort> sortOptions)
     {
-        _mediator = mediator;
+        _top2000Services = top2000Services;
         _groupOptions = groupOptions;
         _sortOptions = sortOptions;
         GroupByOptions = [];
@@ -80,18 +80,10 @@ public partial class ViewModel : ObservableObject
 
     public async Task ExceuteSearchAsync()
     {
-        var editions = await _mediator.Send(new AllEditionsRequest());
+        var editions = await _top2000Services.AllEditionsAsync();
         var lastEdition = editions.First();
 
-        var request = new SearchTrackRequest
-        {
-            QueryString = this.QueryText ?? "",
-            Sorting = this.SortBy!.Value,
-            Grouping = this.GroupBy!.Value,
-            LatestYear = lastEdition.Year,
-
-        };
-        var result = await _mediator.Send(request);
+        var result = await _top2000Services.SearchAsync(this.QueryText ?? "", lastEdition.Year, this.SortBy!.Value, this.GroupBy!.Value );
 
         this.Results.ClearAddRange(result);
         this.ResultsFlat.ClearAddRange(this.Results.SelectMany(x => x));

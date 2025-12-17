@@ -1,21 +1,19 @@
-using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Spectre.Console;
-using System.CommandLine.Parsing;
 using Top2000.Apps.CLI.Database;
-using Top2000.Features.AllListingsOfEdition;
+using Top2000.Features;
+using Top2000.Features.Listing;
 
 namespace Top2000.Apps.CLI.Commands.Show;
 
 public class ShowCommandHandler
 {
     private readonly Top2000DbContext _dbContext;
-    private readonly IMediator _mediator;
+    private readonly Top2000Services _top2000Services;
 
-    public ShowCommandHandler(Top2000DbContext dbContext, IMediator mediator)
+    public ShowCommandHandler(Top2000DbContext dbContext, Top2000Services top2000Services)
     {
         _dbContext = dbContext;
-        _mediator = mediator;
+        _top2000Services = top2000Services;
     }
     
     public async Task<int> HandleShowEditionsAsync(ParseResult result, CancellationToken token)
@@ -112,10 +110,7 @@ public class ShowCommandHandler
                     .UseConverter(y => y.ToString()));
         }
 
-        var listingsForYear = await _mediator.Send(new AllListingsOfEditionRequest
-        {
-            Year = year.Value
-        }, token);
+        var listingsForYear = await _top2000Services.AllListingsOfEditionAsync(year.Value, token);
 
         if (!listingsForYear.Any())
         {

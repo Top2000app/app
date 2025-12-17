@@ -4,15 +4,15 @@ namespace Top2000.Data.Csv.Models;
 
 public class Track
 {
-    public int Id { get; init; }
+    public required int Id { get; init; }
 
-    public string Title { get; init; } = string.Empty;
+    public required string Title { get; init; } = string.Empty;
 
-    public string Artist { get; init; } = string.Empty;
+    public required string Artist { get; init; } = string.Empty;
 
-    public int RecordedYear { get; init; } = 1;
+    public required int RecordedYear { get; init; } = 1;
 
-    public DateTime? LastPlayUtc { get; init; }
+    public required DateTime? LastPlayUtc { get; init; }
 
-    public int FirstEdition { get; init; }
+    public required int FirstEdition { get; init; }
 }

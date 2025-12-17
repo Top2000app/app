@@ -1,4 +1,4 @@
-﻿using Top2000.Features.AllEditions;
+﻿using Top2000.Features.Editions;
 
 namespace Top2000.Features.Specs.Bindings;
 
@@ -19,11 +19,7 @@ public class AllEditionsSteps
     [When(@"the feature is executed")]
     public async Task WhenTheFeatureIsExecutedAsync()
     {
-        var request = new AllEditionsRequest();
-
-        var mediator = App.GetService<IMediator>();
-
-        _editions = await mediator.Send(request);
+        _editions = await App.Top2000Services.AllEditionsAsync();
     }
 
     [Then(@"a sorted set is returned started with the highest year")]

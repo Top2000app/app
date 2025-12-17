@@ -1,16 +1,15 @@
-﻿using Top2000MauiApp.Globalisation;
+﻿using Top2000.Features;
+using Top2000MauiApp.Globalisation;
 
 namespace Top2000MauiApp.Pages.Overview.Position;
 
 [XamlCompilation(XamlCompilationOptions.Compile)]
 public partial class View : ContentPage
 {
-    private readonly IMediator mediator;
 
     public View()
     {
         this.BindingContext = App.GetService<ViewModel>();
-        mediator = App.GetService<IMediator>();
         this.InitializeComponent();
     }
 

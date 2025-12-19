@@ -24,18 +24,14 @@ public class ExportJsonCommandHandler
 
     public async Task<int> HandleExportJsonAsync(ParseResult result, CancellationToken token)
     {
-        var outputPath = result.GetValue<string>("--output") ?? "json";
-        if (!Directory.Exists(outputPath))
-        {
-            Directory.CreateDirectory(outputPath);
-        }
+        var outputPath = result.GetValue<string>("--output") ?? "";
 
-        List<Edition> editions = new();
-        List<Listing> listings = new();
-        List<Track> tracks = new();
+        List<Edition> editions = [];
+        List<Listing> listings = [];
+        List<Track> tracks = [];
 
         string? jsonString = null;
-        string path = Path.Combine(outputPath, "top2000.json");
+        var path = Path.Combine(outputPath, "top2000.json");
 
         // Single Progress session to avoid concurrency issues
         await AnsiConsole.Progress()

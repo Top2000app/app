@@ -24,12 +24,11 @@
     <RepositoryUrl>https://github.com/Top2000app/data</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
-
-
+  <!--
   <Target Name="GenerateCsvFile" BeforeTargets="BeforeBuild">
-    <Exec Command="dotnet run --project ../Top2000.Data.CsvCreator/Top2000.Data.CsvCreator.csproj" />
+    <Exec Command="dotnet run -project ../Top2000.Data.CsvCreator/Top2000.Data.CsvCreator.csproj" />
   </Target>
-
+-->
   <ItemGroup>
     <None Remove="*.db" />
     <None Remove="*.csv" />

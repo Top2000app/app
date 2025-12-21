@@ -9,6 +9,9 @@
   <Folder Name="/data/csv/">
     <Project Path="src/data/csv/Top2000.Data.Csv/Top2000.Data.Csv.csproj" />
   </Folder>
+  <Folder Name="/data/json/">
+    <Project Path="src/data/json/Top2000.Data.JsonClientDatabase/Top2000.Data.JsonClientDatabase.csproj" />
+  </Folder>
   <Folder Name="/data/sql/">
     <Project Path="src/data/sql/Top2000.Data.ClientDatabase/Top2000.Data.ClientDatabase.csproj" />
     <Project Path="src/data/sql/Top2000.Data.LocalDb/Top2000.Data.LocalDb.csproj" />
@@ -18,6 +21,7 @@
   </Folder>
   <Folder Name="/features/">
     <Project Path="src/features/sql/Top2000.Features.SQLite/Top2000.Features.SQLite.csproj" />
+    <Project Path="src/features/Top2000.Features.Json/Top2000.Features.Json.csproj" />
     <Project Path="src/features/Top2000.Features/Top2000.Features.csproj" />
     <Project Path="tests/features/Top2000.Features.Specs/Top2000.Features.Specs.csproj" />
     <Project Path="tests/features/Top2000.Features.Tests/Top2000.Features.Tests.csproj" />

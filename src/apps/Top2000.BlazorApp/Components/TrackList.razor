@@ -1,17 +1,7 @@
-@using Top2000.BlazorApp.Services
-@using Top2000.Features.Listing
-@inject TrackService TrackService
+@using Top2000.Features.Listings
+@inject Top2000Services Top2000Services
 
-@if (_isLoading)
-{
-    <div class="text-center p-4">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading tracks...</span>
-        </div>
-        <p class="mt-2">Loading @Year tracks...</p>
-    </div>
-}
-else if (_tracks.Count == 0)
+@if (_listings.Count == 0)
 {
     <div class="text-center p-4">
         <p class="text-muted">No tracks found for @Year</p>
@@ -20,7 +10,7 @@ else if (_tracks.Count == 0)
 else
 {
     <ul class="track-list">
-        @foreach (var track in _tracks)
+        @foreach (var track in _listings)
         {
             <li class="@(track.TrackId == SelectedTrack ? "selected" : "")"
                 @onclick="() => OnSelect.InvokeAsync(track.TrackId)">
@@ -69,19 +59,16 @@ else
     [Parameter] public int? SelectedTrack { get; set; }
     [Parameter] public EventCallback<int> OnSelect { get; set; }
 
-    List<TrackListing> _tracks = [];
-    bool _isLoading = false;
+    HashSet<TrackListing> _listings = [];
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        _isLoading = true;
         try
         {
-            _tracks = TrackService.ByEdition(Year);
+            _listings = await Top2000Services.AllListingsOfEditionAsync(Year);
         }
         finally
         {
-            _isLoading = false;
             StateHasChanged();
         }
     }

@@ -8,17 +8,15 @@ using Top2000.Apps.CLI.Commands.Export.Csv;
 using Top2000.Apps.CLI.Commands.Export.Json;
 using Top2000.Apps.CLI.Commands.Search;
 using Top2000.Apps.CLI.Database;
-using Top2000.Data.ClientDatabase;
 using Top2000.Features;
 using Top2000.Features.SQLite;
 
 var host = Host.CreateApplicationBuilder(args);
 
-var adapter = new SqliteFeatureAdapter();
-
 host.Services
-    .AddTop2000Features(host.Configuration, adapter)
+    .AddTop2000Features<SqliteFeatureAdapter>()
     .AddDbContext<Top2000DbContext>()
+    .AddSingleton<Top2000Command>()
 
     .AddSingleton<ExportApiCommandHandler>()
     .AddSingleton<ExportCsvCommandHandler>()
@@ -29,37 +27,11 @@ host.Services
     .AddSingleton<ICommand, ShowCommands>()
 
     .AddSingleton<SearchCommandHandler>()
-    .AddSingleton<ICommand, SearchCommand>()
-
-
+    .AddSingleton<ICommand, SearchCommand>() 
     ;
+
 var app = host.Build();
-var databaseGen = app.Services.GetRequiredService<IUpdateClientDatabase>();
-var top2000 = app.Services.GetRequiredService<Top2000AssemblyDataSource>();
-var onlineStore = app.Services.GetRequiredService<OnlineDataSource>();
 
-await AnsiConsole.Status()
-    .StartAsync("Initialising database...", async ctx =>
-    {
-        ctx.Spinner(Spinner.Known.Dots);
-        ctx.SpinnerStyle(Style.Parse("green"));
-        
-        await databaseGen.RunAsync(top2000);
-        await databaseGen.RunAsync(onlineStore);
-        
-        ctx.Status("Database ready!");
-        await Task.Delay(500); // Brief pause to show completion
-    });
-
-
-var commands = app.Services.GetRequiredService<IEnumerable<ICommand>>(); 
-
-var rootCommand = new RootCommand("Top 2000 CLI Application");
-
-foreach (var command in commands)
-{
-    rootCommand.Add(command.Create());
-}
-
-var result = rootCommand.Parse(args);
-await result.InvokeAsync();
+await app.Services
+    .GetRequiredService<Top2000Command>()
+    .RunAsync(args);

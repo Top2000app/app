@@ -2,11 +2,11 @@
 
 public class ListingInformation
 {
-    public int Edition { get; set; }
+    public required int Edition { get; init; }
 
-    public int? Position { get; set; }
+    public int? Position { get; init; }
 
-    public DateTime? PlayUtcDateAndTime { get; set; }
+    public DateTime? PlayUtcDateAndTime { get; init; }
 
     public DateTime? LocalUtcDateAndTime => PlayUtcDateAndTime is DateTime utcDateTime
         ? DateTime.SpecifyKind(utcDateTime, DateTimeKind.Utc).ToLocalTime()

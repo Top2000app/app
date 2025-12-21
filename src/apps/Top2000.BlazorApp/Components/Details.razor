@@ -1,6 +1,5 @@
-@using Top2000.BlazorApp.Services
-@using Top2000.BlazorApp.Models
-@inject TrackService TrackService
+@using Top2000.Features.TrackInformation
+@inject Top2000Services Top2000Services
 
 @if (Track is null)
 {
@@ -10,17 +9,17 @@ else
 {
     <h2>@Track.Title</h2>
     <p><strong>Artist:</strong> @Track.Artist</p>
-    <p><strong>Rank:</strong> #@Track.Number</p>
+    <p><strong>Rank:</strong> #@Track.Listings.Last().Position</p>
 }
 
 @code {
     [Parameter] public int Year { get; set; }
     [Parameter] public int TrackNumber { get; set; }
 
-    Track? Track;
+    TrackDetails? Track { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
-        Track = await TrackService.GetTrackAsync(Year, TrackNumber);
+        Track = await Top2000Services.TrackDetailsAsync(TrackNumber);
     }
 }

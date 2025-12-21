@@ -1,6 +1,4 @@
-﻿using Top2000.Features.TrackInformation;
-
-namespace Top2000.Features.SQLite.TrackInformation;
+﻿namespace Top2000.Features.TrackInformation;
 
 public class ListingInformationDescendingComparer : Comparer<ListingInformation>
 {

@@ -1,6 +1,4 @@
-﻿using Top2000.Features.Editions;
-
-namespace Top2000.Features.SQLite.Editions;
+﻿namespace Top2000.Features.Editions;
 
 public class EditionDescendingComparer : Comparer<Edition>
 {

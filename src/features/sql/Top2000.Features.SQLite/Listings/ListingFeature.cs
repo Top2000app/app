@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using Top2000.Data.ClientDatabase;
-using Top2000.Features.Listing;
+﻿using Top2000.Features.Listings;
 
 namespace Top2000.Features.SQLite.Listings;
 

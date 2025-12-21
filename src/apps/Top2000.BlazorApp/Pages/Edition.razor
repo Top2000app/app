@@ -1,8 +1,5 @@
 @page "/{Year:int}"
 @page "/{Year:int}/{TrackNumber:int}"
-@using Top2000.BlazorApp.Services
-
-@inject TrackService TrackService
 @inject NavigationManager Nav
 
 <PageTitle>Top2000 @Year</PageTitle>
@@ -18,7 +15,7 @@
     <Detail>
         @if (TrackNumber.HasValue)
         {
-            <TrackDetail
+            <Details
                 Year="Year"
                 TrackNumber="TrackNumber.Value" />
         }

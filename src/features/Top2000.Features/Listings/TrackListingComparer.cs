@@ -1,6 +1,4 @@
-﻿using Top2000.Features.Listing;
-
-namespace Top2000.Features.SQLite.Listings;
+namespace Top2000.Features.Listings;
 
 public class TrackListingComparer : IEqualityComparer<TrackListing>
 {

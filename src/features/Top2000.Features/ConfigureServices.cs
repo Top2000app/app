@@ -9,10 +9,13 @@ public static class ConfigureServices
 {
     extension(IServiceCollection services)
     {
-        public IServiceCollection AddTop2000Features(ConfigurationManager configurationManager, IFeatureAdapter featureAdapter ) 
+        public IServiceCollection AddTop2000Features<TAdapter>(Action<TAdapter>? configure = null ) where TAdapter : IFeatureAdapter, new()
         {
-            featureAdapter
-                .AddFeatureImplementors(configurationManager, services);
+            var adapter = new TAdapter();
+            configure?.Invoke(adapter);
+            
+            adapter
+                .AddFeatureImplementors(services);
             
             return services
                 .AddTransient<Top2000Services>()
@@ -28,5 +31,5 @@ public static class ConfigureServices
 
 public interface IFeatureAdapter
 {
-    void AddFeatureImplementors(ConfigurationManager configurationManager, IServiceCollection services);
+    void AddFeatureImplementors(IServiceCollection services);
 }

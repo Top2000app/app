@@ -24,6 +24,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\..\data\json\Top2000.Data.JsonClientDatabase\Top2000.Data.JsonClientDatabase.csproj" />
     <ProjectReference Include="..\..\data\sql\Top2000.Data.ClientDatabase\Top2000.Data.ClientDatabase.csproj" />
     <ProjectReference Include="..\..\features\sql\Top2000.Features.SQLite\Top2000.Features.SQLite.csproj" />
   </ItemGroup>

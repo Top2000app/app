@@ -50,7 +50,7 @@ public partial class View : ContentPage
 
     private void JumpWhenTop2000IsOn()
     {
-        if (Top2000Info.IsLive())
+        if (Top2000Info.ShowLiveScreen())
         {
             this.JumpToSelectedDateTime(DateTime.Now);
         }

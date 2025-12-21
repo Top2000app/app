@@ -1,27 +1,25 @@
-﻿using Top2000.Features.TrackInformation;
-
-namespace Top2000.Features.SQLite.TrackInformation;
+﻿namespace Top2000.Features.TrackInformation;
 
 public class ListingStatusStrategy
 {
-    private readonly int recordedYear;
-    private readonly List<ListingInformation> previous = [];
+    private readonly int _recordedYear;
+    private readonly List<ListingInformation> _previous = [];
 
     public ListingStatusStrategy(int recordedYear)
     {
-        this.recordedYear = recordedYear;
+        _recordedYear = recordedYear;
     }
 
     public ListingStatus Determine(ListingInformation current)
     {
         var status = GetStatus(current);
-        previous.Add(current);
+        _previous.Add(current);
         return status;
     }
 
     private ListingStatus GetStatus(ListingInformation current)
     {
-        if (!current.CouldBeListed(recordedYear))
+        if (!current.CouldBeListed(_recordedYear))
         {
             return ListingStatus.NotAvailable;
         }
@@ -31,7 +29,7 @@ public class ListingStatusStrategy
             return ListingStatus.NotListed;
         }
 
-        if (!previous.Exists(x => x.Status == ListingStatus.New))
+        if (!_previous.Exists(x => x.Status == ListingStatus.New))
         {
             return ListingStatus.New;
         }

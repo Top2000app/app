@@ -31,14 +31,15 @@ public static partial class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
-        var adapter = new SqliteFeatureAdapter(configure =>
-        {
-            configure.DatabaseDirectory(FileSystem.Current.AppDataDirectory);
-            configure.EnableOnlineUpdates();
-        });
-
         builder.Services
-            .AddTop2000Features(builder.Configuration, adapter)
+            .AddTop2000Features<SqliteFeatureAdapter>(adapter =>
+                {
+                    adapter.ConfigureClientDatabase(clientDb =>
+                    {
+                        clientDb
+                            .DatabaseDirectory(FileSystem.Current.AppDataDirectory);
+                    });
+                })
             .AddSingleton<IThemeService, ThemeService>()
             .AddTransient<Pages.Overview.Position.ViewModel>()
             .AddTransient<Pages.Overview.Date.ViewModel>()
@@ -51,7 +52,7 @@ public static partial class MauiProgram
             .AddSingleton<ICulture>(new SupportedCulture("fr"))
         ;
 
-        if (Top2000Info.IsLive())
+        if (Top2000Info.ShowLiveScreen())
         {
             builder.Services.AddSingleton<IMainShell, Top2000MauiApp.Pages.NavigationShell.LiveTop2000.View>();
         }

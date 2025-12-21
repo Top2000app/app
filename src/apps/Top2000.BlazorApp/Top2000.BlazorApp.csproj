@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\features\Top2000.Features.Json\Top2000.Features.Json.csproj" />
       <ProjectReference Include="..\..\features\Top2000.Features\Top2000.Features.csproj" />
     </ItemGroup>
 

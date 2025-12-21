@@ -22,18 +22,19 @@ public static class App
     [BeforeTestRun]
     public static void BeforeTestRun()
     {
-        var configurationManager = new ConfigurationManager();
-
-        var sqliteAdapter = new SqliteFeatureAdapter(builder =>
-        {
-            builder
-                .DatabaseDirectory(Directory.GetCurrentDirectory())
-                .DatabaseName("top2000_unittest.db")
-                .EnableOnlineUpdates();
-        });
-        
         var services = new ServiceCollection()
-            .AddTop2000Features(configurationManager, sqliteAdapter);
+                .AddTop2000Features<SqliteFeatureAdapter>(configure =>
+                {
+                    configure.ConfigureClientDatabase(clientDb =>
+                    {
+                        clientDb
+                            .DatabaseDirectory(Directory.GetCurrentDirectory())
+                            .DatabaseName("top2000_unittest.db")
+                            .EnableOnlineUpdates();
+                    });
+                })
+            ;
+        
 
         ServiceProvider = services.BuildServiceProvider();
     }

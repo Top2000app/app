@@ -1,4 +1,4 @@
-﻿using Top2000.Features.Listing;
+﻿using Top2000.Features.Listings;
 using Top2000MauiApp.Themes;
 
 namespace Top2000MauiApp.Pages.Overview;

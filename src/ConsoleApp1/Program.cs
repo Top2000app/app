@@ -7,12 +7,9 @@ using Top2000.Data.ClientDatabase;
 using Top2000.Features;
 using Top2000.Features.SQLite;
 
-var adapter = new SqliteFeatureAdapter();
-var configurationManager = new ConfigurationManager();
-
 var services = new ServiceCollection()
     .AddDbContext<Top2000DbContext>()
-    .AddTop2000Features(configurationManager, adapter)
+    .AddTop2000Features<SqliteFeatureAdapter>()
     .BuildServiceProvider();
 
 var databaseGen = services.GetRequiredService<IUpdateClientDatabase>();

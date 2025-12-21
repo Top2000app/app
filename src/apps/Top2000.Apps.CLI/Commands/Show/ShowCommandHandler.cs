@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Top2000.Apps.CLI.Database;
 using Top2000.Features;
-using Top2000.Features.Listing;
+using Top2000.Features.Listings;
 
 namespace Top2000.Apps.CLI.Commands.Show;
 

@@ -5,6 +5,9 @@
     <Project Path="src/apps/Top2000.BlazorApp/Top2000.BlazorApp.csproj" />
     <Project Path="src/apps/Top2000MauiApp/Top2000MauiApp.csproj" />
   </Folder>
+  <Folder Name="/apps/Aspire/">
+    <Project Path="src/apps/Aspire/Top2000.Apps.Aspire/Top2000.Apps.Aspire.csproj" />
+  </Folder>
   <Folder Name="/data/" />
   <Folder Name="/data/csv/">
     <Project Path="src/data/csv/Top2000.Data.Csv/Top2000.Data.Csv.csproj" />

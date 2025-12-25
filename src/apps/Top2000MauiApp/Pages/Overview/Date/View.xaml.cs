@@ -6,6 +6,7 @@ namespace Top2000MauiApp.Pages.Overview.Date;
 [XamlCompilation(XamlCompilationOptions.Compile)]
 public partial class View : ContentPage
 {
+    private static bool isFirstScreenAppearing = true;
     public View()
     {
         this.BindingContext = App.GetService<ViewModel>();
@@ -20,7 +21,7 @@ public partial class View : ContentPage
         {
             Shell.SetTabBarIsVisible(this, true);
             Shell.SetNavBarIsVisible(this, true);
-            GroupFlyout.TranslateToAsync(this.Width * -1, 0).GetAwaiter().GetResult();
+            GroupFlyout.TranslateToAsync(this.Width * -1, 0);
             GroupFlyout.IsVisible = false;
 
             return true;
@@ -45,7 +46,16 @@ public partial class View : ContentPage
             await this.ViewModel.InitialiseViewModelAsync();
         }
 
-        this.JumpWhenTop2000IsOn();
+        if (isFirstScreenAppearing)
+        {
+            isFirstScreenAppearing = false;
+            await Task.Delay(100);
+            this.JumpWhenTop2000IsOn();
+        }
+        else
+        {
+            this.JumpWhenTop2000IsOn();
+        }
     }
 
     private void JumpWhenTop2000IsOn()

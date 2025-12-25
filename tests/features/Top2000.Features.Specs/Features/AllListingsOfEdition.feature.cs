@@ -128,8 +128,8 @@ namespace Top2000.Features.Specs.Features
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("In 1998 the Top2000 did not exist", "Background: the system won\'t throw an exception when the year since found. \nIt is" +
-                    " the responsibilty of the caller to make sure the year exist. ", tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("In 1998 the Top2000 did not exist", "Background: the system won\'t throw an exception when the year since found. \r\nIt i" +
+                    "s the responsibilty of the caller to make sure the year exist. ", tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 3

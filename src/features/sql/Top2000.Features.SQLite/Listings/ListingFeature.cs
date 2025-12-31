@@ -31,26 +31,38 @@ public class ListingFeature : IListings
         await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
         while (await reader.ReadAsync(cancellationToken))
         {
+            var delta = reader.IsDBNull(reader.GetOrdinal("Delta"))
+                ? (int?)null
+                : reader.GetInt32(reader.GetOrdinal("Delta"));
+
+            var deltaType = delta switch
+            {
+                0 => TrackListingDeltaType.NoChange,
+                > 0 => TrackListingDeltaType.Increased,
+                < 0 => TrackListingDeltaType.Decreased,
+                _ => TrackListingDeltaType.New
+            };
+
             var trackListing = new TrackListing
             {
                 TrackId = reader.GetInt32(reader.GetOrdinal("TrackId")),
                 Position = reader.GetInt32(reader.GetOrdinal("Position")),
-                Delta = reader.IsDBNull(reader.GetOrdinal("Delta")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("Delta")),
+                Delta = delta ?? 0,
                 PlayUtcDateAndTime = reader.IsDBNull(reader.GetOrdinal("PlayUtcDateAndTime")) ? DateTime.MinValue : reader.GetDateTime(reader.GetOrdinal("PlayUtcDateAndTime")),
                 Title = reader.GetString(reader.GetOrdinal("Title")),
                 Artist = reader.GetString(reader.GetOrdinal("Artist")),
-                IsRecurring = false,
+                DeltaType = deltaType,
             };
             items.Add(trackListing);
         }
 
-        var itemWithNullDelta = items.Where(x => x.Delta is null);
+        var itemWithNullDelta = items.Where(x => x.DeltaType == TrackListingDeltaType.New);
         foreach (var item in itemWithNullDelta)
         {
             var inCounters = counters.Find(x => x.TrackId == item.TrackId);
             if (inCounters?.TrackCount > 1)
             {
-                item.IsRecurring = true;
+                item.DeltaType = TrackListingDeltaType.Recurring;
             }
         }
 

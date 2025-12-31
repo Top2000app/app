@@ -17,22 +17,16 @@ namespace Top2000.Features.SQLite;
 public class SqliteFeatureAdapter : IFeatureAdapter
 {
     private Action<Top2000ServiceBuilder>? _configure = null;
-    private ConfigurationManager _configurationManager = new ConfigurationManager();
 
     public void ConfigureClientDatabase(Action<Top2000ServiceBuilder>? configure)
     {
         _configure = configure;
     }
-    
-    public void OverwriteBuildInConfigurationManager(ConfigurationManager configurationManager)
-    {
-        _configurationManager = configurationManager;
-    }
-    
+
     public void AddFeatureImplementors(IServiceCollection services)
     {
         services
-            .AddTop2000ClientDatabase(_configurationManager, _configure)
+            .AddTop2000ClientDatabase(_configure)
             .AddSingleton<TrackCountHolder>()
             .AddTransient<IEditions, EditionFeature>()
             .AddTransient<IListings, ListingFeature>()

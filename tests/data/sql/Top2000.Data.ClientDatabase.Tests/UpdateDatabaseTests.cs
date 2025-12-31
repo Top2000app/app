@@ -15,10 +15,7 @@ public class UpdateDatabaseTests
     {
         _databaseFileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".db");
         _connection = new SqliteConnection($"Data Source={_databaseFileName}");
-        _sut = new UpdateDatabase(Options.Create(new Top2000DataOptions()
-        {
-            ConnectionString = $"Data Source={_databaseFileName}"
-        }));
+        _sut = new UpdateDatabase(_connection);
         _sourceMock = new Mock<ISource>();
     }
 

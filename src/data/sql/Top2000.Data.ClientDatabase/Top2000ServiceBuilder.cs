@@ -46,4 +46,6 @@ public class Top2000ServiceBuilder
         this.OnlineUpdatesEnabled = true;
         return this;
     }
+    
+    public string ConnectionString => $"Data Source={Path.Combine(Directory, Name)}";
 }

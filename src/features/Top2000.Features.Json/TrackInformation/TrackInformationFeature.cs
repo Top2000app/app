@@ -1,27 +1,28 @@
 using Top2000.Data.JsonClientDatabase.Models;
+using Top2000.Features.Json.Data;
 using Top2000.Features.TrackInformation;
 
 namespace Top2000.Features.Json.TrackInformation;
 
 public class TrackInformationFeature : ITrackInformation
 {
-    private readonly Top2000DataContext _data;
+    private readonly DataProvider _dataProvider;
 
-    public TrackInformationFeature(Top2000DataContext data)
+    public TrackInformationFeature(DataProvider dataProvider)
     {
-        _data = data;
+        _dataProvider = dataProvider;
     }
     
     public Task<TrackDetails> TrackDetailsAsync(int trackId, CancellationToken cancellationToken = default)
     {
-        var track = _data.Tracks.FirstOrDefault(x => x.Id == trackId);
-        if (track is null)
+        var isFound = _dataProvider.Value.Tracks.TryGetValue(trackId, out var track);
+        if (!isFound || track is null)
         {
             return Task.FromResult<TrackDetails>(null);
         }
         
-        var listings = _data.Editions
-            .GroupJoin(_data.Listings.Where(l => l.TrackId == trackId),
+        var listings = _dataProvider.Value.Editions
+            .GroupJoin(_dataProvider.Value.Listings.Where(l => l.TrackId == trackId),
                 edition => edition.Year,
                 listing => listing.EditionId,
                 (edition, listingGroup) => new

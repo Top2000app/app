@@ -1,15 +1,16 @@
 using Top2000.Data.JsonClientDatabase.Models;
+using Top2000.Features.Json.Data;
 using Top2000.Features.Searching;
 
 namespace Top2000.Features.Json.Searching;
 
 public class SearchFeature : ISearch
 {
-    private readonly Top2000DataContext _data;
+    private readonly DataProvider _dataProvider;
 
-    public SearchFeature(Top2000DataContext data)
+    public SearchFeature(DataProvider dataProvider)
     {
-        _data = data;
+        _dataProvider = dataProvider;
     }
     
     public Task<List<IGrouping<string, SearchedTrack>>> SearchAsync(string queryString, int latestYear, ISort sorting, IGroup group,
@@ -31,8 +32,8 @@ public class SearchFeature : ISearch
                 Title = x.Title,
                 Artist = x.Artist,
                 RecordedYear = x.RecordedYear,
-                Position = _data.Listings
-                    .FirstOrDefault(l => l.TrackId == x.Id && l.EditionId == latestYear)?
+                Position = _dataProvider.Value.ListingsOfEdition[latestYear]
+                    .FirstOrDefault(l => l.TrackId == x.Id)?
                     .Position,
                 LatestEdition = latestYear,
             });
@@ -42,10 +43,10 @@ public class SearchFeature : ISearch
         
         return Task.FromResult(resultSet);
     }
-
+    
     private IEnumerable<Track> SearchOnTitleAndArtist(string queryString, int latestYear)
     {
-        return _data.Tracks
+        return _dataProvider.Value.Tracks.Values
             .Where(x => x.Artist.Contains(queryString, StringComparison.OrdinalIgnoreCase)
                         || x.Title.Contains(queryString, StringComparison.OrdinalIgnoreCase)
                         || (x.SearchArtist ?? "").Contains(queryString, StringComparison.OrdinalIgnoreCase)
@@ -55,7 +56,7 @@ public class SearchFeature : ISearch
 
     private IEnumerable<Track> SearchOnYear(string queryString, int latestYear, int result)
     {
-        return _data.Tracks
+        return _dataProvider.Value.Tracks.Values
             .Where(x => x.RecordedYear == result)
             .Take(100);
     }

@@ -16,7 +16,7 @@ public class AllListingsOfEditionSteps
     [When(@"the AllListingOfEdition feature is executed with year (.*)")]
     public async Task WhenTheAllListingOfEditionFeatureIsExecutedWithYearAsync(int year)
     {
-        _result = await App.Top2000Services.AllListingsOfEditionAsync(year);
+        _result = await App.Top2000Services().AllListingsOfEditionAsync(year);
     }
 
     [Then("the start of the list is {int}")]

@@ -2,44 +2,22 @@ namespace Top2000.Apps.CLI.Commands.Show;
 
 public class ShowCommands : ICommand
 {
-    private readonly ShowCommandHandler _handler;
+    private readonly IEnumerable<ICommand<ShowCommands>> _subCommands;
 
-    public ShowCommands(ShowCommandHandler handler)
+    public ShowCommands(IEnumerable<ICommand<ShowCommands>> subCommands)
     {
-        _handler = handler;
+        _subCommands = subCommands;
     }
-    
+
     public Command Create()
     {
-        var showCommand = new Command("show", "Display items from the database")
-        {
-            ShowEditionsCommand(),
-            ShowEditionCommand()
-        };
+        var command = new Command("show", "Display items from the database");
 
-        return showCommand;
-    }
-    
-    private Command ShowEditionsCommand()
-    {
-        var editionsCommand = new Command("editions", "Show Top 2000 editions");
-        
-        editionsCommand.SetAction(_handler.HandleShowEditionsAsync);
-        
-        return editionsCommand;
-    }
-
-    private Command ShowEditionCommand()
-    {
-        var editionCommand = new Command("edition", "Show a specific Top 2000 edition");
-        
-        editionCommand.SetAction(_handler.HandleShowEditionAsync);
-        
-        editionCommand.Add(new Option<int>("--year", "-y")
+        foreach (var subCommand in _subCommands)
         {
-            Description = "Year of the edition to show",
-        });
-        
-        return editionCommand;
+            command.Subcommands.Add(subCommand.Create());
+        }
+
+        return command;
     }
 }

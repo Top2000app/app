@@ -21,75 +21,47 @@ public class TrackListingViewModel
 
     public static double ConvertDeltaFontSize(TrackListing track)
     {
-        var value = track.Delta;
-
-        if (value == 0)
+        return track.DeltaType switch
         {
-            return 15;
-        }
-
-        if (value is null || !value.HasValue)
-        {
-            return 20;
-        }
-
-        return 11;
+            TrackListingDeltaType.NoChange => 15,
+            TrackListingDeltaType.Increased => 11,
+            TrackListingDeltaType.Decreased => 11,
+            TrackListingDeltaType.New => 20,
+            TrackListingDeltaType.Recurring => 20,
+            _ => 11
+        };
     }
 
     public static string ConvertDeltaToSymbol(TrackListing track)
     {
-        var value = track.Delta;
-
-        if (value is null)
+        return track.DeltaType switch
         {
-            if (track.IsRecurring)
-            {
-                return Symbols.BackInList;
-            }
-
-            return Symbols.New;
-        }
-
-        if (value.Value > 0)
-        {
-            return Symbols.Up;
-        }
-
-        if (value.Value < 0)
-        {
-            return Symbols.Down;
-        }
-
-        return Symbols.Same;
+            TrackListingDeltaType.NoChange => Symbols.Same,
+            TrackListingDeltaType.Increased => Symbols.Up,
+            TrackListingDeltaType.Decreased => Symbols.Down,
+            TrackListingDeltaType.New => Symbols.New,
+            TrackListingDeltaType.Recurring => Symbols.BackInList,
+            _ => Symbols.Same
+        };
     }
 
     public static string ConvertDeltaToString(TrackListing track)
     {
-        var offset = track.Delta;
-        return offset.HasValue && offset.Value != 0
-            ? Math.Abs(offset.Value).ToString(App.NumberFormatProvider)
+        return track.Delta != 0
+            ? Math.Abs(track.Delta).ToString(App.NumberFormatProvider)
             : string.Empty;
     }
 
     public static Color ConvertDeltaSymbolColour(TrackListing track)
     {
-        var value = track.Delta;
-
-        if (!value.HasValue)
+        return track.DeltaType switch
         {
-            return Colours.YellowColour;
-        }
-
-        if (value.Value > 0)
-        {
-            return Colours.GreenColour;
-        }
-
-        if (value.Value < 0)
-        {
-            return Colours.RedColour;
-        }
-
-        return Colours.GreyColour;
+            TrackListingDeltaType.NoChange => Colours.GreyColour,
+            TrackListingDeltaType.Increased => Colours.GreenColour,
+            TrackListingDeltaType.Decreased => Colours.RedColour,
+            TrackListingDeltaType.New => Colours.YellowColour,
+            TrackListingDeltaType.Recurring => Colours.YellowColour,
+            _ => Colours.GreyColour
+        };
     }
 }

@@ -10,11 +10,11 @@ public interface IUpdateClientDatabase
 
 public class UpdateDatabase : IUpdateClientDatabase
 {
-    private readonly Top2000DataOptions _configuration;
+    private readonly SqliteConnection _connection;
 
-    public UpdateDatabase(IOptions<Top2000DataOptions> options)
+    public UpdateDatabase(SqliteConnection connection)
     {
-        _configuration = options.Value;
+        _connection = connection;
     }
 
     public async Task RunAsync(ISource source)
@@ -31,22 +31,21 @@ public class UpdateDatabase : IUpdateClientDatabase
 
     private async Task ExecuteScriptAsync(SqlScript script)
     {
-        var connection = new SqliteConnection(_configuration.ConnectionString);
-        await connection.OpenAsync();
-        await using var transaction = connection.BeginTransaction();
+        await _connection.OpenAsync();
+        await using var transaction = _connection.BeginTransaction();
         try
         {
             var sections = script.SqlSections();
 
             foreach (var section in sections)
             {
-                 var cmd = connection.CreateCommand();
+                 var cmd = _connection.CreateCommand();
                  cmd.CommandText = section;
                  cmd.Transaction = transaction;
                  await cmd.ExecuteNonQueryAsync();
             }
 
-            await using var insertCmd = connection.CreateCommand();
+            await using var insertCmd = _connection.CreateCommand();
             insertCmd.CommandText = "INSERT INTO Journal (ScriptName) VALUES ($scriptName)";
             insertCmd.Parameters.AddWithValue("$scriptName", script.ScriptName);
             insertCmd.Transaction = transaction;
@@ -60,23 +59,22 @@ public class UpdateDatabase : IUpdateClientDatabase
         }
         finally
         {
-            await connection.CloseAsync();
+            await _connection.CloseAsync();
         }
     }
 
     private async Task<ImmutableSortedSet<string>> AllJournalsAsync()
     {
         var scriptNames = ImmutableSortedSet.CreateBuilder<string>();
-        var connection = new SqliteConnection(_configuration.ConnectionString);
-        await connection.OpenAsync();
+        await _connection.OpenAsync();
 
-        await using (var ensureCmd = connection.CreateCommand())
+        await using (var ensureCmd = _connection.CreateCommand())
         {
             ensureCmd.CommandText = "CREATE TABLE IF NOT EXISTS Journal (ScriptName TEXT NOT NULL PRIMARY KEY)";
             await ensureCmd.ExecuteNonQueryAsync();
         }
 
-        await using var cmd = connection.CreateCommand();
+        await using var cmd = _connection.CreateCommand();
         cmd.CommandText = "SELECT ScriptName FROM Journal";
         await using var reader = await cmd.ExecuteReaderAsync();
         while (await reader.ReadAsync())
@@ -84,7 +82,7 @@ public class UpdateDatabase : IUpdateClientDatabase
             var scriptName = reader.GetString(0);
             scriptNames.Add(scriptName);
         }
-        await connection.CloseAsync();
+        await _connection.CloseAsync();
         return scriptNames.ToImmutable();
     }
 }

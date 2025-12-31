@@ -19,7 +19,7 @@ public class AllEditionsSteps
     [When(@"the feature is executed")]
     public async Task WhenTheFeatureIsExecutedAsync()
     {
-        _editions = await App.Top2000Services.AllEditionsAsync();
+        _editions = await App.Top2000Services().AllEditionsAsync();
     }
 
     [Then(@"a sorted set is returned started with the highest year")]

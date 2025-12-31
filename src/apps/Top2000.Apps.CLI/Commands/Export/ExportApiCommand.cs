@@ -1,9 +1,10 @@
+using System.Diagnostics;
 using System.Text.Json;
 using Top2000.Data;
 
-namespace Top2000.Apps.CLI.Commands.Export.Api;
+namespace Top2000.Apps.CLI.Commands.Export;
 
-public class ExportApiCommandHandler
+public class ExportApiCommand : ICommand<ExportCommands>
 {
     private readonly ITop2000AssemblyData _top2000AssemblyData;
     private static readonly JsonSerializerOptions SerializerSettings = new()
@@ -12,12 +13,26 @@ public class ExportApiCommandHandler
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
     
-    public ExportApiCommandHandler(ITop2000AssemblyData top2000AssemblyData)
+    public ExportApiCommand(ITop2000AssemblyData top2000AssemblyData)
     {
         _top2000AssemblyData = top2000AssemblyData;
     }
     
-    public async Task<int> HandleExportStaticSiteAsync(ParseResult result, CancellationToken token)
+    public Command Create()
+    {
+        var apiCommand = new Command("api", "Export to static api format");
+        var outputOption = new Option<string>(name: "--output", "-o", "/o")
+        {
+            Description = "Output file path",
+        };
+        apiCommand.Add(outputOption);
+        
+        apiCommand.SetAction(HandleExportStaticSiteAsync);
+
+        return apiCommand;
+    }
+    
+    private async Task<int> HandleExportStaticSiteAsync(ParseResult result, CancellationToken token)
     {
         var outputPath = result.GetValue<string>("--output") ?? "site";
 
@@ -114,4 +129,29 @@ public class ExportApiCommandHandler
 
         return allVersions;
     }
+
+    [DebuggerDisplay("{FileName}")]
+    private sealed class VersionFile
+    {
+        private readonly List<VersionFile> _upgrades;
+
+        public VersionFile(string fileName)
+        {
+            _upgrades = [];
+            Version = fileName.Split('-')[0];
+            FileName = fileName;
+        }
+
+        public string Version { get; set; }
+
+        public string FileName { get; set; }
+
+        public IReadOnlyCollection<VersionFile> Upgrades => _upgrades;
+
+        public void AddRange(IEnumerable<VersionFile> versionFiles)
+        {
+            _upgrades.AddRange(versionFiles);
+        }
+    }
+
 }

@@ -27,4 +27,8 @@ public class SearchCommand : ICommand
         
         return showCommand;
     }
+
+    public void AddSubCommand(Command subCommand)
+    {
+    }
 }

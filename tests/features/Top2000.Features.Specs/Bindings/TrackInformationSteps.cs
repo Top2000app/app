@@ -14,7 +14,7 @@ public class TrackInformationSteps
     [When(@"the track information feature is executed for TrackId (.*)")]
     public async Task WhenTheTrackInformationFeatureIsExecutedForTrackIdAsync(int trackId)
     {
-        Track = await App.Top2000Services.TrackDetailsAsync(trackId);
+        Track = await App.Top2000Services().TrackDetailsAsync(trackId);
     }
 
     [Then(@"the title is ""(.*)"" from '(.*)' which is recorded in the year (.*)")]

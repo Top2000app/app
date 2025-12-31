@@ -2,10 +2,13 @@ namespace Top2000.Data.JsonClientDatabase.Models;
 
 public class Top2000DataContext
 {
-    public List<Track> Tracks { get; set; } = [];
-    public List<Listing> Listings { get; set; } = [];
-    public List<Edition> Editions { get; set; } = [];
+    public required int Version { get; init; } 
 
-    public int Version { get; set; } = 0;
+    public required Dictionary<int, List<Listing>> ListingsOfEdition { get; init;  } 
+    public required List<Listing> Listings { get; init;  } 
+    
+    public required Dictionary<int, Track> Tracks { get; set; } 
+    
+    public required List<Edition> Editions { get; set; }
 }
 

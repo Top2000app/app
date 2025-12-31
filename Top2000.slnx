@@ -1,8 +1,7 @@
 <Solution>
   <Folder Name="/apps/">
-    <Project Path="src/apps/Top2000.Apps.BlazorApp/Top2000.Apps.BlazorApp.csproj" />
+    <Project Path="src/apps/Top2000.Apps.BlazorApp2/Top2000.Apps.BlazorApp2.csproj" />
     <Project Path="src/apps/Top2000.Apps.CLI/Top2000.Apps.CLI.csproj" />
-    <Project Path="src/apps/Top2000.BlazorApp/Top2000.BlazorApp.csproj" />
     <Project Path="src/apps/Top2000MauiApp/Top2000MauiApp.csproj" />
   </Folder>
   <Folder Name="/apps/Aspire/">
@@ -24,6 +23,7 @@
   </Folder>
   <Folder Name="/features/">
     <Project Path="src/features/sql/Top2000.Features.SQLite/Top2000.Features.SQLite.csproj" />
+    <Project Path="src/features/Top2000.Features.Json.Tests/Top2000.Features.Json.Tests.csproj" />
     <Project Path="src/features/Top2000.Features.Json/Top2000.Features.Json.csproj" />
     <Project Path="src/features/Top2000.Features/Top2000.Features.csproj" />
     <Project Path="tests/features/Top2000.Features.Specs/Top2000.Features.Specs.csproj" />

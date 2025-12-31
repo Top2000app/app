@@ -8,21 +8,17 @@ public static class ConfigureServices
     extension(IServiceCollection services)
     {
         public IServiceCollection AddTop2000ClientDatabase(
-            ConfigurationManager configurationManager,
             Action<Top2000ServiceBuilder>? configure = null)
         {
             var builder = new Top2000ServiceBuilder();
             configure?.Invoke(builder);
-            var connectionString = $"Data Source={Path.Combine(builder.Directory, builder.Name)}";
-
-            configurationManager["ConnectionStrings:Top2000"] = connectionString;
 
             services
-                .Configure<Top2000DataOptions>(configurationManager.GetRequiredSection("ConnectionStrings:Top2000"))
+                .AddSingleton<Top2000ServiceBuilder>()
                 .AddTransient<Top2000AssemblyDataSource>()
                 .AddTransient<IUpdateClientDatabase, UpdateDatabase>()
                 .AddTransient<ITop2000AssemblyData, Top2000Data>()
-                .AddTransient<SqliteConnection>(x => new SqliteConnection(connectionString))
+                .AddTransient<SqliteConnection>(x => new SqliteConnection(x.GetRequiredService<Top2000ServiceBuilder>().ConnectionString))
                 .AddSingleton(builder);
 
             if (builder.OnlineUpdatesEnabled)

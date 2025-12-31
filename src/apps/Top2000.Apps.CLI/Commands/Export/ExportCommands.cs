@@ -1,31 +1,23 @@
-using Top2000.Apps.CLI.Commands.Export.Api;
-using Top2000.Apps.CLI.Commands.Export.Csv;
-using Top2000.Apps.CLI.Commands.Export.Json;
-
 namespace Top2000.Apps.CLI.Commands.Export;
 
 public class ExportCommands : ICommand
 {
-    private readonly ExportJsonCommandHandler _jsonCommandHandler;
-    private readonly ExportCsvCommandHandler _csvCommandHandler;
-    private readonly ExportApiCommandHandler _apiCommandHandler;
+    private readonly IEnumerable<ICommand<ExportCommands>> _subCommands;
 
-    public ExportCommands(ExportJsonCommandHandler jsonCommandHandler, 
-        ExportCsvCommandHandler csvCommandHandler,
-        ExportApiCommandHandler apiCommandHandler)
+    public ExportCommands(IEnumerable<ICommand<ExportCommands>> subCommands)
     {
-        _jsonCommandHandler = jsonCommandHandler;
-        _csvCommandHandler = csvCommandHandler;
-        _apiCommandHandler = apiCommandHandler;
+        _subCommands = subCommands;
     }
 
     public Command Create()
     {
-        return new Command("export", "Export data to various formats")
+        var command = new Command("export", "Export data to various formats");
+        
+        foreach (var subCommand in _subCommands)
         {
-            ExportCsvCommand.CreateCommand(_csvCommandHandler),
-            ExportJsonCommand.CreateCommand(_jsonCommandHandler),
-            ExportApiCommand.CreateCommand(_apiCommandHandler)
-        };
+            command.Subcommands.Add(subCommand.Create());
+        }
+
+        return command;
     }
 }

@@ -27,9 +27,6 @@
 
   <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Using Include="AwesomeAssertions" />
   </ItemGroup>
   

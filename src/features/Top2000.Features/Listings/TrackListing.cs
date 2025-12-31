@@ -6,13 +6,13 @@ public class TrackListing
 
     public required int Position { get; init; }
 
-    public int? Delta { get; init; }
-
-    public required bool IsRecurring { get; set; }
+    public int Delta { get; init; }
 
     public DateTime PlayUtcDateAndTime { get; init; }
 
     public required string Title { get; init; }
 
     public required string Artist { get; init; }
+    
+    public required TrackListingDeltaType DeltaType { get; set; }
 }

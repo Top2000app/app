@@ -30,7 +30,7 @@ public class JsonFeatureAdapter : IFeatureAdapter
        _configureDataLoader.Invoke(services);
 
        services
-           .AddSingleton(new Top2000DataContext())
+           .AddSingleton<DataProvider>()
            .AddTransient<IDataInitialiser, JsonDataInitialiser>()
            .AddTransient<IEditions, EditionFeature>()
            .AddTransient<IListings, ListingFeature>()

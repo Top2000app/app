@@ -58,7 +58,7 @@ public class GroupByPositionTests
     {
         var tracks = Enumerable
             .Range(1, 2005)
-            .Select(x => CreateNewTrackListingWithPosition(x))
+            .Select(CreateNewTrackListingWithPosition)
             .ToList();
 
         var list = new HashSet<TrackListing>(tracks);
@@ -77,7 +77,7 @@ public class GroupByPositionTests
     {
         var tracks = Enumerable
            .Range(1, 2501)
-           .Select(x => CreateNewTrackListingWithPosition(x))
+           .Select(CreateNewTrackListingWithPosition)
            .ToList();
 
         var list = new HashSet<TrackListing>(tracks);
@@ -93,15 +93,15 @@ public class GroupByPositionTests
 
     private static TrackListing CreateNewTrackListingWithPosition(int position)
     {
-        return new()
+        return new TrackListing
         {
             Artist = "UnitTest",
             Delta = 0,
-            IsRecurring = true,
             Position = position,
             PlayUtcDateAndTime = DateTime.UtcNow,
             Title = "UnitTest",
             TrackId = position,
+            DeltaType = TrackListingDeltaType.New
         };
     }
 }

@@ -12,13 +12,17 @@ namespace Top2000.Features.Specs;
 [Binding]
 public static class App
 {
-    public static string DatabasePath = Path.Combine(Directory.GetCurrentDirectory(), "top2000_unittest.db");
+    public static readonly string DatabasePath = Path.Combine(Directory.GetCurrentDirectory(), "top2000_unittest.db");
+    private static Top2000Services? _top2000Services;
+    private static IServiceProvider? _serviceProvider;
 
-    public static TType GetService<TType>() where TType : notnull => ServiceProvider.GetRequiredService<TType>();
-    private static IServiceProvider ServiceProvider { get; set; } = new HostBuilder().Build().Services;
+    public static TType GetService<TType>() where TType : notnull => ServiceProvider().GetRequiredService<TType>();
 
-    public static Top2000Services Top2000Services { get; } = ServiceProvider.GetRequiredService<Top2000Services>();
-    
+    private static IServiceProvider ServiceProvider() => _serviceProvider ?? throw new InvalidOperationException("BeforeTestRun method has not been called yet.");
+
+    public static Top2000Services Top2000Services() => _top2000Services ?? throw new InvalidOperationException("BeforeTestRun method has not been called yet.");
+
+
     [BeforeTestRun]
     public static void BeforeTestRun()
     {
@@ -32,10 +36,9 @@ public static class App
                             .DatabaseName("top2000_unittest.db")
                             .EnableOnlineUpdates();
                     });
-                })
-            ;
+                }) ;
         
-
-        ServiceProvider = services.BuildServiceProvider();
+        _serviceProvider = services.BuildServiceProvider();
+        _top2000Services = _serviceProvider.GetRequiredService<Top2000Services>();
     }
 }

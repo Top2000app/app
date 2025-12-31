@@ -1,6 +1,6 @@
 using Top2000.Features.Json;
 
-namespace Top2000.BlazorApp;
+namespace Top2000.Apps.MudBlazorApp;
 
 public class Top2000DataLoader : IDataLoader
 {

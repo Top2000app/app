@@ -1,52 +1,33 @@
 using Top2000.Data.JsonClientDatabase.Models;
+using Top2000.Features.Json.Data;
 using Top2000.Features.Listings;
 
 namespace Top2000.Features.Json.Listings;
 
 public class ListingFeature : IListings
 {
-    private readonly Top2000DataContext _data;
+    private readonly DataProvider _dataProvider;
 
-    public ListingFeature(Top2000DataContext data)
+    public ListingFeature(DataProvider dataProvider)
     {
-        _data = data;
+        _dataProvider = dataProvider;
     }
     
     public Task<HashSet<TrackListing>> AllListingsOfEditionAsync(int edition, CancellationToken cancellationToken = default)
     {
-        var currentListings = _data.Listings.Where(l => l.EditionId == edition);
-        var previousListings = _data.Listings.Where(l => l.EditionId == edition - 1)
-            .ToDictionary(l => l.TrackId, l => l.Position);
-        
-        var items = currentListings
-            .Join(_data.Tracks, 
-                listing => listing.TrackId, 
-                track => track.Id, 
-                (listing, track) => new TrackListing
-                {
-                    TrackId = listing.TrackId,
-                    Position = listing.Position,
-                    Delta = previousListings.TryGetValue(listing.TrackId, out var prevPos) 
-                        ? prevPos - listing.Position 
-                        : (int?)null,
-                    PlayUtcDateAndTime = listing.PlayUtcDateAndTime ?? DateTime.MinValue,
-                    Title = track.Title,
-                    Artist = track.Artist,
-                    IsRecurring = false
-                })
-            .OrderBy(x => x.Position)
-            .ToList();
-
-        var itemsWithNullDelta = items.Where(x => x.Delta is null);
-        foreach (var item in itemsWithNullDelta)
-        {
-            var count = _data.Listings.Count(x => x.TrackId == item.TrackId);
-            if (count > 1)
+        var listings = _dataProvider.Value.ListingsOfEdition[edition];
+        var returnSet = listings.Select(x => new TrackListing
             {
-                item.IsRecurring = true;
-            }
-        }
-
-        return Task.FromResult(items.ToHashSet(new TrackListingComparer()));
+                DeltaType = (TrackListingDeltaType)x.DeltaType,
+                Position = x.Position,
+                TrackId = x.TrackId,
+                Delta = x.Delta,
+                PlayUtcDateAndTime = x.PlayUtcDateAndTime ?? DateTime.MinValue,
+                Title = _dataProvider.Value.Tracks[x.TrackId].Title,
+                Artist = _dataProvider.Value.Tracks[x.TrackId].Artist,
+            })
+            .ToHashSet(new TrackListingComparer());
+        
+        return Task.FromResult(returnSet);
     }
 }

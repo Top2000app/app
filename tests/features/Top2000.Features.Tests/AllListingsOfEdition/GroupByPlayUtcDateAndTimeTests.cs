@@ -46,11 +46,11 @@ public class GroupByPlayUtcDateAndTimeTests
         {
             Artist = "UnitTest",
             Delta = 0,
-            IsRecurring = true,
             Position = 0,
             PlayUtcDateAndTime = playUtcDateAndTime,
             Title = "UnitTest",
             TrackId = 0,
+            DeltaType = TrackListingDeltaType.New
         };
     }
 }

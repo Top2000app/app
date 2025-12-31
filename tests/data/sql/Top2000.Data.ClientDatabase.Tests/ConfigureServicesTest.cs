@@ -13,10 +13,9 @@ public class ConfigureServicesTest
     public void CanConfigureServices()
     {
         Top2000ServiceBuilder builder = new();
-        var configurationManager = new ConfigurationManager();
         
         var serviceCollection = new ServiceCollection()
-            .AddTop2000ClientDatabase(configurationManager, configure => builder = configure)
+            .AddTop2000ClientDatabase(configure => builder = configure)
             .BuildServiceProvider();
 
         serviceCollection.GetService<Top2000AssemblyDataSource>()
@@ -35,9 +34,8 @@ public class ConfigureServicesTest
     [TestMethod]
     public void EnablingOnlineUpdatesGivesAnotherOption()
     {
-        var configManager = new ConfigurationManager();
         var serviceCollection = new ServiceCollection()
-            .AddTop2000ClientDatabase(configManager, configure =>
+            .AddTop2000ClientDatabase(configure =>
             {
                 configure.EnableOnlineUpdates();
             })

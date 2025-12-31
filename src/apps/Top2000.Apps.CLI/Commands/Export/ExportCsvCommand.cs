@@ -1,19 +1,34 @@
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Top2000.Apps.CLI.Database;
 
-namespace Top2000.Apps.CLI.Commands.Export.Csv;
+namespace Top2000.Apps.CLI.Commands.Export;
 
-public class ExportCsvCommandHandler
+public class ExportCsvCommand : ICommand<ExportCommands>
 {
     private readonly Top2000DbContext _dbContext;
 
-    public ExportCsvCommandHandler(Top2000DbContext dbContext)
+    public ExportCsvCommand(Top2000DbContext dbContext)
     {
         _dbContext = dbContext;
     }
+    
+    public Command Create()
+    {
+        var csvCommand = new Command("csv", "Export to CSV format");
+        var outputOption = new Option<string>(name: "--output", "-o", "/o")
+        {
+            Description = "Output file path",
+        };
+        csvCommand.Add(outputOption);
+        
+        csvCommand.SetAction(HandleExportCsvAsync);
 
-    public async Task<int> HandleExportCsvAsync(ParseResult result, CancellationToken token)
+        return csvCommand;
+    }
+
+    private async Task<int> HandleExportCsvAsync(ParseResult result, CancellationToken token)
     {
         var outputPath = result.GetValue<string>("--output");
         
@@ -133,4 +148,6 @@ public class ExportCsvCommandHandler
         
         return $"{size:0.##} {sizes[order]}";
     }
+
+
 }

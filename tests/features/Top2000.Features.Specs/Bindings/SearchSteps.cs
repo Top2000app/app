@@ -14,7 +14,7 @@ public class SearchSteps
     {
         var latestEdition = await GetLatestEditionAsync();
 
-        result = App.Top2000Services.SearchAsync(queryString, latestEdition, _sorting, _grouping).Result;
+        result = App.Top2000Services().SearchAsync(queryString, latestEdition, _sorting, _grouping).Result;
     }
 
     [When(@"searching without a query")]
@@ -22,7 +22,7 @@ public class SearchSteps
     {
         var latestEdition = await GetLatestEditionAsync();
 
-        result = App.Top2000Services.SearchAsync(string.Empty, latestEdition, _sorting, _grouping).Result;
+        result = App.Top2000Services().SearchAsync(string.Empty, latestEdition, _sorting, _grouping).Result;
     }
 
     [Then(@"the following tracks are found:")]
@@ -55,7 +55,7 @@ public class SearchSteps
 
     private async Task<int> GetLatestEditionAsync()
     {
-        var allEditions = await App.Top2000Services.AllEditionsAsync();
+        var allEditions = await App.Top2000Services().AllEditionsAsync();
         return allEditions.Last().Year;
     }
 

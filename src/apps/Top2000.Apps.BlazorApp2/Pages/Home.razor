@@ -1,0 +1,43 @@
+﻿@page "/"
+@using Top2000.Features
+@using Top2000.Features.Listings
+@inject Top2000Services Top2000Services
+
+<PageTitle>Home</PageTitle>
+
+@if (!IsLoaded)
+{
+    <h1>Loading…</h1>
+}
+else if (TheList == null || TheList.Count == 0)
+{
+    <h1>Not found</h1>
+}
+else
+{
+    <h2>found @TheList.Count</h2>
+    <MudList T="TrackListing">
+
+        @foreach (var track in TheList)
+        {
+            <MudListItem Text="@track.Title" SecondaryText="@track.Artist"/>
+            <MudDivider/>
+        }
+
+    </MudList>
+}
+
+@code{
+    
+    private bool IsLoaded { get; set; } = false;
+    private HashSet<TrackListing> TheList { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Top2000Services.InitialiseDataAsync();
+        TheList = await Top2000Services.AllListingsOfEditionAsync(2025);
+        IsLoaded = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

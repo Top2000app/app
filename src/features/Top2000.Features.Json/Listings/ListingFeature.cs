@@ -23,8 +23,8 @@ public class ListingFeature : IListings
                 TrackId = x.TrackId,
                 Delta = x.Delta,
                 PlayUtcDateAndTime = x.PlayUtcDateAndTime ?? DateTime.MinValue,
-                Title = _dataProvider.Value.Tracks[x.TrackId].Title,
-                Artist = _dataProvider.Value.Tracks[x.TrackId].Artist,
+                Title = x.Title,
+                Artist = x.Artist,
             })
             .ToHashSet(new TrackListingComparer());
         

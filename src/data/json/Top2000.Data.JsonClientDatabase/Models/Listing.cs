@@ -1,3 +1,5 @@
+using System.Xml;
+
 namespace Top2000.Data.JsonClientDatabase.Models;
 
 public class Listing
@@ -12,6 +14,14 @@ public class Listing
     
     public required DeltaType DeltaType { get; init; }
     
+    public required int RecordedYear { get; init; }
+    
+    public required string Title { get; init; }
+    public required string Artist { get; init; }
+
+    public string? SearchTitle { get; init; }
+    
+    public string? SearchArtist { get; init; }
 }
 
 public enum DeltaType

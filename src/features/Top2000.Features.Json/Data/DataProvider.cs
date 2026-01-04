@@ -4,10 +4,12 @@ namespace Top2000.Features.Json.Data;
 
 public class DataProvider
 {
-    public Top2000DataContext Value { get; private set; }
-
-    public void SetValue(Top2000DataContext dataContext)
+    public Top2000DataContext Value { get; } = new Top2000DataContext()
     {
-        Value = dataContext;
-    }
+        Version = 0,
+        ListingsOfEdition = new Dictionary<int, List<Listing>>(),
+        Listings = [],
+        Tracks = new Dictionary<int, Track>(),
+        Editions = []
+    };
 }

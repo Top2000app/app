@@ -22,10 +22,10 @@ public sealed class Test1
             .GetRequiredService<Top2000Services>();
 
         await top2000.InitialiseDataAsync();
-        var editions = await top2000.AllListingsOfEditionAsync(2025);
+        var listings = await top2000.AllListingsOfEditionAsync(2025);
         
-        Assert.IsNotNull(editions);
-        Assert.IsTrue(editions.Any());
+        Assert.IsNotNull(listings);
+        Assert.HasCount(2000, listings);
     }
 }
 

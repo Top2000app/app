@@ -5,6 +5,7 @@ using Top2000.Apps.CLI.Database;
 using Top2000.Data.JsonClientDatabase;
 using Top2000.Data.JsonClientDatabase.Models;
 using Top2000.Features;
+using Edition = Top2000.Data.JsonClientDatabase.Models.Edition;
 
 namespace Top2000.Apps.CLI.Commands.Export;
 
@@ -39,15 +40,23 @@ public class ExportJsonCommand : ICommand<ExportCommands>
 
         return csvCommand;
     }
+
+    private async Task<List<Edition>> GetAllEditionsAsync()
+    {
+        var allEditions = await _top2000Services.AllEditionsAsync();
+
+        return allEditions.Select(x => new Edition()
+        {
+            Year = x.Year,
+            EndUtcDateAndTime = x.EndUtcDateAndTime,
+            StartUtcDateAndTime = x.StartUtcDateAndTime,
+            HasPlayDateAndTime = x.HasPlayDateAndTime
+        }).ToList();
+    }
     
      private async Task<int> HandleExportJsonAsync(ParseResult result, CancellationToken token)
     {
         var outputPath = result.GetValue<string>("--output") ?? "";
-
-        var fileContent = new Top2000File();
-
-        string? jsonString = null;
-        var path = Path.Combine(outputPath, "top2000.json");
 
         // Single Progress session to avoid concurrency issues
         await AnsiConsole.Progress()
@@ -63,58 +72,63 @@ public class ExportJsonCommand : ICommand<ExportCommands>
             .StartAsync(async progressCtx =>
             {
                 var taskExporting = progressCtx.AddTask("Exporting", autoStart: true);
-                var allEditions = await _top2000Services.AllEditionsAsync(token);
+                var allEditions = await GetAllEditionsAsync();
+                var version = await _top2000Services.DataVersion(token);
+
+                var fileInfo = new Top2000VersionInfo
+                {
+                    Editions = allEditions,
+                    Version = version
+                };
+
+                var tracks = await _dbContext.Tracks
+                    .AsNoTracking()
+                    .Select(x => new Top2000.Data.JsonClientDatabase.Models.Track()
+                    {
+                        Artist = x.Artist,
+                        Id = x.Id,
+                        RecordedYear = x.RecordedYear,
+                        Title = x.Title,
+                        SearchArtist = x.SearchArtist,
+                        SearchTitle = x.SearchTitle,
+                    })
+                    .ToDictionaryAsync(x => x.Id, token);
 
                 foreach (var edition in allEditions)
                 {
-                    fileContent.Editions.Add(new Data.JsonClientDatabase.Models.Edition()
-                    {
-                        Year = edition.Year,
-                        EndUtcDateAndTime = edition.EndUtcDateAndTime,
-                        StartUtcDateAndTime = edition.StartUtcDateAndTime,
-                        HasPlayDateAndTime = edition.HasPlayDateAndTime
-                    });
-
                     var listingOfEdition = (await _top2000Services.AllListingsOfEditionAsync(edition.Year, token))
-                        .Select(listing => new Top2000.Data.JsonClientDatabase.Models.Listing
+                        .Select(listing => new Data.JsonClientDatabase.Models.Listing
                         {
                             EditionId = edition.Year,
                             Position = listing.Position,
                             TrackId = listing.TrackId,
                             PlayUtcDateAndTime = listing.PlayUtcDateAndTime,
                             Delta = listing.Delta,
-                            DeltaType = (DeltaType)listing.DeltaType
+                            DeltaType = (DeltaType)listing.DeltaType,
+                            RecordedYear = tracks[listing.TrackId].RecordedYear,
+                            SearchArtist = tracks[listing.TrackId].SearchArtist,
+                            SearchTitle = tracks[listing.TrackId].SearchTitle,
+                            Artist = tracks[listing.TrackId].Artist,
+                            Title = tracks[listing.TrackId].Title,
                         })
                         .ToList();
-                    fileContent.Listings.AddRange(listingOfEdition);
+
+                    var fileContent = new Top2000File
+                    {
+                        Listings = listingOfEdition,
+                    };
+
+                    var jsonString = JsonSerializer.Serialize(fileContent, _jsonOptions);
+                    var path = Path.Combine(outputPath, $"{edition.Year}.json");
+                    await File.WriteAllTextAsync(path, jsonString, token);
                 }
                 
-
-                // Tracks
-                var tracks = await _dbContext.Tracks
-                    .AsNoTracking()
-                    .Select(x => new Top2000.Data.JsonClientDatabase.Models.Track()
-                    {
-                        Artist =  x.Artist,
-                        Id = x.Id,
-                        RecordedYear = x.RecordedYear,
-                        Title = x.Title,
-                        SearchArtist =  x.SearchArtist,
-                        SearchTitle = x.SearchTitle,
-                    })
-                    .ToListAsync(token);
-                fileContent.Tracks.AddRange(tracks);
-
-                // Serialize
-
-                fileContent.Version= await _top2000Services.DataVersion(token);
-                jsonString = JsonSerializer.Serialize(fileContent, _jsonOptions);
-                // Write
-                await File.WriteAllTextAsync(path, jsonString, token);
+                var versionPath = Path.Combine(outputPath, "version.json");
+                var jsonVersionString = JsonSerializer.Serialize(fileInfo, _jsonOptions);
+                await File.WriteAllTextAsync(versionPath, jsonVersionString, token);
                 taskExporting.Value = 100;
             });
 
-        AnsiConsole.MarkupLine($"[grey]Output:[/] [bold]{path}[/]");
 
         return 0;
     }

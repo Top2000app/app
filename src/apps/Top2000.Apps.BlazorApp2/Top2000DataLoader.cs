@@ -11,8 +11,14 @@ public class Top2000DataLoader : IDataLoader
         _httpClient = httpClient;
     }
     
-    public Task<Stream> LoadDataAsync(CancellationToken cancellationToken = default)
+    public Task<Stream> LoadDataVersionAsync()
     {
-        return _httpClient.GetStreamAsync("data/top2000.json", cancellationToken);
+        return _httpClient.GetStreamAsync("data/version.json");
     }
+
+    public Task<Stream> LoadEditionDataAsync(int edition)
+    {
+        return _httpClient.GetStreamAsync($"data/{edition}.json");
+    }
+
 }

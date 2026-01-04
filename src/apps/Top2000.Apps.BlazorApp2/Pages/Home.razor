@@ -1,41 +1,111 @@
 ﻿@page "/"
 @using Top2000.Features
+@using Top2000.Features.Json.Data
 @using Top2000.Features.Listings
 @inject Top2000Services Top2000Services
+@inject JsonPartialDataInitialiser JsonPartialDataInitialiser
 
 <PageTitle>Home</PageTitle>
 
-@if (!IsLoaded)
-{
-    <h1>Loading…</h1>
-}
-else if (TheList == null || TheList.Count == 0)
-{
-    <h1>Not found</h1>
-}
-else
-{
-    <h2>found @TheList.Count</h2>
-    <MudList T="TrackListing">
+<MudPaper Class="d-flex" Style="height: 100vh;">
+<MudPaper Class="pa-2" Style="flex: 0 0 30%; min-width: 350px; overflow-y: auto;">
+        <MudList T="TrackListing" >
+            @foreach (var track in TheList)
+            {
+                if (!IsLoaded)
+                {
+                    <MudListItem AlignItems="AlignItems.Start" Class="top-align-item">
+                        <AvatarContent >
+                            <MudSkeleton Width="100px" Height="24px" />
+                            <MudSkeleton Width="100px" Height="16px" />
+                        </AvatarContent>
+                        <ChildContent >
+                            <MudSkeleton Class="ml-3" Height="24px" />
+                            <MudSkeleton Class="ml-3" Height="16px" />
+                        </ChildContent>
+                    </MudListItem>
+                }
+                else
+                {
+                    <MudListItem AlignItems="AlignItems.Start" Class="top-align-item">
+                        <AvatarContent >
+                            <MudText Typo="Typo.h5">@track.Position</MudText>
+                            @switch (track.DeltaType)
+                            {
+                                case TrackListingDeltaType.Increased:
+                                    <MudIcon Icon="@Icons.Material.Filled.KeyboardArrowUp" Title="Increased" Color="Color.Success" Size="Size.Small"/>
+                                    <MudText Typo="Typo.subtitle2" Color="Color.Success" Inline="true">@track.Delta</MudText>
+                                    break;
+                                case TrackListingDeltaType.Decreased:
+                                    <MudIcon Icon="@Icons.Material.Filled.KeyboardArrowUp" Title="Increased" Color="Color.Error" Size="Size.Small"/>
+                                    <MudText Typo="Typo.subtitle2" Color="Color.Error" Inline="true">@track.Delta</MudText>
+                                    break;
+                                case TrackListingDeltaType.Recurring:
+                                    <MudIcon Icon="@Icons.Material.Filled.Replay" Color="Color.Warning" Size="Size.Small"/>
+                                    break;
+                                case TrackListingDeltaType.New:
+                                    <MudIcon Icon="@Icons.Material.Filled.Flag" Color="Color.Warning" Size="Size.Small"/>
+                                    break;
+                                default:
+                                case TrackListingDeltaType.NoChange:
+                                    <MudIcon Icon="@Icons.Material.Filled.DragHandle" Title="No Change" Color="Color.Error" Size="Size.Small"/>
+                                    break;
+                            }
+                        </AvatarContent>
+                        <ChildContent >
+                            <MudText Typo="Typo.h5" Class="ml-3">@track.Title</MudText>
+                            <MudText Typo="Typo.body1" Class="ml-3">@track.Artist</MudText>
+                        </ChildContent>
+                    </MudListItem>
+                }
+        
+                <MudDivider/>
+            }
+        </MudList>
+</MudPaper>
 
-        @foreach (var track in TheList)
-        {
-            <MudListItem Text="@track.Title" SecondaryText="@track.Artist"/>
-            <MudDivider/>
-        }
+<MudPaper Class="pa-4" Style="flex: 1; overflow-y: auto;">
+    <MudGrid>
+        @* Place your grid content here *@
+        <MudItem xs="12">
+            <MudText Typo="Typo.h4">Main Content Area</MudText>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+</MudPaper>
+@code {
 
-    </MudList>
-}
-
-@code{
-    
-    private bool IsLoaded { get; set; } = false;
-    private HashSet<TrackListing> TheList { get; set; } = [];
+    private bool IsLoaded { get; set; }
+    private List<TrackListing> TheList { get; set; } = [];
 
     protected override async Task OnInitializedAsync()
     {
-        await Top2000Services.InitialiseDataAsync();
-        TheList = await Top2000Services.AllListingsOfEditionAsync(2025);
+        TheList = Enumerable.Range(0, 100)
+            .Select(x => new TrackListing
+            {
+                Position = 1,
+                TrackId = -1,
+                Artist = "",
+                DeltaType = TrackListingDeltaType.Decreased,
+                Title = "",
+                Delta = 0,
+                PlayUtcDateAndTime = DateTime.UtcNow
+            })
+            .ToList();
+        
+        // first load the current year and await it
+        await JsonPartialDataInitialiser.InitialiseEditionAsync(2025);
+
+        // then load the rest without awaiting it
+        // JsonPartialDataInitialiser.InitialiseRestAsync();
+
+        TheList = (await Top2000Services.AllListingsOfEditionAsync(2025))
+            .ToList();
+
+        TheList = TheList
+            .OrderByDescending(x => x.Position)
+            .ToList();
+
         IsLoaded = true;
         await InvokeAsync(StateHasChanged);
     }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Top2000.Apps.CLI.Commands.Show;
 using Top2000.Apps.CLI.Commands.Export;
 using Top2000.Apps.CLI.Commands;
@@ -10,16 +11,20 @@ using Top2000.Features.SQLite;
 
 var host = Host.CreateApplicationBuilder(args);
 
+host.Logging.ClearProviders();
+
 host.Services
     .AddTop2000Features<SqliteFeatureAdapter>()
     .AddDbContext<Top2000DbContext>()
-    .AddSingleton<Top2000Command>();
+    .AddSingleton<Top2000Command>()
+    ;
 
 host.Services
     .AddCommand<ExportCommands>()
     .AddSubCommand<ExportJsonCommand>()
     .AddSubCommand<ExportApiCommand>()
-    .AddSubCommand<ExportCsvCommand>();
+    .AddSubCommand<ExportCsvCommand>()
+    ;
 
 host.Services
     .AddSingleton<ShowListingCommand>()
@@ -39,33 +44,3 @@ var app = host.Build();
 await app.Services
     .GetRequiredService<Top2000Command>()
     .RunAsync(args);
-
-internal class CommandRegistration<TCommand> where TCommand : class, ICommand
-{
-    private readonly IServiceCollection _services;
-
-    public CommandRegistration(IServiceCollection services)
-    {
-        _services = services;
-    }
-    
-    public CommandRegistration<TCommand> AddSubCommand<TSubCommand>() 
-        where TSubCommand : class, ICommand<TCommand>
-    {
-        _services.AddSingleton<ICommand<TCommand>, TSubCommand>();
-        return this;
-    }
-}
-
-internal static class ServiceCollectionExtensions
-{
-    extension(IServiceCollection services)
-    {
-        public CommandRegistration<TCommand> AddCommand<TCommand>()
-        where TCommand : class, ICommand
-        {
-            services.AddSingleton<ICommand, TCommand>();
-            return new CommandRegistration<TCommand>(services);
-        }
-    }
-}

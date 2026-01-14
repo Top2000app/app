@@ -12,10 +12,13 @@
         <PackageOutputPath>./nupkg</PackageOutputPath>
         <PackageId>top2000.cli</PackageId>
         <PackageIconUrl>nugeticon.png</PackageIconUrl>
+        <Version>0.1</Version>
         <Authors>Rick Neeft</Authors>
         <Description>A Command line interface application for the TOP 2000.</Description>
         <PackageTags>TOP2000 CLI</PackageTags>
         <Copyright>Copyright 2025 (c) Rick Neeft Development.</Copyright>
+        <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -42,6 +45,7 @@
   
   <ItemGroup>
     <None Include="..\..\..\docs\nugeticon.png" Pack="true" PackagePath="\" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

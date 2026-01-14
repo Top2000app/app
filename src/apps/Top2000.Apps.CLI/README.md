@@ -127,7 +127,6 @@ Export all Top 2000 data to JSON format.
 
 ```bash
 top2000 export json --output data.json
-top2000 export json -o data.json
 ```
 
 #### `export csv`
@@ -136,7 +135,6 @@ Export all Top 2000 data to CSV format.
 
 ```bash
 top2000 export csv --output data.csv
-top2000 export csv -o data.csv
 ```
 
 #### `export api`
@@ -145,7 +143,6 @@ Export data to a static API structure (multiple JSON files organized by endpoint
 
 ```bash
 top2000 export api --output ./api
-top2000 export api -o ./site
 ```
 
 ## Features

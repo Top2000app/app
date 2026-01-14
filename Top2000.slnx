@@ -3,6 +3,7 @@
     <Project Path="src/apps/Top2000.Apps.BlazorApp2/Top2000.Apps.BlazorApp2.csproj" />
     <Project Path="src/apps/Top2000.Apps.CLI/Top2000.Apps.CLI.csproj" />
     <Project Path="src/apps/Top2000MauiApp/Top2000MauiApp.csproj" />
+    <Project Path="Top2000.Apps.AvaloniaApp/Top2000.Apps.AvaloniaApp.csproj" />
   </Folder>
   <Folder Name="/apps/Aspire/">
     <Project Path="src/apps/Aspire/Top2000.Apps.Aspire/Top2000.Apps.Aspire.csproj" />
@@ -31,6 +32,7 @@
   <Folder Name="/SolutionFiles/">
     <File Path=".editorconfig" />
     <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
   </Folder>
   <Folder Name="/temp/">
     <Project Path="src/ConsoleApp1/ConsoleApp1.csproj" />

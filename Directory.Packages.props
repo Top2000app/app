@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitiveDependencies>true</CentralPackageTransitiveDependencies>
-    <NoWarn>$NU1015</NoWarn>
+    <NoWarn>$(NoWarn);NU1507;NETSDK1201;PRI257</NoWarn>
     <MicrosoftExtensionsVersion>10.0.1</MicrosoftExtensionsVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -39,5 +39,12 @@
     <PackageVersion Include="MSTest.TestAdapter" Version="4.0.2" />
     <PackageVersion Include="MSTest.TestFramework" Version="4.0.2" />
     <PackageVersion Include="Reqnroll.MsTest" Version="3.3.2" />
+
+    <!-- Avalonia -->
+    <PackageVersion Include="Avalonia" Version="11.3.11"/>
+    <PackageVersion Include="Avalonia.Desktop" Version="11.3.11"/>
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.3.11"/>
+    <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.3.11"/>
+    <PackageVersion Include="Avalonia.Diagnostics" Version="11.3.11" />
   </ItemGroup>
 </Project>

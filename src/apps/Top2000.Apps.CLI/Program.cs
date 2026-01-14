@@ -6,6 +6,7 @@ using Top2000.Apps.CLI.Commands.Show;
 using Top2000.Apps.CLI.Commands.Export;
 using Top2000.Apps.CLI.Commands;
 using Top2000.Apps.CLI.Commands.Export.Isam;
+using Top2000.Apps.CLI.Commands.Info;
 using Top2000.Apps.CLI.Commands.Search;
 using Top2000.Apps.CLI.Commands.Stats;
 using Top2000.Apps.CLI.Database;
@@ -46,6 +47,9 @@ host.Services
 host.Services
     .AddCommand<StatsCommand>()
     .AddCommand<StatsCommand, StatsListingCommand>()
+    ;
+
+host.Services.AddCommand<InfoCommand>()
     ;
 
 var app = host.Build();

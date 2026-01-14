@@ -148,6 +148,4 @@ public class ExportCsvCommand : ICommand<ExportCommands>
         
         return $"{size:0.##} {sizes[order]}";
     }
-
-
 }

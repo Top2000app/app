@@ -18,22 +18,20 @@ public class StatsListingCommand : ICommand<StatsCommand>
          
         editionCommand.SetAction(HandleStatsEditionAsync);
          
-        editionCommand.Add(new Option<int>("--year", "-y")
+        editionCommand.Add(new Argument<int>("year")
         {
             Description = "Year of the edition to show",
+            Arity =  ArgumentArity.ExactlyOne
         });
          
         return editionCommand;
-
     }
     
     private async Task<int> HandleStatsEditionAsync(ParseResult result, CancellationToken token)
     {
-        var edition = result.GetRequiredValue<int>("--year");
+        var edition = result.GetRequiredValue<int>("year");
 
         var listings = await _top2000Services.AllListingsOfEditionAsync(edition, token);
-
-
         
         AnsiConsole.Clear();
         if (listings.Count > 0)
@@ -66,7 +64,7 @@ public class StatsListingCommand : ICommand<StatsCommand>
                 .OrderBy(x => x.Position)
                 .FirstOrDefault();
 
-            var countofUnchanged = listings.Count(x => x.DeltaType == TrackListingDeltaType.NoChange);
+            var countOfUnchanged = listings.Count(x => x.DeltaType == TrackListingDeltaType.NoChange);
 
             // Display dashboard
             var rule = new Rule($"[bold yellow]Top2000 - Statistics Dashboard[/]")
@@ -168,12 +166,8 @@ public class StatsListingCommand : ICommand<StatsCommand>
                 BorderStyle = new Style(Color.Magenta)
             };
 
-           
-            
-           
-            
             // Unchanged tracks
-            var unchangedPanel = new Panel(new Markup($"[bold white] {countofUnchanged}[/] tracks unchanged"))
+            var unchangedPanel = new Panel(new Markup($"[bold white] {countOfUnchanged}[/] tracks unchanged"))
             {
                 Header = new PanelHeader(" [bold white]No Change[/]", Justify.Center),
                 Border = BoxBorder.Rounded,

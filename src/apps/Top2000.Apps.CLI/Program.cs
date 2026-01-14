@@ -28,7 +28,7 @@ host.Services
     .AddSubCommand<ExportJsonCommand>()
     .AddSubCommand<ExportApiCommand>()
     .AddSubCommand<ExportCsvCommand>()
-    .AddSubCommand<ExportIsamCommand>()
+  //  .AddSubCommand<ExportIsamCommand>()
     ;
 
 host.Services

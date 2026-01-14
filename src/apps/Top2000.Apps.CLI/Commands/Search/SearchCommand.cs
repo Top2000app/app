@@ -13,7 +13,7 @@ public class SearchCommand : ICommand
     {
         var showCommand = new Command("search", "Display items from the database")
         {
-            new Option<string>("--query", "-q")
+            new Argument<string>("query")
             {
                 Description = "Search query string"
             },
@@ -26,9 +26,5 @@ public class SearchCommand : ICommand
         showCommand.SetAction(_handler.HandleSearchAsync);
         
         return showCommand;
-    }
-
-    public void AddSubCommand(Command subCommand)
-    {
     }
 }

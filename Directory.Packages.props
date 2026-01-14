@@ -9,24 +9,24 @@
     <PackageVersion Include="Aspire.Hosting.SqlServer" Version="13.1.0" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageVersion Include="dbup-sqlserver" Version="6.0.16" />
-    <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.2" />
     <PackageVersion Include="MudBlazor" Version="9.0.0-preview.1" />
-    <PackageVersion Include="System.CommandLine" Version="2.0.1" />
+    <PackageVersion Include="System.CommandLine" Version="2.0.2" />
     <PackageVersion Include="Spectre.Console" Version="0.54.0" />
     <!-- Microsoft.Extensions.* -->
-    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="10.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.2" />
     <!-- Microsoft.Maui.* -->
     <PackageVersion Include="Microsoft.Maui.Controls" Version="10.0.20" />
     <PackageVersion Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.20" />
@@ -38,6 +38,6 @@
     <PackageVersion Include="morelinq" Version="4.4.0" />
     <PackageVersion Include="MSTest.TestAdapter" Version="4.0.2" />
     <PackageVersion Include="MSTest.TestFramework" Version="4.0.2" />
-    <PackageVersion Include="Reqnroll.MsTest" Version="3.3.0" />
+    <PackageVersion Include="Reqnroll.MsTest" Version="3.3.2" />
   </ItemGroup>
 </Project>

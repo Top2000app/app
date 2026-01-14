@@ -120,7 +120,7 @@ namespace Top2000.Features.Specs.Features
             return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/AllEditions.feature.ndjson", 11);
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="The first edition of the Top2000 was in 1999")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 3, DisplayName="The first edition of the Top2000 was in 1999")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("The first edition of the Top2000 was in 1999")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "All Editions")]
         public async global::System.Threading.Tasks.Task TheFirstEditionOfTheTop2000WasIn1999()
@@ -154,7 +154,7 @@ await testRunner.ThenAsync("the latest year is 1999", ((string)(null)), ((global
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Every edition is returned starting with the highest year")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 8, DisplayName="Every edition is returned starting with the highest year")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Every edition is returned starting with the highest year")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "All Editions")]
         public async global::System.Threading.Tasks.Task EveryEditionIsReturnedStartingWithTheHighestYear()
@@ -188,7 +188,7 @@ await testRunner.ThenAsync("a sorted set is returned started with the highest ye
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="An Edition contains the datetime in local time")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 13, DisplayName="An Edition contains the datetime in local time")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("An Edition contains the datetime in local time")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "All Editions")]
         public async global::System.Threading.Tasks.Task AnEditionContainsTheDatetimeInLocalTime()
@@ -222,7 +222,7 @@ await testRunner.ThenAsync("the Start- and EndDateTime is in local time", ((stri
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="The first editions started at the start of boxing day (CET)")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 18, DisplayName="The first editions started at the start of boxing day (CET)")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("The first editions started at the start of boxing day (CET)")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "All Editions")]
         public async global::System.Threading.Tasks.Task TheFirstEditionsStartedAtTheStartOfBoxingDayCET()
@@ -286,7 +286,7 @@ await testRunner.ThenAsync("the UTC Start date is as follow:", ((string)(null)),
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="As from 2009 the Top2000 starts at first christmas day at noon (CET)")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 33, DisplayName="As from 2009 the Top2000 starts at first christmas day at noon (CET)")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("As from 2009 the Top2000 starts at first christmas day at noon (CET)")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "All Editions")]
         public async global::System.Threading.Tasks.Task AsFrom2009TheTop2000StartsAtFirstChristmasDayAtNoonCET()
@@ -341,7 +341,7 @@ await testRunner.ThenAsync("the UTC Start date is as follow:", ((string)(null)),
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="As from 2015 the Top2000 starts three hours earlier")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 45, DisplayName="As from 2015 the Top2000 starts three hours earlier")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("As from 2015 the Top2000 starts three hours earlier")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "All Editions")]
         public async global::System.Threading.Tasks.Task AsFrom2015TheTop2000StartsThreeHoursEarlier()
@@ -390,7 +390,7 @@ await testRunner.ThenAsync("the UTC Start date is as follow:", ((string)(null)),
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="In 2019 the Top2000 start at 08:00")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 55, DisplayName="In 2019 the Top2000 start at 08:00")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("In 2019 the Top2000 start at 08:00")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "All Editions")]
         public async global::System.Threading.Tasks.Task In2019TheTop2000StartAt0800()
@@ -430,7 +430,7 @@ await testRunner.ThenAsync("the UTC Start date is as follow:", ((string)(null)),
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="As from 2020 the Top2000 starts at the start of boxing day (CET)")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 62, DisplayName="As from 2020 the Top2000 starts at the start of boxing day (CET)")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("As from 2020 the Top2000 starts at the start of boxing day (CET)")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "All Editions")]
         public async global::System.Threading.Tasks.Task AsFrom2020TheTop2000StartsAtTheStartOfBoxingDayCET()
@@ -479,7 +479,7 @@ await testRunner.ThenAsync("the UTC Start date is as follow:", ((string)(null)),
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="The List of 2023 started earlier than usual because it was the 25 edition")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 72, DisplayName="The List of 2023 started earlier than usual because it was the 25 edition")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("The List of 2023 started earlier than usual because it was the 25 edition")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "All Editions")]
         public async global::System.Threading.Tasks.Task TheListOf2023StartedEarlierThanUsualBecauseItWasThe25Edition()

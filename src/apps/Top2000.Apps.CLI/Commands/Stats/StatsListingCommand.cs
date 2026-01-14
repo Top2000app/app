@@ -3,40 +3,27 @@ using Top2000.Features.Listings;
 
 namespace Top2000.Apps.CLI.Commands.Stats;
 
-public class StatsListingCommand : ICommand<StatsCommand>
+public class StatsListingCommand(Top2000Services top2000Services) : CommandBase("edition", "Show a specific Top 2000 edition")
 {
-    private readonly Top2000Services _top2000Services;
-
-    public StatsListingCommand(Top2000Services top2000Services)
-    {
-        _top2000Services = top2000Services;
-    }
-    
-    public Command Create()
-    {
-        var editionCommand = new Command("edition", "Show a specific Top 2000 edition");
-         
-        editionCommand.SetAction(HandleStatsEditionAsync);
-         
-        editionCommand.Add(new Argument<int>("year")
+    protected override List<Symbol> Symbols =>
+    [
+        new Argument<int>("year")
         {
             Description = "Year of the edition to show",
             Arity =  ArgumentArity.ExactlyOne
-        });
-         
-        return editionCommand;
-    }
-    
-    private async Task<int> HandleStatsEditionAsync(ParseResult result, CancellationToken token)
+        }
+    ];
+
+    protected override async Task ExecuteAsync(ParseResult result, CancellationToken token)
     {
         var edition = result.GetRequiredValue<int>("year");
 
-        var listings = await _top2000Services.AllListingsOfEditionAsync(edition, token);
+        var listings = await top2000Services.AllListingsOfEditionAsync(edition, token);
         
         AnsiConsole.Clear();
         if (listings.Count > 0)
         {
-            var theListing = (await _top2000Services.AllEditionsAsync(token))
+            var theListing = (await top2000Services.AllEditionsAsync(token))
                 .First(e => e.Year == edition);
             var count = listings.Count;
             
@@ -183,7 +170,5 @@ public class StatsListingCommand : ICommand<StatsCommand>
             AnsiConsole.Write(columns);
             AnsiConsole.WriteLine();
         }
-
-        return 0;
     }
 }

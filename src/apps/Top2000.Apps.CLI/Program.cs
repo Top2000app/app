@@ -19,34 +19,33 @@ host.Logging.ClearProviders();
 host.Services
     .AddTop2000Features<SqliteFeatureAdapter>()
     .AddDbContext<Top2000DbContext>()
-    .AddSingleton<Top2000Command>()
+    .AddRootCommand<Top2000Command>()
     ;
 
 host.Services
     .AddSingleton<Database>()
     .AddCommand<ExportCommands>()
-    .AddSubCommand<ExportJsonCommand>()
-    .AddSubCommand<ExportApiCommand>()
-    .AddSubCommand<ExportCsvCommand>()
+    .AddCommand<ExportCommands, ExportJsonCommand>()
+    .AddCommand<ExportCommands, ExportApiCommand>()
+    .AddCommand<ExportCommands, ExportCsvCommand>()
   //  .AddSubCommand<ExportIsamCommand>()
     ;
 
 host.Services
     .AddSingleton<ShowListingCommand>()
     .AddCommand<ShowCommands>()
-    .AddSubCommand<ShowNowCommand>()
-    .AddSubCommand<ShowEditionsCommand>()
-    .AddSubCommand<ShowListingCommand>()
+    .AddCommand<ShowCommands, ShowNowCommand>()
+    .AddCommand<ShowCommands, ShowEditionsCommand>()
+    .AddCommand<ShowCommands, ShowListingCommand>()
     ;
     
 host.Services
-    .AddSingleton<SearchCommandHandler>()
-    .AddSingleton<ICommand, SearchCommand>() 
+    .AddCommand<SearchCommand>() 
     ;
 
 host.Services
     .AddCommand<StatsCommand>()
-    .AddSubCommand<StatsListingCommand>()
+    .AddCommand<StatsCommand, StatsListingCommand>()
     ;
 
 var app = host.Build();

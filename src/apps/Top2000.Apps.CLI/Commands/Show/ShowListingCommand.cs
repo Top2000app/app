@@ -5,70 +5,52 @@ using Top2000.Features.Listings;
 
 namespace Top2000.Apps.CLI.Commands.Show;
 
-public class ShowListingCommand : ICommand<ShowCommands>
+public class ShowListingCommand(Top2000Services top2000Services) : CommandBase("edition", "Show a specific Top 2000 edition")
 {
-    private readonly Top2000Services _top2000Services;
-
-    public ShowListingCommand(Top2000Services top2000Services)
-    {
-        _top2000Services = top2000Services;
-    }
-    
-    
-    public Command Create()
-    {
-        var editionCommand = new Command("edition", "Show a specific Top 2000 edition");
-         
-        editionCommand.SetAction(HandleShowEditionAsync);
-        
-        editionCommand.Add(new Argument<string>("year")
+    protected override List<Symbol> Symbols =>
+    [
+        new Argument<string>("year")
         {
             Description = "Year of the edition to show",
             Arity = ArgumentArity.ExactlyOne,
-        });
-        
-        editionCommand.Add(new Option<int>("--top")
+        },
+        new Option<int>("--top")
         {
             Description = "Number of top tracks to show",
-        });
-        editionCommand.Add(new Option<int>("--skip")
+        },
+        new Option<int>("--skip")
         {
             Description = "Number of tracks to skip from the listing. If --top is specified, skip is ignored.",
-        });
-        editionCommand.Add(new Option<int>("--take")
+        },
+        new Option<int>("--take")
         {
             Description =  "Number of tracks to take from the listing. If --top is specified, skip is ignored.",
-        });
-        
-        editionCommand.Add(new Option<bool>("--new")
+        },
+        new Option<bool>("--new")
         {
             Description = "Show tracks that are new to the Top 2000 this edition",
-        });
-        editionCommand.Add(new Option<bool>("--recurring")
+        },
+        new Option<bool>("--recurring")
         {
             Description = "Show tracks that are back in the Top 2000 after being absent"
-        });
-        editionCommand.Add(new Option<bool>("--risers")
+        },
+        new Option<bool>("--risers")
         {
             Description = "Show tracks that have increased in position from the previous edition"
-        });
-        editionCommand.Add(new Option<bool>("--fallers")
+        },
+        new Option<bool>("--fallers")
         {
             Description = "Show tracks that have decreased in position from the previous edition"
-        });
-        editionCommand.Add(new Option<bool>("--held")
+        },
+        new Option<bool>("--held")
         {
             Description = "Show tracks that have maintained the same position from the previous edition"
-        });
-        
-        editionCommand.Add(new Option<Ordering>("--order")
+        },new Option<Ordering>("--order")
         {
             Description = "Order the listing by the specified field",
             DefaultValueFactory = (_) => Ordering.Rank
-        });
-        
-        return editionCommand;
-    }
+        }
+    ];
 
     public enum Ordering
     {
@@ -82,7 +64,7 @@ public class ShowListingCommand : ICommand<ShowCommands>
         DeltaDescending
     }
 
-    private async Task<int> HandleShowEditionAsync(ParseResult result, CancellationToken token)
+    protected override async Task ExecuteAsync(ParseResult result, CancellationToken token)
     {
         var year = int.Parse(result.GetRequiredValue<string>("year"));
 
@@ -99,12 +81,11 @@ public class ShowListingCommand : ICommand<ShowCommands>
         
         var order = result.GetValue<Ordering>("--order");
         
-        var listingsForYear = await _top2000Services.AllListingsOfEditionAsync(year, token);
+        var listingsForYear = await top2000Services.AllListingsOfEditionAsync(year, token);
 
         if (listingsForYear.Count == 0)
         {
             AnsiConsole.MarkupLine($"[yellow]No listings found for year {year}.[/]");
-            return 0;
         }
 
         var listings = new List<TrackListing>();
@@ -168,7 +149,5 @@ public class ShowListingCommand : ICommand<ShowCommands>
         };
         
         TrackListView.DisplayTable(listings, $"Top 2000 {year}");
-
-        return 1;
     }
 }

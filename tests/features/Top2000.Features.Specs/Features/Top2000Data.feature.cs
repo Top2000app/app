@@ -126,7 +126,7 @@ namespace Top2000.Features.Specs.Features
             return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Top2000Data.feature.ndjson", 6);
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="All editions contains 2000 positions starting with 1 and ending with 2000")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 7, DisplayName="All editions contains 2000 positions starting with 1 and ending with 2000")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("All editions contains 2000 positions starting with 1 and ending with 2000")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Top2000Data")]
         public async global::System.Threading.Tasks.Task AllEditionsContains2000PositionsStartingWith1AndEndingWith2000()
@@ -160,7 +160,7 @@ await testRunner.ThenAsync("the listing table contains 2000 tracks for each edit
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="The last edition can either have 10 or 2000 tracks")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 11, DisplayName="The last edition can either have 10 or 2000 tracks")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("The last edition can either have 10 or 2000 tracks")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Top2000Data")]
         public async global::System.Threading.Tasks.Task TheLastEditionCanEitherHave10Or2000Tracks()
@@ -197,7 +197,7 @@ await testRunner.ThenAsync("the latest edition contains either 10 or 2000 items"
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="The playtime of each track is either the same to the last track or increment by o" +
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 16, DisplayName="The playtime of each track is either the same to the last track or increment by o" +
             "ne hour")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("The playtime of each track is either the same to the last track or increment by o" +
             "ne hour")]
@@ -235,7 +235,7 @@ await testRunner.ThenAsync("for each track in the listing table the PlayDateAndT
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Edition 2023 has 2500 tracks")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 20, DisplayName="Edition 2023 has 2500 tracks")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Edition 2023 has 2500 tracks")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Top2000Data")]
         public async global::System.Threading.Tasks.Task Edition2023Has2500Tracks()

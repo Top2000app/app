@@ -5,11 +5,23 @@ internal static class ServiceCollectionExtensions
 {
     extension(IServiceCollection services)
     {
-        public CommandRegistration<TCommand> AddCommand<TCommand>()
-            where TCommand : class, ICommand
+        public IServiceCollection AddRootCommand<TCommand>()
+            where TCommand : RootCommand
         {
-            services.AddSingleton<ICommand, TCommand>();
-            return new CommandRegistration<TCommand>(services);
+            services.AddSingleton<TCommand>();
+            return services;
+        }
+        
+        public IServiceCollection AddCommand<TCommand>() where TCommand : CommandBase
+        {
+            services.AddKeyedSingleton<CommandBase, TCommand>(typeof(Top2000Command));
+            return services;
+        }
+        
+        public IServiceCollection AddCommand<TParent, TCommand>() where TCommand : CommandBase
+        {
+            services.AddKeyedSingleton<CommandBase, TCommand>(typeof(TParent));
+            return services;
         }
     }
-}
+}   

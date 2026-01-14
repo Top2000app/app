@@ -120,7 +120,7 @@ namespace Top2000.Features.Specs.Features
             return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Search.feature.ndjson", 9);
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Tracks can be searched by the counter part of a special character")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 3, DisplayName="Tracks can be searched by the counter part of a special character")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Tracks can be searched by the counter part of a special character")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Search")]
         public async global::System.Threading.Tasks.Task TracksCanBeSearchedByTheCounterPartOfASpecialCharacter()
@@ -180,7 +180,7 @@ await testRunner.ThenAsync("the following tracks are found:", ((string)(null)), 
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Track can be searching by title")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 14, DisplayName="Track can be searching by title")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Track can be searching by title")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Search")]
         public async global::System.Threading.Tasks.Task TrackCanBeSearchingByTitle()
@@ -234,7 +234,7 @@ await testRunner.ThenAsync("the following tracks are found:", ((string)(null)), 
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Tracks can be searching by artist")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 23, DisplayName="Tracks can be searching by artist")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Tracks can be searching by artist")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Search")]
         public async global::System.Threading.Tasks.Task TracksCanBeSearchingByArtist()
@@ -278,7 +278,7 @@ await testRunner.ThenAsync("the following tracks are found:", ((string)(null)), 
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Track can be searched by their full RecordedYear")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 30, DisplayName="Track can be searched by their full RecordedYear")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Track can be searched by their full RecordedYear")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Search")]
         public async global::System.Threading.Tasks.Task TrackCanBeSearchedByTheirFullRecordedYear()
@@ -322,7 +322,7 @@ await testRunner.ThenAsync("the following tracks are found:", ((string)(null)), 
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Searching track by their RecordedYear are only found by searching the full year")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 37, DisplayName="Searching track by their RecordedYear are only found by searching the full year")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Searching track by their RecordedYear are only found by searching the full year")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Search")]
         public async global::System.Threading.Tasks.Task SearchingTrackByTheirRecordedYearAreOnlyFoundBySearchingTheFullYear()
@@ -356,7 +356,7 @@ await testRunner.ThenAsync("the track White Christmas is not found", ((string)(n
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Searching will have a result cap of 100")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 42, DisplayName="Searching will have a result cap of 100")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Searching will have a result cap of 100")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Search")]
         public async global::System.Threading.Tasks.Task SearchingWillHaveAResultCapOf100()
@@ -390,7 +390,7 @@ await testRunner.ThenAsync("the results contain 100 items", ((string)(null)), ((
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="An empty search querty give zero results")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 47, DisplayName="An empty search querty give zero results")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("An empty search querty give zero results")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Search")]
         public async global::System.Threading.Tasks.Task AnEmptySearchQuertyGiveZeroResults()

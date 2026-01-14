@@ -9,41 +9,27 @@ using Edition = Top2000.Data.JsonClientDatabase.Models.Edition;
 
 namespace Top2000.Apps.CLI.Commands.Export;
 
-public class ExportJsonCommand : ICommand<ExportCommands>
+public class ExportJsonCommand(Top2000DbContext dbContext, Top2000Services top2000Services) : CommandBase("json", "Export data to Json format")
 {
-    private readonly Top2000DbContext _dbContext;
-    private readonly Top2000Services _top2000Services;
-    private readonly JsonSerializerOptions _jsonOptions;
-
-    public ExportJsonCommand(Top2000DbContext dbContext, Top2000Services top2000Services)
-    {
-        _dbContext = dbContext;
-        _top2000Services = top2000Services;
-        _jsonOptions = new JsonSerializerOptions
-        {
-            WriteIndented = false,
-            PropertyNamingPolicy = new ShortNameNamingPolicy(),
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        };
-    }
-    
-    public Command Create()
-    {
-        var csvCommand = new Command("json", "Export to Json format");
-        var outputOption = new Option<string>(name: "--output", "-o", "/o")
+    protected override List<Symbol> Symbols =>
+    [
+        new Option<string>(name: "--output")
         {
             Description = "Output file path",
-        };
-        csvCommand.Add(outputOption);
-        
-        csvCommand.SetAction(HandleExportJsonAsync);
+        }
+    ];
 
-        return csvCommand;
-    }
+    private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+    {
+        WriteIndented = false,
+        PropertyNamingPolicy = new ShortNameNamingPolicy(),
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
 
+  
     private async Task<List<Edition>> GetAllEditionsAsync()
     {
-        var allEditions = await _top2000Services.AllEditionsAsync();
+        var allEditions = await top2000Services.AllEditionsAsync();
 
         return allEditions.Select(x => new Edition()
         {
@@ -53,8 +39,8 @@ public class ExportJsonCommand : ICommand<ExportCommands>
             HasPlayDateAndTime = x.HasPlayDateAndTime
         }).ToList();
     }
-    
-     private async Task<int> HandleExportJsonAsync(ParseResult result, CancellationToken token)
+
+    protected override async Task ExecuteAsync(ParseResult result, CancellationToken token)
     {
         var outputPath = result.GetValue<string>("--output") ?? "";
 
@@ -73,7 +59,7 @@ public class ExportJsonCommand : ICommand<ExportCommands>
             {
                 var taskExporting = progressCtx.AddTask("Exporting", autoStart: true);
                 var allEditions = await GetAllEditionsAsync();
-                var version = await _top2000Services.DataVersion(token);
+                var version = await top2000Services.DataVersion(token);
 
                 var fileInfo = new Top2000VersionInfo
                 {
@@ -81,7 +67,7 @@ public class ExportJsonCommand : ICommand<ExportCommands>
                     Version = version
                 };
 
-                var tracks = await _dbContext.Tracks
+                var tracks = await dbContext.Tracks
                     .AsNoTracking()
                     .Select(x => new Top2000.Data.JsonClientDatabase.Models.Track()
                     {
@@ -96,7 +82,7 @@ public class ExportJsonCommand : ICommand<ExportCommands>
 
                 foreach (var edition in allEditions)
                 {
-                    var listingOfEdition = (await _top2000Services.AllListingsOfEditionAsync(edition.Year, token))
+                    var listingOfEdition = (await top2000Services.AllListingsOfEditionAsync(edition.Year, token))
                         .Select(listing => new Data.JsonClientDatabase.Models.Listing
                         {
                             EditionId = edition.Year,
@@ -128,8 +114,5 @@ public class ExportJsonCommand : ICommand<ExportCommands>
                 await File.WriteAllTextAsync(versionPath, jsonVersionString, token);
                 taskExporting.Value = 100;
             });
-
-
-        return 0;
     }
 }

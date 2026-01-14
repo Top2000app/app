@@ -126,7 +126,7 @@ namespace Top2000.Features.Specs.Features
             return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/TrackInformation.feature.ndjson", 15);
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Track information contains the static data from a track")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 5, DisplayName="Track information contains the static data from a track")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Track information contains the static data from a track")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "TrackInformation")]
         public async global::System.Threading.Tasks.Task TrackInformationContainsTheStaticDataFromATrack()
@@ -163,7 +163,7 @@ await testRunner.ThenAsync("the title is \"L\'Été Indien\" from \'Joe Dassin\'
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Tracks that are recorded after the first edition are listed as Not available")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 10, DisplayName="Tracks that are recorded after the first edition are listed as Not available")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Tracks that are recorded after the first edition are listed as Not available")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "TrackInformation")]
         public async global::System.Threading.Tasks.Task TracksThatAreRecordedAfterTheFirstEditionAreListedAsNotAvailable()
@@ -213,7 +213,7 @@ await testRunner.AndAsync("the following years are listed as \'NotAvailable\'", 
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Track that were recorded but did not made it on the list are listed as NotListed")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 21, DisplayName="Track that were recorded but did not made it on the list are listed as NotListed")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Track that were recorded but did not made it on the list are listed as NotListed")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "TrackInformation")]
         public async global::System.Threading.Tasks.Task TrackThatWereRecordedButDidNotMadeItOnTheListAreListedAsNotListed()
@@ -267,7 +267,7 @@ await testRunner.AndAsync("the following years are listed as \'NotListed\'", ((s
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="The first time a track is listed the status of the listing is New")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 34, DisplayName="The first time a track is listed the status of the listing is New")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("The first time a track is listed the status of the listing is New")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "TrackInformation")]
         public async global::System.Threading.Tasks.Task TheFirstTimeATrackIsListedTheStatusOfTheListingIsNew()
@@ -307,7 +307,7 @@ await testRunner.AndAsync("the listing 2009 is listed as \'New\'", ((string)(nul
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Tracks that are listed again but was not in the previous edition the status is li" +
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 40, DisplayName="Tracks that are listed again but was not in the previous edition the status is li" +
             "sted as Back")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Tracks that are listed again but was not in the previous edition the status is li" +
             "sted as Back")]
@@ -350,7 +350,7 @@ await testRunner.AndAsync("the listing 2011 is listed as \'Back\'", ((string)(nu
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Tracks that are higher on the list than previous edition are listed are Increased" +
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 46, DisplayName="Tracks that are higher on the list than previous edition are listed are Increased" +
             " and a offset is indicating the delta")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Tracks that are higher on the list than previous edition are listed are Increased" +
             " and a offset is indicating the delta")]
@@ -414,7 +414,7 @@ await testRunner.AndAsync("the following years are listed as \'Increased\'", ((s
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Tracks that are lower on the list than previous edition are listed are Decreased " +
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 59, DisplayName="Tracks that are lower on the list than previous edition are listed are Decreased " +
             "and a offset is indicating the delta")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Tracks that are lower on the list than previous edition are listed are Decreased " +
             "and a offset is indicating the delta")]
@@ -508,7 +508,7 @@ await testRunner.AndAsync("the following years are listed as \'Decreased\'", ((s
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Tracks that haven\'t change position since the previous edition are listed as Unch" +
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 82, DisplayName="Tracks that haven\'t change position since the previous edition are listed as Unch" +
             "anged")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Tracks that haven\'t change position since the previous edition are listed as Unch" +
             "anged")]
@@ -561,7 +561,7 @@ await testRunner.AndAsync("the following years are listed as \'Unchanged\'", ((s
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="\'Since release\' is the statistic that shows how many times the tracks could have " +
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 91, DisplayName="\'Since release\' is the statistic that shows how many times the tracks could have " +
             "been listed")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("\'Since release\' is the statistic that shows how many times the tracks could have " +
             "been listed")]
@@ -607,7 +607,7 @@ await testRunner.AndAsync("is it listed for 11 times", ((string)(null)), ((globa
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Record high shows the highest listing for the track")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 98, DisplayName="Record high shows the highest listing for the track")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Record high shows the highest listing for the track")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "TrackInformation")]
         public async global::System.Threading.Tasks.Task RecordHighShowsTheHighestListingForTheTrack()
@@ -647,7 +647,7 @@ await testRunner.AndAsync("the record high is number 1 on 2015", ((string)(null)
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Record low shows the lowest listing for the track")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 104, DisplayName="Record low shows the lowest listing for the track")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Record low shows the lowest listing for the track")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "TrackInformation")]
         public async global::System.Threading.Tasks.Task RecordLowShowsTheLowestListingForTheTrack()
@@ -687,7 +687,7 @@ await testRunner.AndAsync("the record low is number 54 in 2025", ((string)(null)
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Last postion shows the position of latest edition where the track was listed")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 110, DisplayName="Last postion shows the position of latest edition where the track was listed")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Last postion shows the position of latest edition where the track was listed")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "TrackInformation")]
         public async global::System.Threading.Tasks.Task LastPostionShowsThePositionOfLatestEditionWhereTheTrackWasListed()
@@ -727,7 +727,7 @@ await testRunner.AndAsync("the Lastest position is number 54 in 2025", ((string)
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="First position shows the position of the first edition where the track was listed" +
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 116, DisplayName="First position shows the position of the first edition where the track was listed" +
             "")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("First position shows the position of the first edition where the track was listed" +
             "")]

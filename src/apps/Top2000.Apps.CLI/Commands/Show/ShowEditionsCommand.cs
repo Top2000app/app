@@ -2,27 +2,11 @@ using Top2000.Features;
 
 namespace Top2000.Apps.CLI.Commands.Show;
 
-public class ShowEditionsCommand : ICommand<ShowCommands>
+public class ShowEditionsCommand(Top2000Services services) : CommandBase("editions", "Show Top 2000 editions")
 {
-    private readonly Top2000Services _services;
-
-    public ShowEditionsCommand(Top2000Services services)
-    {
-        _services = services;
-    }
-    
-    public Command Create()
-    {
-        var editionsCommand = new Command("editions", "Show Top 2000 editions");
-
-        editionsCommand.SetAction(HandleShowEditionsAsync);
-
-        return editionsCommand;
-    }
-    
     private async Task<int> HandleShowEditionsAsync(ParseResult result, CancellationToken token)
     {
-        var editions = (await _services.AllEditionsAsync(token))
+        var editions = (await services.AllEditionsAsync(token))
             .OrderBy(x => x.Year)
             .ToList();
 
@@ -33,7 +17,6 @@ public class ShowEditionsCommand : ICommand<ShowCommands>
             AnsiConsole.MarkupLine("[yellow]No editions found.[/]");
             return 0;
         }
-
         
         var table = new Table();
         table.AddColumn("[bold]#[/]");

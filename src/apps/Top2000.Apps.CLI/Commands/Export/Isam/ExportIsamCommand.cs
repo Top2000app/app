@@ -5,28 +5,11 @@ using Top2000.Features;
 namespace Top2000.Apps.CLI.Commands.Export.Isam;
 
 
-public class ExportIsamCommand : ICommand<ExportCommands>
+public class ExportIsamCommand(Top2000Services _top2000Services, DownloaderApp.Database _database) : CommandBase("isam", "Export the DOS ISAM database for the Top2000")
 {
-    private readonly Top2000Services _top2000Services;
-    private readonly DownloaderApp.Database _database;
     private const int PageSize = 512;
-    
-    public ExportIsamCommand(Top2000Services top2000Services, DownloaderApp.Database database)
-    {
-        _top2000Services = top2000Services;
-        _database = database;
-    }
-    
-    public Command Create()
-    {
-        var command = new Command("isam", "Export the DOS ISAM database for the Top2000");
 
-        command.SetAction(HandleIsamExportAsync);
-
-        return command;
-    }
-
-    private async Task<int> HandleIsamExportAsync(ParseResult result, CancellationToken token)
+    protected override async Task ExecuteAsync(ParseResult result, CancellationToken token)
     {
         await using var fs = File.Create("TOP2000.DAT");
         await using var bw = new BinaryWriter(fs);
@@ -138,7 +121,6 @@ public class ExportIsamCommand : ICommand<ExportCommands>
         );
 
         Console.WriteLine("TOP2000.DAT created.");
-        return 1;
     }
     
      // ============================================================

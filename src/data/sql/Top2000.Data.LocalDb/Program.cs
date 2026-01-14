@@ -1,8 +1,5 @@
-﻿var connectionString = Environment.GetEnvironmentVariable("Connectionstrings__Top2000") 
+﻿var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__Top2000") 
                        ?? throw new InvalidOperationException("ConnectionStrings__Top2000 is not configured in environment variables!");
-
-EnsureDatabase.For
-    .SqlDatabase(connectionString);
 
 var upgradeEngine = DeployChanges.To
     .SqlDatabase(connectionString)

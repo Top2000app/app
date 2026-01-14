@@ -5,30 +5,17 @@ using Top2000.Apps.CLI.Database;
 
 namespace Top2000.Apps.CLI.Commands.Export;
 
-public class ExportCsvCommand : ICommand<ExportCommands>
+public class ExportCsvCommand(Top2000DbContext dbContext) : CommandBase("csv", "Export Top2000 data to CSV format")
 {
-    private readonly Top2000DbContext _dbContext;
-
-    public ExportCsvCommand(Top2000DbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-    
-    public Command Create()
-    {
-        var csvCommand = new Command("csv", "Export to CSV format");
-        var outputOption = new Option<string>(name: "--output", "-o", "/o")
+    protected override List<Symbol> Symbols =>
+    [
+        new Option<string>(name: "--output")
         {
             Description = "Output file path",
-        };
-        csvCommand.Add(outputOption);
-        
-        csvCommand.SetAction(HandleExportCsvAsync);
+        }
+    ];
 
-        return csvCommand;
-    }
-
-    private async Task<int> HandleExportCsvAsync(ParseResult result, CancellationToken token)
+    protected override async Task ExecuteAsync(ParseResult result, CancellationToken token)
     {
         var outputPath = result.GetValue<string>("--output");
         
@@ -44,7 +31,7 @@ public class ExportCsvCommand : ICommand<ExportCommands>
                 var trackTask = ctx.AddTask("[blue]Loading tracks from database...[/]");
                 trackTask.StartTask();
                 
-                var allTracks = await _dbContext.Tracks
+                var allTracks = await dbContext.Tracks
                     .Include(t => t.Listings)
                     .ThenInclude(l => l.Edition)
                     .ToListAsync(token);
@@ -56,7 +43,7 @@ public class ExportCsvCommand : ICommand<ExportCommands>
                 var editionTask = ctx.AddTask("[blue]Loading editions from database...[/]");
                 editionTask.StartTask();
                 
-                var allEditions = await _dbContext.Editions
+                var allEditions = await dbContext.Editions
                     .OrderBy(e => e.Year)
                     .Select(e => e.Year)
                     .ToListAsync(token);
@@ -108,8 +95,6 @@ public class ExportCsvCommand : ICommand<ExportCommands>
                 
                 AnsiConsole.Write(panel);
             });
-
-        return 1;
     }
 
     private static string CreateCsvString(Track track, List<int> allEditions, int lastYear)

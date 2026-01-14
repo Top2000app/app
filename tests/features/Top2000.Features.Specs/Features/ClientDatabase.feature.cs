@@ -126,7 +126,7 @@ namespace Top2000.Features.Specs.Features
             return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/ClientDatabase.feature.ndjson", 6);
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Application is installed with a fresh client database")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 14, DisplayName="Application is installed with a fresh client database")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Application is installed with a fresh client database")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Client database")]
         public async global::System.Threading.Tasks.Task ApplicationIsInstalledWithAFreshClientDatabase()
@@ -163,7 +163,7 @@ await testRunner.ThenAsync("the client database is created with the scripts from
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Client database is updated upon startup when new scripts are shipped")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 19, DisplayName="Client database is updated upon startup when new scripts are shipped")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Client database is updated upon startup when new scripts are shipped")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Client database")]
         public async global::System.Threading.Tasks.Task ClientDatabaseIsUpdatedUponStartupWhenNewScriptsAreShipped()
@@ -200,7 +200,7 @@ await testRunner.ThenAsync("the client database is created with the scripts from
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Client database is updated upon startup when new scripts are shipped on the Top20" +
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 24, DisplayName="Client database is updated upon startup when new scripts are shipped on the Top20" +
             "00 website.")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Client database is updated upon startup when new scripts are shipped on the Top20" +
             "00 website.")]
@@ -243,7 +243,7 @@ await testRunner.AndAsync("the client database is updated", ((string)(null)), ((
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="Client database is updated when new scripts are shipped in the assembly and the T" +
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(callerLineNumber: 30, DisplayName="Client database is updated when new scripts are shipped in the assembly and the T" +
             "op2000 website.")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Client database is updated when new scripts are shipped in the assembly and the T" +
             "op2000 website.")]

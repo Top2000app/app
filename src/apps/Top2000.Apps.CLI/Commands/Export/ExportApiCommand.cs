@@ -4,35 +4,23 @@ using Top2000.Data;
 
 namespace Top2000.Apps.CLI.Commands.Export;
 
-public class ExportApiCommand : ICommand<ExportCommands>
+public class ExportApiCommand(ITop2000AssemblyData top2000AssemblyData) : CommandBase("api", "Export to static api format")
 {
-    private readonly ITop2000AssemblyData _top2000AssemblyData;
+    protected override List<Symbol> Symbols =>
+    [
+        new Option<string>(name: "--output")
+        {
+            Description = "Output file path",
+        }
+    ];
+
     private static readonly JsonSerializerOptions SerializerSettings = new()
     {
         WriteIndented = true,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
-    
-    public ExportApiCommand(ITop2000AssemblyData top2000AssemblyData)
-    {
-        _top2000AssemblyData = top2000AssemblyData;
-    }
-    
-    public Command Create()
-    {
-        var apiCommand = new Command("api", "Export to static api format");
-        var outputOption = new Option<string>(name: "--output", "-o", "/o")
-        {
-            Description = "Output file path",
-        };
-        apiCommand.Add(outputOption);
-        
-        apiCommand.SetAction(HandleExportStaticSiteAsync);
 
-        return apiCommand;
-    }
-    
-    private async Task<int> HandleExportStaticSiteAsync(ParseResult result, CancellationToken token)
+    protected override async Task ExecuteAsync(ParseResult result, CancellationToken token)
     {
         var outputPath = result.GetValue<string>("--output") ?? "site";
 
@@ -43,13 +31,11 @@ public class ExportApiCommand : ICommand<ExportCommands>
         await CreateApiFileAsync(outputPath);
         
         AnsiConsole.MarkupLine("[green]✓ Static site export completed successfully![/]");
-        
-        return 0;
     }
     
     private async Task CreateDataFilesAsync(string location)
     {
-        var toUpload = _top2000AssemblyData
+        var toUpload = top2000AssemblyData
             .GetAllSqlFiles()
             .ToList();
 
@@ -68,7 +54,7 @@ public class ExportApiCommand : ICommand<ExportCommands>
 
                 foreach (var file in toUpload)
                 {
-                    var contents = await _top2000AssemblyData.GetScriptContentAsync(file);
+                    var contents = await top2000AssemblyData.GetScriptContentAsync(file);
                     var fileName = Path.Combine(sqlPath, file);
 
                     await File.WriteAllTextAsync(fileName, contents);
@@ -114,7 +100,7 @@ public class ExportApiCommand : ICommand<ExportCommands>
     
     private List<VersionFile> Transform()
     {
-        var allVersions = _top2000AssemblyData
+        var allVersions = top2000AssemblyData
             .GetAllSqlFiles()
             .Select(x => new VersionFile(x))
             .ToList();

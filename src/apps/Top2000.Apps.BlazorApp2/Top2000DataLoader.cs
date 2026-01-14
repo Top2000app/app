@@ -4,21 +4,27 @@ namespace Top2000.Apps.MudBlazorApp;
 
 public class Top2000DataLoader : IDataLoader
 {
-    private readonly HttpClient _httpClient;
-
-    public Top2000DataLoader(HttpClient httpClient)
+    public Top2000DataLoader()
     {
-        _httpClient = httpClient;
+
     }
     
     public Task<Stream> LoadDataVersionAsync()
     {
-        return _httpClient.GetStreamAsync("data/version.json");
+        var stream = typeof(Top2000DataLoader).Assembly.GetManifestResourceStream(
+            "Top2000.Apps.BlazorApp2.wwwroot.data.version.json")
+            ?? throw new InvalidOperationException("Could not find embedded resource 'Data.version.json'");
+        
+        return Task.FromResult(stream);
     }
 
     public Task<Stream> LoadEditionDataAsync(int edition)
     {
-        return _httpClient.GetStreamAsync($"data/{edition}.json");
+        var stream = typeof(Top2000DataLoader).Assembly.GetManifestResourceStream(
+                         $"Top2000.Apps.BlazorApp2.wwwroot.data.{edition}.json")
+                     ?? throw new InvalidOperationException("Could not find embedded resource 'Data.version.json'");
+        
+        return Task.FromResult(stream);
     }
 
 }

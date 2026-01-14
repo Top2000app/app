@@ -30,7 +30,14 @@ public class ShowNowCommand : ICommand<ShowCommands>
             .Where(x => x.PlayUtcDateAndTime == groupKey)
             .ToList();
 
-        TrackListView.DisplayTable(tracks, $"{groupKey.ToLocalTime():f} - {groupKey.ToLocalTime().AddHours(1):t}");
+        if (tracks.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[yellow]The TOP2000 is not live at the moment.[/]");
+        }
+        else
+        {
+            TrackListView.DisplayTable(tracks, $"{groupKey.ToLocalTime():f} - {groupKey.ToLocalTime().AddHours(1):t}");
+        }
 
         return 1;
     }

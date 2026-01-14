@@ -9,8 +9,3 @@ public interface ICommand<T> : ICommand
 where T : ICommand
 {
 }
-
-public interface ISubCommand
-{
-    void CreateSubCommand();
-}

@@ -1,3 +1,5 @@
+using System.CommandLine.Parsing;
+using Top2000.Data.JsonClientDatabase.Models;
 using Top2000.Features;
 using Top2000.Features.Listings;
 
@@ -18,170 +20,155 @@ public class ShowListingCommand : ICommand<ShowCommands>
         var editionCommand = new Command("edition", "Show a specific Top 2000 edition");
          
         editionCommand.SetAction(HandleShowEditionAsync);
-         
-        editionCommand.Add(new Option<int>("--year", "-y")
+        
+        editionCommand.Add(new Argument<string>("year")
         {
             Description = "Year of the edition to show",
+            Arity = ArgumentArity.ExactlyOne,
         });
-         
+        
+        editionCommand.Add(new Option<int>("--top")
+        {
+            Description = "Number of top tracks to show",
+        });
+        editionCommand.Add(new Option<int>("--skip")
+        {
+            Description = "Number of tracks to skip from the listing. If --top is specified, skip is ignored.",
+        });
+        editionCommand.Add(new Option<int>("--take")
+        {
+            Description =  "Number of tracks to take from the listing. If --top is specified, skip is ignored.",
+        });
+        
+        editionCommand.Add(new Option<bool>("--new")
+        {
+            Description = "Show tracks that are new to the Top 2000 this edition",
+        });
+        editionCommand.Add(new Option<bool>("--recurring")
+        {
+            Description = "Show tracks that are back in the Top 2000 after being absent"
+        });
+        editionCommand.Add(new Option<bool>("--risers")
+        {
+            Description = "Show tracks that have increased in position from the previous edition"
+        });
+        editionCommand.Add(new Option<bool>("--fallers")
+        {
+            Description = "Show tracks that have decreased in position from the previous edition"
+        });
+        editionCommand.Add(new Option<bool>("--held")
+        {
+            Description = "Show tracks that have maintained the same position from the previous edition"
+        });
+        
+        editionCommand.Add(new Option<Ordering>("--order")
+        {
+            Description = "Order the listing by the specified field",
+            DefaultValueFactory = (_) => Ordering.Rank
+        });
+        
         return editionCommand;
     }
 
-    public async Task<int> HandleShowEditionAsync(ParseResult result, CancellationToken token)
+    public enum Ordering
     {
-        var year = result.GetValue<int?>("--year");
+        Rank,
+        Title,
+        Artist,
+        Delta,
+        RankDescending,
+        TitleDescending,
+        ArtistDescending,
+        DeltaDescending
+    }
+
+    private async Task<int> HandleShowEditionAsync(ParseResult result, CancellationToken token)
+    {
+        var year = int.Parse(result.GetRequiredValue<string>("year"));
+
+        var showNew = result.GetValue<bool>("--new");
+        var showRecurring = result.GetValue<bool>("--recurring");
+        var showRisers = result.GetValue<bool>("--risers");
+        var showFallers = result.GetValue<bool>("--fallers");
+        var showHeld = result.GetValue<bool>("--held");
+        var showAll = !showHeld && !showFallers && !showRisers && !showRecurring && !showNew;
         
-        // If no year was specified, ask the user to select one
-        if (!year.HasValue)
-        {
-            var availableEditions = (await _top2000Services.AllEditionsAsync(token))
-                .Select(e => e.Year)
-                .ToList();
-
-            if (availableEditions.Count == 0)
-            {
-                AnsiConsole.MarkupLine("[yellow]No editions found in the database.[/]");
-                return 0;
-            }
-
-            year = AnsiConsole.Prompt(
-                new SelectionPrompt<int>()
-                    .Title("[green]Select a year to view:[/]")
-                    .AddChoices(availableEditions)
-                    .UseConverter(y => y.ToString()));
-        }
-
-        var listingsForYear = await _top2000Services.AllListingsOfEditionAsync(year.Value, token);
+        var top = result.GetValue<int>("--top");
+        var skip = result.GetValue<int>("--skip");
+        var take = result.GetValue<int>("--take");
+        
+        var order = result.GetValue<Ordering>("--order");
+        
+        var listingsForYear = await _top2000Services.AllListingsOfEditionAsync(year, token);
 
         if (listingsForYear.Count == 0)
         {
-            AnsiConsole.MarkupLine($"[yellow]No listings found for year {year.Value}.[/]");
+            AnsiConsole.MarkupLine($"[yellow]No listings found for year {year}.[/]");
             return 0;
         }
 
-        var listings = listingsForYear.ToList();
+        var listings = new List<TrackListing>();
+
+        if (showAll)
+        {
+            listings.AddRange(listingsForYear);
+        }
         
-        // Ask user how they want to view the data
-        var choice = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-                .Title($"[green]Found {listings.Count} songs for {year.Value}. How would you like to view them?[/]")
-                .AddChoices("Show all at once", "Show paginated (25 per page)", "Show top 100 only", "Show summary statistics"));
-
-        switch (choice)
+        if (showHeld)
         {
-            case "Show all at once":
-                TrackListView.DisplayTable(listings, $"Top 2000 - {year.Value} (All {listings.Count} songs)");
-                break;
-                
-            case "Show paginated (25 per page)":
-                DisplayPaginated(listings, year.Value);
-                break;
-                
-            case "Show top 100 only":
-                var top100 = listings.Take(100).ToList();
-                TrackListView.DisplayTable(top100, $"Top 2000 - {year.Value} (Top 100)");
-                break;
-                
-            case "Show summary statistics":
-                DisplaySummaryStats(listings, year.Value);
-                break;
+            listings.AddRange(listingsForYear.Where(x => x.DeltaType == TrackListingDeltaType.NoChange));
         }
 
-        return 0;
-    }
-
-   
-
-    private static void DisplayPaginated(List<TrackListing> listings, int year)
-    {
-        const int pageSize = 25;
-        var totalPages = (int)Math.Ceiling(listings.Count / (double)pageSize);
-        var currentPage = 1;
-
-        while (true)
+        if (showNew)
         {
-            var startIndex = (currentPage - 1) * pageSize;
-            var pageItems = listings.Skip(startIndex).Take(pageSize).ToList();
-            
-            AnsiConsole.Clear();
-            TrackListView.DisplayTable(pageItems, $"Top 2000 - {year} (Page {currentPage}/{totalPages})");
-            
-            var options = new List<string>();
-            if (currentPage < totalPages) options.Add("Next page");
-            if (currentPage > 1) options.Add("Previous page");
-            options.AddRange(["Jump to page", "Search in results", "Exit"]);
+            listings.AddRange(listingsForYear.Where(x => x.DeltaType == TrackListingDeltaType.New));
+        }
 
-            var choice = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title("Navigation:")
-                    .AddChoices(options));
+        if (showFallers)
+        {
+            listings.AddRange(listingsForYear.Where(x => x.DeltaType == TrackListingDeltaType.Decreased));
+        }
 
-            switch (choice)
+        if (showRisers)
+        {
+            listings.AddRange(listingsForYear.Where(x => x.DeltaType == TrackListingDeltaType.Increased));
+        }
+
+        if (showRecurring)
+        {
+            listings.AddRange(listingsForYear.Where(x => x.DeltaType == TrackListingDeltaType.Recurring));
+        }
+        
+        if (top > 0)
+        {
+            listings = listings.Take(top).ToList();
+        }
+        else
+        {
+            listings = skip switch
             {
-                case "Previous page":
-                    currentPage--;
-                    break;
-                case "Next page":
-                    currentPage++;
-                    break;
-                case "Jump to page":
-                    var targetPage = AnsiConsole.Prompt(
-                        new TextPrompt<int>($"Enter page number (1-{totalPages}):")
-                            .ValidationErrorMessage("[red]Invalid page number[/]")
-                            .Validate(page => page >= 1 && page <= totalPages));
-                    currentPage = targetPage;
-                    break;
-                
-                case "Exit":
-                    return;
-            }
+                > 0 when take > 0 => listings.Skip(skip).Take(take).ToList(),
+                < 1 when take > 0 => listings.Take(take).ToList(),
+                > 0 when take < 1 => listings.Skip(skip).ToList(),
+                _ => listings
+            };
         }
+      
+        listings = order switch
+        {
+            Ordering.Rank => listings.OrderBy(x => x.Position).ToList(),
+            Ordering.Title => listings.OrderBy(x => x.Title).ToList(),
+            Ordering.Artist => listings.OrderBy(x => x.Artist).ToList(),
+            Ordering.Delta => listings.OrderBy(x => x.Delta).ToList(),
+            Ordering.RankDescending => listings.OrderByDescending(x => x.Position).ToList(),
+            Ordering.TitleDescending => listings.OrderByDescending(x => x.Title).ToList(),
+            Ordering.ArtistDescending => listings.OrderByDescending(x => x.Artist).ToList(),
+            Ordering.DeltaDescending => listings.OrderByDescending(x => x.Delta).ToList(),
+            _ => listings
+        };
+        
+        TrackListView.DisplayTable(listings, $"Top 2000 {year}");
+
+        return 1;
     }
-
-
-    private static void DisplaySummaryStats(List<TrackListing> listings, int year)
-    {
-        var newEntries = listings.Count(x => x.DeltaType == TrackListingDeltaType.New);
-        var recurringEntries = listings.Count(x => x.DeltaType == TrackListingDeltaType.Recurring);
-        var movedUp = listings.Count(x => x.DeltaType == TrackListingDeltaType.Increased);
-        var movedDown = listings.Count(x => x.DeltaType == TrackListingDeltaType.Decreased);
-        var stayedSame = listings.Count(x => x.DeltaType == TrackListingDeltaType.NoChange);
-
-        var panel = new Panel(
-            new Markup($"""
-                [bold]Top 2000 {year} - Summary Statistics[/]
-                
-                [green]📊 Total Songs:[/] {listings.Count}
-                
-                [yellow]🆕 New Entries:[/] {newEntries}
-                [yellow]↻ Returning Songs:[/] {recurringEntries}
-                
-                [green]📈 Moved Up:[/] {movedUp}
-                [red]📉 Moved Down:[/] {movedDown}
-                [dim]=  Stayed Same:[/] {stayedSame}
-                
-                [bold]Biggest Changes:[/]
-                
-                [green]📈 Highest Climbers:[/]
-                {string.Join("\n", listings
-                    .Where(l => l.DeltaType == TrackListingDeltaType.Increased)
-                    .OrderByDescending(l => l.Delta)
-                    .Take(5)
-                    .Select((l, i) => $"{i + 1,2}. {l.Artist.EscapeMarkup()} - {l.Title.EscapeMarkup()} (↑{l.Delta})"))}
-                
-                [red]📉 Biggest Drops:[/]
-                {string.Join("\n", listings
-                    .Where(l => l.DeltaType == TrackListingDeltaType.Decreased)
-                    .OrderBy(l => l.Delta)
-                    .Take(5)
-                    .Select((l, i) => $"{i + 1,2}. {l.Artist.EscapeMarkup()} - {l.Title.EscapeMarkup()} (↓{Math.Abs(l.Delta)})"))}
-                """))
-            .Header("Statistics")
-            .Border(BoxBorder.Rounded)
-            .BorderColor(Color.Blue);
-
-        AnsiConsole.Write(panel);
-    }
-
-
 }

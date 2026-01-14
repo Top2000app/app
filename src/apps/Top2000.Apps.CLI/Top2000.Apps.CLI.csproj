@@ -5,6 +5,11 @@
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+      
+        <!-- global tool support -->
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>top2000</ToolCommandName>
+        <PackageOutputPath>./nupkg</PackageOutputPath>
     </PropertyGroup>
 
     <ItemGroup>

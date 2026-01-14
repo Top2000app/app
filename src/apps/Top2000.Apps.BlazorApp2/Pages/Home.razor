@@ -80,24 +80,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        TheList = Enumerable.Range(0, 100)
-            .Select(x => new TrackListing
-            {
-                Position = 1,
-                TrackId = -1,
-                Artist = "",
-                DeltaType = TrackListingDeltaType.Decreased,
-                Title = "",
-                Delta = 0,
-                PlayUtcDateAndTime = DateTime.UtcNow
-            })
-            .ToList();
-        
         // first load the current year and await it
+        await JsonPartialDataInitialiser.InitialiseVersionDataAsync();
         await JsonPartialDataInitialiser.InitialiseEditionAsync(2025);
 
         // then load the rest without awaiting it
-        // JsonPartialDataInitialiser.InitialiseRestAsync();
+        JsonPartialDataInitialiser.InitialiseRestAsync();
 
         TheList = (await Top2000Services.AllListingsOfEditionAsync(2025))
             .ToList();

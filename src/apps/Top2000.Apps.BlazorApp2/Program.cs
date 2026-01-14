@@ -24,8 +24,8 @@ builder.Services
 
 var app = builder.Build();
 
-await app.Services
-    .GetRequiredService<JsonPartialDataInitialiser>()
-    .InitialiseVersionDataAsync();
+//await app.Services
+  //  .GetRequiredService<JsonPartialDataInitialiser>()
+  //  .InitialiseVersionDataAsync();
 
 await app.RunAsync();

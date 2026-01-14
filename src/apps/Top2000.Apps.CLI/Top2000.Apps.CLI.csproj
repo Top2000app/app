@@ -10,6 +10,11 @@
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>top2000</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
+        <packageId>top2000.cli</packageId>
+        <Authors>Rick Neeft</Authors>
+        <Description>A Command line interface application for the TOP 2000.</Description>
+        <PackageTags>TOP2000 CLI</PackageTags>
+        <Copyright>Copyright 2025 (c) Rick Neeft Development.</Copyright>
     </PropertyGroup>
 
     <ItemGroup>

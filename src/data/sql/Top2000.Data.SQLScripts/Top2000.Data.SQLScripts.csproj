@@ -29,7 +29,6 @@
   <ItemGroup>
     <None Remove="sql\*.sql" />
     <EmbeddedResource Include="sql\*.sql" />
-    <None Include="sql\0065-EditionOf2025.sql" />
   </ItemGroup>
 
   <ItemGroup>

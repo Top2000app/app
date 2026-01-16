@@ -18,7 +18,13 @@ public class TrackInformationFeature : ITrackInformation
         var isFound = _dataProvider.Value.Tracks.TryGetValue(trackId, out var track);
         if (!isFound || track is null)
         {
-            return Task.FromResult<TrackDetails>(null);
+            return Task.FromResult(new TrackDetails()
+            {
+                Listings = [],
+                Artist = "TILT",
+                Title = "Track not found",
+                RecordedYear = 1,
+            });
         }
         
         var listings = _dataProvider.Value.Editions

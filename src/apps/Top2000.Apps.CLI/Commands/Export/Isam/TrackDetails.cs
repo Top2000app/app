@@ -1,24 +1,17 @@
 ﻿using System.Collections.Immutable;
+using Top2000.Features.TrackInformation;
 
 namespace DownloaderApp;
 
 public sealed class TrackDetails
 {
-    public TrackDetails(string title, string artist, int recordedYear, ImmutableSortedSet<ListingInformation> listings)
-    {
-        Title = title;
-        Artist = artist;
-        RecordedYear = recordedYear;
-        Listings = listings;
-    }
+    public required string Title { get; init; }
 
-    public string Title { get; }
+    public required string Artist { get; init; }
 
-    public string Artist { get; }
+    public required int RecordedYear { get;init; }
 
-    public int RecordedYear { get; }
-
-    public ImmutableSortedSet<ListingInformation> Listings { get; }
+    public required SortedSet<ListingInformation> Listings { get; init; }
 
     public ListingInformation Highest => Listings
         .Where(x => x.Position.HasValue)

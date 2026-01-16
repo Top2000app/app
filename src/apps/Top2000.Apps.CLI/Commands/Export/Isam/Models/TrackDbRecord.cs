@@ -4,21 +4,21 @@ namespace Top2000.Apps.CLI.Commands.Export.Isam;
 
 public class TrackDbRecord
 {
-    public required short TrackId { get; init; }
+    public required int TrackId { get; init; }
     public required string Title { get; init; }
     public required string Artist { get; init; }
-    public required short RecordedYear { get; init; }
-    public required short HighestPosition { get; init; }
-    public required short HighestEdition { get; init; }
-    public required short LowestPosition { get; init; }
-    public required short LowestEdition { get; init; }
-    public required short FirstPosition { get; init; }
-    public required short FirstEdition { get; init; }
-    public required short LatestPosition { get; init; }
-    public required short LatestEdition { get; init; }
+    public required int RecordedYear { get; init; }
+    public required int HighestPosition { get; init; }
+    public required int HighestEdition { get; init; }
+    public required int LowestPosition { get; init; }
+    public required int LowestEdition { get; init; }
+    public required int FirstPosition { get; init; }
+    public required int FirstEdition { get; init; }
+    public required int LatestPosition { get; init; }
+    public required int LatestEdition { get; init; }
     public required string LatestPlayLocalDateAndTime { get; init; }
-    public required short Appearances { get; init; }
-    public required short AppearancesPossible { get; init; }
+    public required int Appearances { get; init; }
+    public required int AppearancesPossible { get; init; }
     
     private static string ReplaceSpecialChars(string input)
     {
@@ -79,28 +79,24 @@ public class TrackDbRecord
     {
         return new TrackDbRecord
         {
-            TrackId = (short)trackId,
+            TrackId = trackId,
             Title = ReplaceSpecialChars(track.Title),
             Artist = ReplaceSpecialChars(track.Artist),
-            RecordedYear = (short)track.RecordedYear,
-            HighestPosition = (short)(track.Highest?.Position ??
-                                      throw new InvalidOperationException("Position should be available")),
-            HighestEdition = (short)track.Highest.Edition,
-            LowestPosition = (short)(track.Lowest?.Position ??
-                                     throw new InvalidOperationException("Position should be available")),
-            LowestEdition = (short)track.Lowest.Edition,
-            FirstPosition = (short)(track.First.Position ??
-                                    throw new InvalidOperationException("Position should be available")),
-            FirstEdition = (short)track.First.Edition,
-            LatestPosition = (short)(track.Latest.Position ??
-                                     throw new InvalidOperationException("Position should be available")),
-            LatestEdition = (short)track.Latest.Edition,
+            RecordedYear = track.RecordedYear,
+            HighestPosition = track.Highest.Position ?? throw new InvalidOperationException("Position should be available"),
+            HighestEdition = track.Highest.Edition,
+            LowestPosition = track.Lowest.Position ?? throw new InvalidOperationException("Position should be available"),
+            LowestEdition = track.Lowest.Edition,
+            FirstPosition = track.First.Position ?? throw new InvalidOperationException("Position should be available"),
+            FirstEdition = track.First.Edition,
+            LatestPosition = track.Latest.Position ?? throw new InvalidOperationException("Position should be available"),
+            LatestEdition = track.Latest.Edition,
+            Appearances = track.Appearances,
+            AppearancesPossible = track.AppearancesPossible,
             LatestPlayLocalDateAndTime = track.Latest.PlayUtcDateAndTime.HasValue
-                ? track.Latest.PlayUtcDateAndTime.Value.ToLocalTime().ToString("dd-MM-yyyy HH:mm") +
-                  $"-{track.Latest.PlayUtcDateAndTime.Value.ToLocalTime().Hour + 1}:00"
+                ? track.Latest.PlayUtcDateAndTime.Value.ToString("dd-MM-yyyy HH:mm") +
+                  $"-{track.Latest.PlayUtcDateAndTime.Value.Hour + 1}:00"
                 : "-",
-            Appearances = (short)track.Appearances,
-            AppearancesPossible = (short)track.AppearancesPossible
         };
     }
 }

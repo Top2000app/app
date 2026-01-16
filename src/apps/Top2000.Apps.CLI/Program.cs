@@ -24,7 +24,6 @@ host.Services
     ;
 
 host.Services
-    .AddSingleton<Database>()
     .AddCommand<ExportCommands>()
     .AddCommand<ExportCommands, ExportJsonCommand>()
     .AddCommand<ExportCommands, ExportApiCommand>()

@@ -12,7 +12,7 @@
         <PackageOutputPath>./nupkg</PackageOutputPath>
         <PackageId>top2000.cli</PackageId>
         <PackageIconUrl>nugeticon.png</PackageIconUrl>
-        <Version>0.1</Version>
+        <Version>0.2</Version>
         <Authors>Rick Neeft</Authors>
         <Description>A Command line interface application for the TOP 2000.</Description>
         <PackageTags>TOP2000 CLI</PackageTags>

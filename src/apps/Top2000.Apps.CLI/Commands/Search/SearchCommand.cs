@@ -22,7 +22,7 @@ public class SearchCommand(Top2000Services top2000Services) : CommandBase("searc
         var searchResultsGrouped = await top2000Services.SearchAsync(query, latest.Year, sort, group, token);
         var searchResults = searchResultsGrouped.First().ToList();
         
-        if (!searchResults.Any())
+        if (searchResults.Count == 0)
         {
             AnsiConsole.MarkupLine($"[yellow]No results found for query: '{query.EscapeMarkup()}'[/]");
         }

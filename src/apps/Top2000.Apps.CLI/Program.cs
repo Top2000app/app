@@ -29,7 +29,7 @@ host.Services
     .AddCommand<ExportCommands, ExportJsonCommand>()
     .AddCommand<ExportCommands, ExportApiCommand>()
     .AddCommand<ExportCommands, ExportCsvCommand>()
-  //  .AddSubCommand<ExportIsamCommand>()
+    .AddCommand<ExportCommands, ExportIsamCommand>()
     ;
 
 host.Services

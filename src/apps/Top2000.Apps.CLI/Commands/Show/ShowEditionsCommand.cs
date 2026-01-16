@@ -50,7 +50,7 @@ public class ShowEditionsCommand(Top2000Services services) : CommandBase("editio
             }
             
             var durationText = $"{duration.Days}d {duration.Hours}h {duration.Minutes}m";
-            var hasPlayTime = edition.HasPlayDateAndTime ? "[green]✓[/]" : "[red]✗[/]";
+            var hasPlayTime = edition.HasPlayDateAndTime ? $"[green]{UnicodeSymbols.Check}[/]" : $"[red]{UnicodeSymbols.Wrong}[/]";
 
             table.AddRow(
                 index.ToString(),

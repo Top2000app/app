@@ -80,11 +80,11 @@ public class StatsListingCommand(Top2000Services top2000Services) : CommandBase(
             AnsiConsole.WriteLine();
 
             // Increased tracks
-            var increasedContent = new Markup($"[bold green]↑ {countOfIncreased}[/] tracks increased\n");
+            var increasedContent = new Markup($"[bold green]{UnicodeSymbols.Up} {countOfIncreased}[/] tracks increased\n");
             if (highestIncrease != null)
             {
                 increasedContent = new Markup(
-                    $"[bold green]↑ {countOfIncreased}[/] tracks increased\n\n" +
+                    $"[bold green]{UnicodeSymbols.Up} {countOfIncreased}[/] tracks increased\n\n" +
                     $"[dim]Highest increase:[/]\n" +
                     $"[yellow]#{highestIncrease.Position}[/] " +
                     $"[green]+{highestIncrease.Delta}[/]\n" +
@@ -99,11 +99,11 @@ public class StatsListingCommand(Top2000Services top2000Services) : CommandBase(
             };
             
             // Decreased tracks
-            var decreasedContent = new Markup($"[bold red]↓ {countOfDecreased}[/] tracks decreased\n");
+            var decreasedContent = new Markup($"[bold red]{UnicodeSymbols.Down} {countOfDecreased}[/] tracks decreased\n");
             if (highestDecrease != null)
             {
                 decreasedContent = new Markup(
-                    $"[bold red]↓ {countOfDecreased}[/] tracks decreased\n\n" +
+                    $"[bold red]{UnicodeSymbols.Down} {countOfDecreased}[/] tracks decreased\n\n" +
                     $"[dim]Highest decrease:[/]\n" +
                     $"[yellow]#{highestDecrease.Position}[/] " +
                     $"[red]{highestDecrease.Delta}[/]\n" +
@@ -118,11 +118,11 @@ public class StatsListingCommand(Top2000Services top2000Services) : CommandBase(
             };
             
             // New tracks
-            var newContent = new Markup($"[bold yellow] ⚑ {countOfNew}[/] new tracks\n");
+            var newContent = new Markup($"[bold yellow] {UnicodeSymbols.New} {countOfNew}[/] new tracks\n");
             if (highestNew != null)
             {
                 newContent = new Markup(
-                    $"[bold yellow]⚑ {countOfNew}[/] new tracks\n\n" +
+                    $"[bold yellow]{UnicodeSymbols.New} {countOfNew}[/] new tracks\n\n" +
                     $"[dim]Highest new entry:[/]\n" +
                     $"[yellow]#{highestNew.Position}[/]\n" +
                     $"{highestNew.Title}\n" +
@@ -130,17 +130,17 @@ public class StatsListingCommand(Top2000Services top2000Services) : CommandBase(
             }
             var newPanel = new Panel(newContent)
             {
-                Header = new PanelHeader("⚑ [bold yellow]New Entries[/]"),
+                Header = new PanelHeader($"{UnicodeSymbols.New} [bold yellow]New Entries[/]"),
                 Border = BoxBorder.Rounded,
                 BorderStyle = new Style(Color.Yellow)
             };
 
             // Recurring tracks
-            var recurringContent = new Markup($"[bold magenta]↻ {countOfReturned}[/] tracks returned\n");
+            var recurringContent = new Markup($"[bold magenta]{UnicodeSymbols.Recurring} {countOfReturned}[/] tracks returned\n");
             if (highestReturned != null)
             {
                 recurringContent = new Markup(
-                    $"[bold magenta]↻ {countOfReturned}[/] tracks returned\n\n" +
+                    $"[bold magenta]{UnicodeSymbols.Recurring} {countOfReturned}[/] tracks returned\n\n" +
                     $"[dim]Highest return:[/]\n" +
                     $"[yellow]#{highestReturned.Position}[/]\n" +
                     $"{highestReturned.Title}\n" +

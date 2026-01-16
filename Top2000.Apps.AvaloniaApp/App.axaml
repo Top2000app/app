@@ -12,4 +12,9 @@
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>
+             
+    <Application.Resources>
+        <FontFamily x:Key="MaterialIcons">Assets/Fonts/MaterialIcons.ttf#Material Icons</FontFamily>
+    </Application.Resources>
+
 </Application>

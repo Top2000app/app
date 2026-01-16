@@ -4,6 +4,12 @@ namespace Top2000.Apps.CLI.Commands.Export.Isam;
 
 public class ListingDbRecord
 {
+    public required int Edition { get; init; }
+    public required int Offset { get; init; }
+    public required int Position { get; init; }
+    public required int TrackId { get; init; }
+    public required int OffsetType { get; init; }
+    
     public static int ReadOffSet(int? value)
     {
         return value.HasValue
@@ -24,9 +30,8 @@ public class ListingDbRecord
         };
     }
 
-    public int Edition { get; set; }
-    public int Offset { get; set; }
-    public int Position { get; set; }
-    public int TrackId { get; set; }
-    public int OffsetType { get; set; }
+    public string ToCsvString()
+    {
+        return $"{Edition},{Position},{TrackId},{Offset},{OffsetType}";
+    }
 }

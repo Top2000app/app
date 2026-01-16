@@ -31,4 +31,10 @@
       <ProjectReference Include="..\src\data\sql\Top2000.Data.ClientDatabase\Top2000.Data.ClientDatabase.csproj" />
       <ProjectReference Include="..\src\features\sql\Top2000.Features.SQLite\Top2000.Features.SQLite.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <MauiFont Include="Assets\Fonts\MaterialIcons.ttf" />
+      <MauiFont Include="Assets\Fonts\OpenSans-Regular.ttf" />
+      <MauiFont Include="Assets\Fonts\OpenSans-Semibold.ttf" />
+    </ItemGroup>
 </Project>

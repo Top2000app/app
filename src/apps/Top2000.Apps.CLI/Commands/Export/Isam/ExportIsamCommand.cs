@@ -8,43 +8,68 @@ namespace Top2000.Apps.CLI.Commands.Export.Isam;
 public class ExportIsamCommand(Top2000Services _top2000Services, DownloaderApp.Database _database) : CommandBase("isam", "Export the DOS ISAM database for the Top2000")
 {
     private const int PageSize = 512;
-
-    protected override async Task ExecuteAsync(ParseResult result, CancellationToken token)
+    private List<byte[]> editionsDataset;
+    private List<byte[]> listingsDataset;
+    private List<byte[]> tracksDataset;
+    
+    private List<TrackDbRecord> tracksDetails = [];
+    private List<ListingDbRecord> listingsDetails = [];
+    private List<EditionDbRecord> _editionsDetails = [];
+    
+    private Field[] tracksSchema = new[]
     {
-        await using var fs = File.Create("TOP2000.DAT");
-        await using var bw = new BinaryWriter(fs);
+        new Field(FieldType.Int16, 2),
+        new Field(FieldType.Text, 57),
+        new Field(FieldType.Text, 44),
+        new Field(FieldType.Int16, 2),
+        new Field(FieldType.Int16, 2),
+        new Field(FieldType.Int16, 2),
+        new Field(FieldType.Int16, 2),
+        new Field(FieldType.Int16, 2),
+        new Field(FieldType.Int16, 2),
+        new Field(FieldType.Int16, 2),
+        new Field(FieldType.Int16, 2),
+        new Field(FieldType.Int16, 2),
+        new Field(FieldType.Text, 26),
+        new Field(FieldType.Int16, 2),
+        new Field(FieldType.Int16, 2)
+    };
+    
+    private Field[] editionsSchema = new[]
+    {
+        new Field(FieldType.Int16, 2)
+    };
+    
+    private Field[] listingsSchema = new[]
+    {
+        new Field(FieldType.Int16, 2),
+        new Field(FieldType.Int16, 2),
+        new Field(FieldType.Int16, 2),
+        new Field(FieldType.Int16, 2),
+        new Field(FieldType.Int16, 2)
+    };
+    
+    private Field[] catalogSchema = new[]
+    {
+        new Field(FieldType.Text, 16),   // Dataset name (space padded)
+        new Field(FieldType.Int16, 2),   // Dataset number (1-based)
+        new Field(FieldType.Int16, 2),   // Header page number
+        new Field(FieldType.Int16, 2),   // Record length
+        new Field(FieldType.Int16, 2),   // Flags
+        new Field(FieldType.Int16, 2),   // Index count
+        new Field(FieldType.Int16, 2),   // Reserved
+        new Field(FieldType.Int32, 4),   // Record count (LONG = 4 bytes)
+        new Field(FieldType.Bytes, 32)   // Reserved (32 bytes)
+    };
+    
+    private async Task LoadAllAsync()
+    {
+        _editionsDetails = (await _top2000Services.AllEditionsAsync(CancellationToken.None))
+            .Select(x => new EditionDbRecord{ Year = x.Year} )
+            .ToList();
 
-        // ------------------------------------------------------------
-        // PAGE 0 — FILE HEADER
-        // ------------------------------------------------------------
-        WriteEmptyPage(bw);
-
-        // ------------------------------------------------------------
-        // PAGE 1 — SYSTEM / CATALOG PAGE
-        // ------------------------------------------------------------
-        WriteEmptyPage(bw);
-
-        var currentPage = 2;
-
-        // ------------------------------------------------------------
-        // DATASET: editions
-        // ------------------------------------------------------------
-        var editionsSchema = new[]
-        {
-            new Field(FieldType.Int16, 2)
-        };
-
-        currentPage = WriteDataset(
-            bw,
-            "editions",
-            editionsSchema,
-            await LoadEditionsAsync(),
-            currentPage
-        );
-        
-        // Retrieve all information
+        editionsDataset = LoadEditions(_editionsDetails);
         var trackIds = await _database.AllTrackIdsAsync();
-        List<TrackDbRecord> tracksDetails = [];
         var listings = new List<ListingDbRecord>();
         foreach (var trackId in trackIds)
         {
@@ -67,61 +92,122 @@ public class ExportIsamCommand(Top2000Services _top2000Services, DownloaderApp.D
             
             listings.AddRange(listingsForTrack);
         }
+        
+        listingsDataset = LoadListings(listings);
+        tracksDataset = LoadTracks(tracksDetails);
+    }
 
 
+    protected override async Task ExecuteAsync(ParseResult result, CancellationToken token)
+    {
+        await LoadAllAsync();
+        
+        await Csv.MakeItAsync(_editionsDetails, tracksDetails, listingsDetails);
+        
+        await using var fs = File.Create("TOP2000.DAT");
+        await using var bw = new BinaryWriter(fs);
+        
+        var catalogRecords = new List<byte[]>
+        {
+            CreateCatalogRecord("$CATALOG", 1, 1, 64, 1, 0, 4),
+            CreateCatalogRecord("editions", 2, 1, 2, 1, 0, editionsDataset.Count),
+            CreateCatalogRecord("listings", 3, 1, 10, 1, 0, listingsDataset.Count),
+            CreateCatalogRecord("tracks", 4, 1, 151, 1, 0, tracksDataset.Count)
+        };
+
+        // ------------------------------------------------------------
+        // PAGE 0 — FILE HEADER
+        // ------------------------------------------------------------
+        WriteEmptyPage(bw);
+
+        // ------------------------------------------------------------
+        // PAGE 1 — SYSTEM / CATALOG PAGE
+        // ------------------------------------------------------------
+        WriteEmptyPage(bw);
+
+        var currentPage = 2;
+
+        // ------------------------------------------------------------
+        // DATASET: $CATALOG  (MUST BE FIRST)
+        // ------------------------------------------------------------
+        currentPage = WriteDataset(
+            bw,
+            "$CATALOG",
+            catalogSchema,          // recordLength = 64
+            catalogRecords,
+            currentPage
+        );
+
+        // ------------------------------------------------------------
+        // DATASET: editions
+        // ------------------------------------------------------------
+        currentPage = WriteDataset(
+            bw,
+            "editions",
+            editionsSchema,
+            editionsDataset,
+            currentPage
+        );
 
         // ------------------------------------------------------------
         // DATASET: listings
         // ------------------------------------------------------------
-        var listingsSchema = new[]
-        {
-            new Field(FieldType.Int16, 2),
-            new Field(FieldType.Int16, 2),
-            new Field(FieldType.Int16, 2),
-            new Field(FieldType.Int16, 2),
-            new Field(FieldType.Int16, 2)
-        };
-
         currentPage = WriteDataset(
             bw,
             "listings",
             listingsSchema,
-            LoadListings(listings),
+            listingsDataset,
             currentPage
         );
 
         // ------------------------------------------------------------
         // DATASET: tracks
         // ------------------------------------------------------------
-        var tracksSchema = new[]
-        {
-            new Field(FieldType.Int16, 2),
-            new Field(FieldType.Text, 57),
-            new Field(FieldType.Text, 44),
-            new Field(FieldType.Int16, 2),
-            new Field(FieldType.Int16, 2),
-            new Field(FieldType.Int16, 2),
-            new Field(FieldType.Int16, 2),
-            new Field(FieldType.Int16, 2),
-            new Field(FieldType.Int16, 2),
-            new Field(FieldType.Int16, 2),
-            new Field(FieldType.Int16, 2),
-            new Field(FieldType.Int16, 2),
-            new Field(FieldType.Text, 26),
-            new Field(FieldType.Int16, 2),
-            new Field(FieldType.Int16, 2)
-        };
-
         currentPage = WriteDataset(
             bw,
             "tracks",
             tracksSchema,
-            LoadTracks(tracksDetails),
+            tracksDataset,
             currentPage
         );
 
         Console.WriteLine("TOP2000.DAT created.");
     }
+    
+    
+    static byte[] CreateCatalogRecord(
+        string datasetName,
+        short datasetNumber,
+        short headerPage,
+        short recordLength,
+        short flags,
+        short indexCount,
+        int recordCount)
+    {
+        var b = new byte[64];
+
+        WriteText(b, 0, 16, datasetName);
+        WriteInt16(b, 16, datasetNumber);
+        WriteInt16(b, 18, headerPage);
+        WriteInt16(b, 20, recordLength);
+        WriteInt16(b, 22, flags);
+        WriteInt16(b, 24, indexCount);
+        WriteInt16(b, 26, 0);
+        WriteInt32(b, 28, recordCount);
+
+        // Remaining 32 bytes are zero
+        return b;
+    }
+    
+    
+    static void WriteInt32(byte[] b, int offset, int value)
+    {
+        b[offset]     = (byte)(value & 0xFF);
+        b[offset + 1] = (byte)((value >> 8) & 0xFF);
+        b[offset + 2] = (byte)((value >> 16) & 0xFF);
+        b[offset + 3] = (byte)((value >> 24) & 0xFF);
+    }
+
     
      // ============================================================
     // DATASET WRITER
@@ -208,7 +294,15 @@ public class ExportIsamCommand(Top2000Services _top2000Services, DownloaderApp.D
 
         foreach (var f in schema)
         {
-            bw.Write((byte)(f.Type == FieldType.Int16 ? 1 : 2));
+            byte typeCode = f.Type switch
+            {
+                FieldType.Int16 => 1,
+                FieldType.Int32 => 1,
+                FieldType.Text => 2,
+                FieldType.Bytes => 3,
+                _ => 0
+            };
+            bw.Write(typeCode);
             bw.Write((byte)0);
             WriteUInt16(bw, (ushort)f.Length);
         }
@@ -259,18 +353,14 @@ public class ExportIsamCommand(Top2000Services _top2000Services, DownloaderApp.D
     }
 
 
-    private async Task<List<byte[]>> LoadEditionsAsync()
+    private List<byte[]> LoadEditions(List<EditionDbRecord> editions)
     {
-        var editions = (await _top2000Services.AllEditionsAsync(CancellationToken.None))
-            .Select(x => x.Year)
-            .ToList();
-        
         var records = new List<byte[]>(editions.Count);
 
         foreach (var edition in editions)
         {
             // VB INTEGER = Int16
-            short value = (short)edition;
+            var value = (short)edition.Year;
 
             var record = new byte[2];
             record[0] = (byte)(value & 0xFF);
@@ -349,7 +439,7 @@ public class ExportIsamCommand(Top2000Services _top2000Services, DownloaderApp.D
     // ============================================================
     // STRUCTS
     // ============================================================
-    enum FieldType { Int16, Text }
+    enum FieldType { Int16, Int32, Text, Bytes }
 
     record Field(FieldType Type, int Length);
 }

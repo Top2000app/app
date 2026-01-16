@@ -13,7 +13,7 @@ public static class TrackListView
             .BorderColor(Color.Grey);
 
         table.AddColumn(new TableColumn("[bold]#[/]"));
-        table.AddColumn(new TableColumn("[bold]Δ[/]"));
+        table.AddColumn(new TableColumn($"[bold]{UnicodeSymbols.Delta}[/]"));
         table.AddColumn("[bold]Title[/]");
         table.AddColumn("[bold]Artist[/]");
 
@@ -37,12 +37,12 @@ public static class TrackListView
     {
         return listing.DeltaType switch
         {
-            TrackListingDeltaType.NoChange => "[dim]=[/]",
-            TrackListingDeltaType.Increased => $"[green]↑{listing.Delta}[/]",
-            TrackListingDeltaType.Decreased => $"[red]↓{Math.Abs(listing.Delta)}[/]",
-            TrackListingDeltaType.New => "[yellow]⚑[/]",
-            TrackListingDeltaType.Recurring => "[yellow]↻[/]",
-            _ => "[dim]-[/]"
+            TrackListingDeltaType.NoChange => $"[dim]{UnicodeSymbols.Equal}[/]",
+            TrackListingDeltaType.Increased => $"[green]{UnicodeSymbols.Up}{listing.Delta}[/]",
+            TrackListingDeltaType.Decreased => $"[red]{UnicodeSymbols.Down}{Math.Abs(listing.Delta)}[/]",
+            TrackListingDeltaType.New => $"[yellow]{UnicodeSymbols.New}[/]",
+            TrackListingDeltaType.Recurring => $"[yellow]{UnicodeSymbols.Recurring}[/]",
+            _ => $"[dim]{UnicodeSymbols.Dash}[/]"
         };
     }
 }

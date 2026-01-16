@@ -1,9 +1,6 @@
 ﻿using System.Collections.Immutable;
-using System.Data;
-using System.Net.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Top2000.Apps.CLI.Database;
-using Top2000.Features;
 
 namespace DownloaderApp;
 
@@ -52,7 +49,7 @@ public sealed class Database
 
         foreach (var listing in listings)
         {
-            if (previous != null && previous.Position.HasValue)
+            if (previous?.Position is not null)
             {
                 listing.Offset = listing.Position - previous.Position;
             }

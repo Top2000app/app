@@ -2,12 +2,11 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Top2000.Apps.CLI.Database;
 using Top2000.Features;
-using Top2000.Features.TrackInformation;
 using TrackDetails = DownloaderApp.TrackDetails;
 
 namespace Top2000.Apps.CLI.Commands.Export.Isam;
 
-public class ExportIsamCommand(Top2000Services _top2000Services, Top2000DbContext top2000DbContext) : CommandBase("isam", "Export the DOS ISAM database for the Top2000")
+public class ExportIsamCommand(Top2000Services top2000Services, Top2000DbContext top2000DbContext) : CommandBase("isam", "Export the DOS ISAM database for the Top2000")
 {
     protected override List<Symbol> Symbols =>
     [
@@ -23,7 +22,7 @@ public class ExportIsamCommand(Top2000Services _top2000Services, Top2000DbContex
         
         var listings = new List<string>();
         var tracks = new List<string>();
-        var editions = (await _top2000Services.AllEditionsAsync(CancellationToken.None))
+        var editions = (await top2000Services.AllEditionsAsync(CancellationToken.None))
             .Select(x => $"{x.Year}")
             .ToList();
         
@@ -53,10 +52,16 @@ public class ExportIsamCommand(Top2000Services _top2000Services, Top2000DbContex
         listings.Insert(0, "Edition,Position,TrackId,Offset,OffsetType");
         
         var utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+
+        var outputPath = result.GetValue<string>("--output") ?? "";
+        if (!Directory.Exists(outputPath))
+        {
+            Directory.CreateDirectory(outputPath);
+        }
         
-        await File.WriteAllLinesAsync("editions.csv", editions, utf8WithoutBom, token);
-        await File.WriteAllLinesAsync("tracks.csv", tracks, utf8WithoutBom, token);
-        await File.WriteAllLinesAsync("listings.csv", listings, utf8WithoutBom, token);
+        await File.WriteAllLinesAsync(Path.Combine(outputPath, "editions.csv"), editions, utf8WithoutBom, token);
+        await File.WriteAllLinesAsync(Path.Combine(outputPath, "tracks.csv"), tracks, utf8WithoutBom, token);
+        await File.WriteAllLinesAsync(Path.Combine(outputPath, "listings.csv"), listings, utf8WithoutBom, token);
     }
     
     private Task<List<int>> AllTrackIdsAsync()
@@ -69,14 +74,14 @@ public class ExportIsamCommand(Top2000Services _top2000Services, Top2000DbContex
     
     private async Task<TrackDetails> TrackDetailsAsync(int trackId)
     {
-        var trackDetails = await _top2000Services.TrackDetailsAsync(trackId);
+        var trackDetails = await top2000Services.TrackDetailsAsync(trackId);
 
         return new TrackDetails
         {
             Title = trackDetails.Title,
             Artist = trackDetails.Artist,
             RecordedYear = trackDetails.RecordedYear,
-            Listings = new SortedSet<ListingInformation>(trackDetails.Listings)
+            Listings = trackDetails.Listings
         };
     }
 }

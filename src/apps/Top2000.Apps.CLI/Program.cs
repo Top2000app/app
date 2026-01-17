@@ -46,6 +46,7 @@ host.Services
 host.Services
     .AddCommand<StatsCommand>()
     .AddCommand<StatsCommand, StatsListingCommand>()
+    .AddCommand<StatsCommand, StatsTrackCommand>()
     ;
 
 host.Services.AddCommand<InfoCommand>()

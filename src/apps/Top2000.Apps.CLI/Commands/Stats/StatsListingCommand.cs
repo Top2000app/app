@@ -130,7 +130,7 @@ public class StatsListingCommand(Top2000Services top2000Services) : CommandBase(
             }
             var newPanel = new Panel(newContent)
             {
-                Header = new PanelHeader($"{UnicodeSymbols.New} [bold yellow]New Entries[/]"),
+                Header = new PanelHeader($"[bold yellow]New Entries[/]"),
                 Border = BoxBorder.Rounded,
                 BorderStyle = new Style(Color.Yellow)
             };
@@ -153,10 +153,9 @@ public class StatsListingCommand(Top2000Services top2000Services) : CommandBase(
                 BorderStyle = new Style(Color.Magenta)
             };
 
-            // Unchanged tracks
             var unchangedPanel = new Panel(new Markup($"[bold white] {countOfUnchanged}[/] tracks unchanged"))
             {
-                Header = new PanelHeader(" [bold white]No Change[/]", Justify.Center),
+                Header = new PanelHeader(" [bold white]No Change[/]"),
                 Border = BoxBorder.Rounded,
                 BorderStyle = new Style(Color.Grey)
             };

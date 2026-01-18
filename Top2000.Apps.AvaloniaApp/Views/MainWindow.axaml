@@ -1,13 +1,16 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Top2000.Apps.AvaloniaApp.ViewModels"
+        xmlns:cnt="using:Top2000.Apps.AvaloniaApp.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Top2000.Apps.AvaloniaApp.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="{Binding SelectedEdition.Year}">
+        
+        Loaded="OnLoaded"
+        Title="{Binding Title}">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -16,51 +19,52 @@
     </Design.DataContext>
 
     <DockPanel>
-        <Button Command="{Binding LoadedAsync}" Content="Hello" DockPanel.Dock="Right" />
-        <ListBox DockPanel.Dock="Left"
-                 ItemsSource="{Binding Listings}">
-            <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Margin="0,0,0,5" RowSpacing="0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="80" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <StackPanel Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Spacing="0">
-
-                                       <!-- Style="{StaticResource MediumLabelStyle}"  -->
-                                <TextBlock Text="{Binding PositionString}" 
-                                           Margin="20,0,0,0" />
-
-                                <Grid Margin="20,0,0,0">
-                                    <TextBlock Margin="13,0,0,0" 
-                                          
-                                           FontSize="{Binding DeltaFontSize}"
-                                           Text="{Binding Delta}"
-                                           Foreground="{Binding DeltaSymbolColour}" />
-
-                                    <!-- Style="{StaticResource SmallLabelStyle}"-->
-                                    <TextBlock 
-                                               FontSize="{Binding DeltaFontSize}"
-                                               FontFamily="{StaticResource MaterialIcons}"
-                                               Text="{Binding DeltaSymbol}"
-                                               
-                                               Foreground="{Binding DeltaSymbolColour}" />
-                                </Grid>
-                            </StackPanel>
-                            <!--Style="{StaticResource MediumLabelStyle}"
-                            Style="{StaticResource SmallLabelStyle}" -->
-                            <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Title}"    Margin="0,0,20,0" />
-                            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Artist}"   Margin="0,0,20,0" Opacity=".5" />
+        
+        
+        <ListBox DockPanel.Dock="Left" Width="500" HorizontalAlignment="Left"
+                 ItemsSource="{Binding Listings}"
+                 SelectedItem="{Binding SelectedItem}"
+        >
+            <ListBox.DataTemplates>
+                <vm:TrackListingViewModelTemplateSelector>
+                    <DataTemplate x:Key="group" DataType="{x:Type vm:TrackListingViewModelGroup}">
+                        <TextBlock FontSize="20" Text="{Binding GroupName}"
+                                   Foreground="{StaticResource Top2000Colour}"
+                        />
+                    </DataTemplate>
+            
+                    <DataTemplate x:Key="item" DataType="{x:Type vm:TrackListingViewModel}">
+                        <Grid>
+                            <TextBlock>
+                                <Run Text="{Binding PositionString}"
+                                     FontSize="20" />
+                                <LineBreak />
+                                <Run Text="{Binding Delta}"
+                                     FontSize="{Binding DeltaFontSize}"
+                                     Foreground="{Binding DeltaSymbolColour}" />
+                                <Run Text="{Binding DeltaSymbol}"
+                                     FontSize="{Binding DeltaFontSize}"
+                                     FontFamily="{StaticResource MaterialIcons}"
+                                     Foreground="{Binding DeltaSymbolColour}" />
+                            </TextBlock>
+                            <TextBlock Margin="60,0,20,0">
+                                <Run Text="{Binding Title}"
+                                     FontSize="20" />
+                                <LineBreak />
+                                <Run Text="{Binding Artist}"
+                                     FontSize="15"
+                                     Foreground="Gray" />
+                            </TextBlock>
                         </Grid>
                     </DataTemplate>
-            </ListBox.ItemTemplate>
+                    
+                </vm:TrackListingViewModelTemplateSelector>
+            </ListBox.DataTemplates>
         </ListBox>
+        
+        <cnt:TrackDetailsControl Value="{Binding SelectedListing}" />
+        
     </DockPanel>
     
+        
 </Window>

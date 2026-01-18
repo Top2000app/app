@@ -94,7 +94,7 @@
                                 </Grid>
                             </StackLayout>
 
-                            <Label Grid.Column="1" Grid.Row="0" Text="{Binding Title}"   Style="{StaticResource MediumLabelStyle}" Margin="0,0,20,0" />
+                            <Label Grid.Column="1" Grid.Row="0" Text="{Binding Title}"  Style="{StaticResource MediumLabelStyle}" Margin="0,0,20,0" />
                             <Label Grid.Column="1" Grid.Row="1" Text="{Binding Artist}"  Style="{StaticResource SmallLabelStyle}"  Margin="0,0,20,0" Opacity=".5" />
                         </Grid>
                     </DataTemplate>

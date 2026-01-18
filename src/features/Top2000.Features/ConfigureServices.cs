@@ -18,7 +18,7 @@ public static class ConfigureServices
                 .AddFeatureImplementors(services);
             
             return services
-                .AddTransient<Top2000Services>()
+                .AddTransient<ITop2000Services, Top2000Services>()
                 .AddSingleton<ISort, SortByTitle>()
                 .AddSingleton<ISort, SortByArtist>()
                 .AddSingleton<ISort, SortByRecordedYear>()

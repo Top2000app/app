@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Top2000.Apps.AvaloniaApp.App"
              xmlns:local="using:Top2000.Apps.AvaloniaApp"
+             xmlns:vm="using:Top2000.Apps.AvaloniaApp.ViewModels"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
@@ -11,10 +12,15 @@
   
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="/Views/TrackDetailsControl.axaml"/>
     </Application.Styles>
              
     <Application.Resources>
-        <FontFamily x:Key="MaterialIcons">Assets/Fonts/MaterialIcons.ttf#Material Icons</FontFamily>
+        <ResourceDictionary>
+            <FontFamily x:Key="MaterialIcons">Assets/Fonts/MaterialIcons.ttf#Material Icons</FontFamily>
+            <Color x:Key="Top2000Colour">#DA161C</Color>
+        </ResourceDictionary>
+        
     </Application.Resources>
 
 </Application>

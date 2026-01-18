@@ -6,7 +6,11 @@ using Top2000.Features.TrackInformation;
 
 namespace Top2000.Features;
 
-public class Top2000Services : IListings, ITrackInformation, IEditions, ISearch, IDataInitialiser
+public interface ITop2000Services : IListings, ITrackInformation, IEditions, ISearch, IDataInitialiser
+{
+}
+
+public class Top2000Services : ITop2000Services
 {
     private readonly IListings _listings;
     private readonly ITrackInformation _trackInformation;

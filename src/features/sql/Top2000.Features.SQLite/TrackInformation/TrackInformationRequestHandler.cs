@@ -64,7 +64,7 @@ public class TrackInformationFeature : ITrackInformation
         {
             if (previous?.Position != null && listing.Position.HasValue)
             {
-                listing.Offset = listing.Position - previous.Position;
+                listing.Delta = listing.Position - previous.Position;
             }
 
             listing.Status = statusStrategy.Determine(listing);

@@ -12,7 +12,7 @@ public class ListingInformation
         ? DateTime.SpecifyKind(utcDateTime, DateTimeKind.Utc).ToLocalTime()
         : null;
 
-    public int? Offset { get; set; }
+    public int? Delta { get; set; }
 
     public ListingStatus Status { get; set; }
 

@@ -33,7 +33,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     public bool isLoaded;
 
-    [ObservableProperty] public TrackDetails selectedListing = new TrackDetails
+    [ObservableProperty] 
+    public TrackDetailsViewModel selectedListing = new TrackDetailsViewModel
     {
         Title = "",
         Artist = "",
@@ -51,7 +52,24 @@ public partial class MainWindowViewModel : ViewModelBase
             if (value is TrackListingViewModel trackListing)
             {
                 var details = await _top2000Services.TrackDetailsAsync(trackListing.TrackId);
-                SelectedListing = details;
+                SelectedListing = new TrackDetailsViewModel
+                {
+                    Artist =  trackListing.Artist,
+                    Title = trackListing.Title,
+                    RecordedYear = details.RecordedYear,
+                    Listings = details.Listings
+                        .Select(x => new TrackDetailsListingViewModel
+                        {
+                            Edition = x.Edition.ToString(),
+                            Delta = x.Delta?.ToString() ?? "",
+                            DeltaFontSize = TrackDetailsListingViewModel.ConvertDeltaFontSize(x),
+                            DeltaSymbol = TrackDetailsListingViewModel.ConvertDeltaToSymbol(x),
+                            DeltaSymbolColour = new SolidColorBrush(TrackDetailsListingViewModel.ConvertDeltaSymbolColour(x)),
+                            Position = x.Position,
+                            Status = x.Status
+                        })
+                        .ToList()
+                };
                 // Title = $"{trackListing.Title} - {trackListing.Artist}";
             }
 
@@ -66,9 +84,9 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         var editions = await _top2000Services.AllEditionsAsync();
         SelectedEdition = editions.First();
-        Title = "TOP2000 - " + this.SelectedEdition.Year;
+        Title = "TOP2000 - " + SelectedEdition.Year;
 
-        await this.LoadAllListingsAsync();
+        await LoadAllListingsAsync();
         
         IsLoaded = true;
     }
@@ -103,7 +121,7 @@ public partial class MainWindowViewModel : ViewModelBase
         Listings = items;
     }
 
-    private ITrackListingViewModel TransformTrackListingViewModel(TrackListing x)
+    private static ITrackListingViewModel TransformTrackListingViewModel(TrackListing x)
     {
         return new TrackListingViewModel
         {

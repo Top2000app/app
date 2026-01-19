@@ -39,7 +39,7 @@ public class ExportIsamCommand(Top2000Services top2000Services, Top2000DbContext
                     Edition = x.Edition,
                     Position = x.Position!.Value,
                     TrackId = trackId,
-                    Offset = ListingDbRecord.ReadOffSet(x.Offset),
+                    Offset = ListingDbRecord.ReadOffSet(x.Delta),
                     OffsetType = ListingDbRecord.ToChr(x.Status)
                 }.ToCsvString())
                 .ToList();

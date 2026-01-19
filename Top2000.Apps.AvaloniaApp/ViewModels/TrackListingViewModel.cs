@@ -12,7 +12,7 @@ namespace Top2000.Apps.AvaloniaApp.ViewModels;
 public class TrackListingViewModelTemplateSelector : IDataTemplate
 {
     [Content]
-    public Dictionary<string, IDataTemplate> Templates {get;} = new Dictionary<string, IDataTemplate>();
+    public Dictionary<string, IDataTemplate> Templates {get;} = new();
 
     public Control? Build(object? param)
     {

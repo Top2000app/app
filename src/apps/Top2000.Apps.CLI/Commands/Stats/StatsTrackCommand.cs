@@ -150,8 +150,8 @@ public class StatsTrackCommand(Top2000Services top2000Services) : CommandBase("t
             var statusText = listing.Status switch
             {
                 ListingStatus.New => $"[yellow]{UnicodeSymbols.New}[/]",
-                ListingStatus.Decreased => $"[red]{UnicodeSymbols.Down}{Math.Abs(listing.Offset!.Value)}[/]",
-                ListingStatus.Increased => $"[green]{UnicodeSymbols.Up}{Math.Abs(listing.Offset!.Value)}[/]",
+                ListingStatus.Decreased => $"[red]{UnicodeSymbols.Down}{Math.Abs(listing.Delta!.Value)}[/]",
+                ListingStatus.Increased => $"[green]{UnicodeSymbols.Up}{Math.Abs(listing.Delta!.Value)}[/]",
                 ListingStatus.Back => $"[yellow]{UnicodeSymbols.Recurring}[/]",
                 ListingStatus.Unchanged => $"[grey]{UnicodeSymbols.Equal}[/]",
                 _ => $"[dim]-[/]",

@@ -106,7 +106,7 @@ public class MockupTop2000Services : ITop2000Services
                     Position = 4,
                     PlayUtcDateAndTime = new DateTime(2025, 12, 25, 10, 0, 0),
                     Status = ListingStatus.Decreased,
-                    Offset = -1
+                    Delta = -1
                 },
                 new ListingInformation
                 {
@@ -114,7 +114,7 @@ public class MockupTop2000Services : ITop2000Services
                     Position = 1,
                     PlayUtcDateAndTime = new DateTime(2025, 12, 25, 10, 0, 0),
                     Status = ListingStatus.Increased,
-                    Offset = 2053
+                    Delta = 2053
                 },
                 new ListingInformation
                 {

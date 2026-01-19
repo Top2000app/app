@@ -1,0 +1,146 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Top2000.Apps.AvaloniaApp.ViewModels"
+             mc:Ignorable="d" x:DataType="vm:TrackDetailsViewModel"
+             d:DesignHeight="400" d:DesignWidth="600"
+             x:Class="Top2000.Apps.AvaloniaApp.Views.TrackDetailsView">
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:DesignTimeTrackDetailsViewModel />
+    </Design.DataContext>
+    
+    <Grid RowDefinitions="Auto,80,Auto,*">
+
+        <TextBlock Grid.Row="0">
+            <Run Text="{Binding Title}"
+                 FontSize="38" />
+            <LineBreak />
+            <Run Text="{Binding Artist}"
+                   FontSize="30" />
+            <Run Text="(" FontSize="30" />
+            <Run Text="{Binding RecordedYear}" 
+                 FontSize="30" />
+            <Run Text=")" FontSize="30" />
+            
+        </TextBlock>
+    
+        <ScrollViewer Grid.Row="1" 
+                      HorizontalScrollBarVisibility="Auto" 
+                      VerticalScrollBarVisibility="Disabled" >
+            
+            <ItemsControl ItemsSource="{Binding Listings}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="vm:TrackDetailsListingViewModel" >
+                        <Grid Margin="0,0,20,0" RowDefinitions="20,22,20">
+                            <TextBlock Grid.Row="0"
+                                Text="{Binding Edition }"  
+                                FontSize="20" />
+                            <TextBlock Grid.Row="1" VerticalAlignment="Center">
+                                <Run Text="{Binding DeltaSymbol}"
+                                     FontFamily="{StaticResource MaterialIcons}"
+                                     FontSize="{Binding DeltaFontSize}" 
+                                     Foreground="{Binding DeltaSymbolColour}"
+                                     />
+                                <Run Text="{Binding Delta}"
+                                     FontSize="{Binding DeltaFontSize}" 
+                                     Foreground="{Binding DeltaSymbolColour}" />
+                            </TextBlock>
+                            <TextBlock Grid.Row="2" 
+                                       Text="{Binding PositionString}"
+                                       FontSize="20" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                
+            </ItemsControl>
+            
+        </ScrollViewer>
+        
+        <Grid Grid.Row="2" RowDefinitions="Auto,100" ColumnDefinitions="100,20 100" >
+           <Arc Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" 
+                Stroke="LightGray"
+                StartAngle="0" SweepAngle="360" StrokeThickness="10" ></Arc>
+
+           <Arc Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch"
+                Stroke="{StaticResource Top2000Colour}"
+                StartAngle="270"  SweepAngle="{Binding SinceRelease}" StrokeThickness="10" ></Arc>
+           
+            <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Run Text="{Binding Appearances}" FontSize="20" />
+                <Run Text="/" FontSize="20" />
+                <Run Text="{Binding AppearancesPossible}" FontSize="20" />
+            </TextBlock>
+            
+            <Arc Grid.Row="1" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                 Stroke="LightGray"
+                 StartAngle="0" SweepAngle="360" StrokeThickness="10" ></Arc>
+    
+            <Arc Grid.Row="1" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                 Stroke="{StaticResource Top2000Colour}"
+                 StartAngle="270"  SweepAngle="{Binding InTop2000}" StrokeThickness="10" ></Arc>
+            
+            <TextBlock Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Run Text="{Binding Appearances}" FontSize="20" />
+                <Run Text="/" FontSize="20" />
+                <Run Text="{Binding Listings.Count}" FontSize="20" />
+            </TextBlock>
+        </Grid> 
+        
+        <ItemsControl Grid.Row="3" ItemsSource="{Binding Listings}" Margin="-20,0,0,0">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel  />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+                
+            <ItemsControl.Items>
+                <TextBlock Margin="20,20,0,0">
+                    <Run Text="%Record High%" />
+                    <LineBreak />
+                    <Run Text="{Binding Highest.Position}" FontSize="20" />
+                    <Run Text="(" FontSize="11" />
+                    <Run Text="{Binding Highest.Edition}" FontSize="11" />
+                    <Run Text=")" FontSize="11" />
+                </TextBlock>
+             
+                <TextBlock Margin="20,20,0,0">
+                    <Run Text="%Record Low%" />
+                    <LineBreak />
+                    <Run Text="{Binding Lowest.Position}" FontSize="20" />
+                    <Run Text="(" FontSize="11" />
+                    <Run Text="{Binding Lowest.Edition}" FontSize="11" />
+                    <Run Text=")" FontSize="11" />
+                </TextBlock>
+                
+                <TextBlock Margin="20,20,0,0">
+                    <Run Text="%First Position%" />
+                    <LineBreak />
+                    <Run Text="{Binding First.Position}" FontSize="20" />
+                    <Run Text="(" FontSize="11" />
+                    <Run Text="{Binding First.Edition}" FontSize="11" />
+                    <Run Text=")" FontSize="11" />
+                </TextBlock>
+                
+                <TextBlock Margin="20,20,0,0">
+                    <Run Text="%Latest Position%" />
+                    <LineBreak />
+                    <Run Text="{Binding Latest.Position}" FontSize="20" />
+                    <Run Text="(" FontSize="11" />
+                    <Run Text="{Binding Latest.Edition}" FontSize="11" />
+                    <Run Text=")" FontSize="11" />
+                </TextBlock>
+                
+            </ItemsControl.Items>
+            
+        </ItemsControl>
+    </Grid>
+</UserControl>

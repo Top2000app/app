@@ -71,7 +71,7 @@
                                                FontFamily="{OnPlatform Android=MaterialIcons}"
                                                HorizontalOptions="Start" />
 
-                                    <Label Text="{Binding Offset}"
+                                    <Label Text="{Binding Delta}"
                                                Style="{StaticResource SmallLabelStyle}"
                                                Opacity="0.5" />
                                 </StackLayout>

@@ -39,12 +39,12 @@
                                 <Run Text="{Binding PositionString}"
                                      FontSize="20" />
                                 <LineBreak />
-                                <Run Text="{Binding Delta}"
-                                     FontSize="{Binding DeltaFontSize}"
-                                     Foreground="{Binding DeltaSymbolColour}" />
                                 <Run Text="{Binding DeltaSymbol}"
                                      FontSize="{Binding DeltaFontSize}"
                                      FontFamily="{StaticResource MaterialIcons}"
+                                     Foreground="{Binding DeltaSymbolColour}" />
+                                <Run Text="{Binding Delta}"
+                                     FontSize="{Binding DeltaFontSize}"
                                      Foreground="{Binding DeltaSymbolColour}" />
                             </TextBlock>
                             <TextBlock Margin="60,0,20,0">
@@ -62,7 +62,9 @@
             </ListBox.DataTemplates>
         </ListBox>
         
-        <cnt:TrackDetailsControl Value="{Binding SelectedListing}" />
+        <!--<cnt:TrackDetailsControl Value="{Binding SelectedListing}" /> -->
+        <cnt:TrackDetailsView DataContext="{Binding SelectedListing}" />
+
         
     </DockPanel>
     

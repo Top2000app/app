@@ -34,22 +34,22 @@ public class ListingStatusStrategy
             return ListingStatus.New;
         }
 
-        if (!current.Offset.HasValue)
+        if (!current.Delta.HasValue)
         {
             return ListingStatus.Back;
         }
 
-        if (current.Offset == 0)
+        if (current.Delta == 0)
         {
             return ListingStatus.Unchanged;
         }
 
-        if (current.Offset < 0)
+        if (current.Delta < 0)
         {
             return ListingStatus.Increased;
         }
 
-        if (current.Offset > 0)
+        if (current.Delta > 0)
         {
             return ListingStatus.Decreased;
         }

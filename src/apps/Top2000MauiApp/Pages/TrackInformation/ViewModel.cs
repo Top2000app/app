@@ -89,7 +89,7 @@ public partial class ViewModel : ObservableObject
                 Edition = x.Edition,
                 StatusSymbol = ToStatusSymbol(x.Status),
                 TextColour = Convert(x.Status),
-                Offset = ConvertToOffset(x.Offset),
+                Offset = ConvertToOffset(x.Delta),
                 Position = ConvertPosition(x.Position),
             })
             .ToList();

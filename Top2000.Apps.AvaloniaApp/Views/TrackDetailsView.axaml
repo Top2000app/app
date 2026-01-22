@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Top2000.Apps.AvaloniaApp.ViewModels"
              mc:Ignorable="d" x:DataType="vm:TrackDetailsViewModel"
-             d:DesignHeight="400" d:DesignWidth="600"
+             d:DesignHeight="600" d:DesignWidth="600"
              x:Class="Top2000.Apps.AvaloniaApp.Views.TrackDetailsView">
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -12,7 +12,7 @@
         <vm:DesignTimeTrackDetailsViewModel />
     </Design.DataContext>
     
-    <Grid RowDefinitions="Auto,80,Auto,*">
+    <Grid RowDefinitions="Auto,120,Auto,*">
 
         <TextBlock Grid.Row="0">
             <Run Text="{Binding Title}"
@@ -27,18 +27,17 @@
             
         </TextBlock>
     
-        <ScrollViewer Grid.Row="1" 
-                      HorizontalScrollBarVisibility="Auto" 
-                      VerticalScrollBarVisibility="Disabled" >
-            
-            <ItemsControl ItemsSource="{Binding Listings}">
-                <ItemsControl.ItemsPanel>
+            <ListBox Grid.Row="1" ItemsSource="{Binding Listings}" 
+                     Margin="0,20"
+                     SelectedItem="{Binding SelectedListing, Mode=TwoWay}"
+                     >
+                <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal"/>
                     </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
+                </ListBox.ItemsPanel>
                 
-                <ItemsControl.ItemTemplate>
+                <ListBox.ItemTemplate>
                     <DataTemplate DataType="vm:TrackDetailsListingViewModel" >
                         <Grid Margin="0,0,20,0" RowDefinitions="20,22,20">
                             <TextBlock Grid.Row="0"
@@ -59,12 +58,10 @@
                                        FontSize="20" />
                         </Grid>
                     </DataTemplate>
-                </ItemsControl.ItemTemplate>
+                </ListBox.ItemTemplate>
                 
-            </ItemsControl>
+            </ListBox>
             
-        </ScrollViewer>
-        
         <Grid Grid.Row="2" RowDefinitions="Auto,100" ColumnDefinitions="100,20 100" >
            <Arc Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" 
                 Stroke="LightGray"
@@ -139,6 +136,25 @@
                     <Run Text=")" FontSize="11" />
                 </TextBlock>
                 
+                <Border Width="180" Height="150" BorderBrush="Gray" BorderThickness="0"
+                        BoxShadow="0 4 8 rgba(0,0,0,0.2)"
+                        CornerRadius="20" 
+                        Background="#f2f2f2">
+
+        
+                    <Grid Margin="10" RowDefinitions="Auto,*,Auto">
+                        <TextBlock Grid.Row="0" FontWeight="Bold" Text="Edition 2025"/>
+                        <Line Grid.Row="1"/>
+                        <TextBlock Grid.Row="1" Text="232" FontSize="50" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                
+                        <TextBlock Grid.Row="2" Foreground="Gray">
+                            <Run Text="Vrijdag 27 dec" />
+                            <LineBreak/>
+                            <Run Text="20:00 - 21:00" />
+                        </TextBlock>
+                    </Grid>
+                </Border>
             </ItemsControl.Items>
             
         </ItemsControl>

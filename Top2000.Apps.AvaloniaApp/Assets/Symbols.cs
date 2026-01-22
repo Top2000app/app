@@ -16,6 +16,8 @@ public static class Symbols
 
     public static string Menu => "\xe5d2";
 
+    public static string ListingMenu => "\xe242";
+
     public static string FilterList => "\xe152";
 
     public static string Clock => "\xe192";
@@ -24,9 +26,9 @@ public static class Symbols
 
     public static string Flag => "\xe153";
 
-    public static string Up => "\xe316";
+    public static string Up => "\xe5d8";
 
-    public static string Down => "\xe313";
+    public static string Down => "\xe5db";
 
     public static string BackInList => "\xe042";
 
@@ -35,8 +37,6 @@ public static class Symbols
     public static string Same => "\xe25d";
 
     public static string Video => "\xe63a";
-
-    public static string New => "\xe05e";
-
+    
     public static string Options => "\xe429";
 }

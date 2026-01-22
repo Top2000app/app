@@ -1,13 +1,81 @@
 ﻿using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Top2000.Apps.AvaloniaApp.Assets;
 using Top2000.Features;
 using Top2000.Features.Editions;
 using Top2000.Features.Listings;
-using Top2000.Features.TrackInformation;
-
 namespace Top2000.Apps.AvaloniaApp.ViewModels;
 
-public partial class MainWindowViewModel : ViewModelBase
+public partial class TrackListingDeltaFilterViewModel : ViewModelBase
+{
+    public required TrackListingDeltaType FilterBy { get; init; }
+
+    public required string DisplayIcon { get; init; }
+    
+    public required SolidColorBrush DisplayColour { get; init; }
+
+    public required ICanFilterListings Parent { get; init; }
+    
+    public int Count { get; set; }
+    
+    [ObservableProperty]
+    private bool _isChecked;
+
+    [ObservableProperty] 
+    private SolidColorBrush _displayColourBrush = new (Colors.White);
+
+    partial void OnIsCheckedChanged(bool value)
+    {
+        Parent.FilterListingList();
+
+        DisplayColourBrush = value
+            ? new SolidColorBrush(Colors.White)
+            : DisplayColour;
+    }
+}
+
+public static class SymbolsExtensions
+{
+    extension(TrackListingDeltaType type)
+    {
+        public string ToSymbol()
+        {
+            return type switch
+            {
+                TrackListingDeltaType.NoChange => Symbols.Same,
+                TrackListingDeltaType.Increased => Symbols.Up,
+                TrackListingDeltaType.Decreased => Symbols.Down,
+                TrackListingDeltaType.New => Symbols.Flag,
+                TrackListingDeltaType.Recurring => Symbols.BackInList,
+                _ => Symbols.Same
+            };
+        }
+
+        public SolidColorBrush ToBrush()
+        {
+            var colour = type switch
+            {
+
+                TrackListingDeltaType.NoChange => Colours.GreyColour,
+                TrackListingDeltaType.Increased => Colours.GreenColour,
+                TrackListingDeltaType.Decreased => Colours.RedColour,
+                TrackListingDeltaType.New => Colours.YellowColour,
+                TrackListingDeltaType.Recurring => Colours.YellowColour,
+                _ => Colours.GreyColour
+            };
+            
+            return new SolidColorBrush(colour);
+        }
+    }
+}
+
+public interface ICanFilterListings
+{
+    void FilterListingList();
+}
+
+public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
 {
     private readonly ITop2000Services _top2000Services;
 
@@ -21,29 +89,35 @@ public partial class MainWindowViewModel : ViewModelBase
         _top2000Services = services;
     }
 
+    [ObservableProperty] private List<TrackListingDeltaFilterViewModel> _filters = [];
+
     [ObservableProperty] 
-    public List<ITrackListingViewModel> listings = [];
+    private List<ITrackListingViewModel> listings = [];
     
     [ObservableProperty]
-    public Edition? selectedEdition;
+    private Edition selectedEdition;
   
     [ObservableProperty]
-    public string title = "Top2000";
+    private string title = "Top2000";
 
     [ObservableProperty]
-    public bool isLoaded;
+    private bool isLoaded;
 
     [ObservableProperty] 
-    public TrackDetailsViewModel selectedListing = new TrackDetailsViewModel
-    {
-        Title = "",
-        Artist = "",
-        RecordedYear = 0,
-        Listings = []
-    };
+    private TrackDetailsViewModel? selectedListing;
     
     [ObservableProperty]
     public ITrackListingViewModel? selectedItem;
+    
+    public async Task ChangeSelectedEditionAsync(int edition, int? position)
+    {
+        if (SelectedEdition.Year != edition)
+        {
+            SelectedEdition = Editions.First(x => x.Year == edition);
+            Title = "TOP2000 - " + SelectedEdition.Year;
+            await LoadAllListingsAsync();
+        }
+    }
     
     async partial void OnSelectedItemChanged(ITrackListingViewModel? value)
     {
@@ -52,25 +126,29 @@ public partial class MainWindowViewModel : ViewModelBase
             if (value is TrackListingViewModel trackListing)
             {
                 var details = await _top2000Services.TrackDetailsAsync(trackListing.TrackId);
+                var trackListings = details.Listings
+                    .Select(x => new TrackDetailsListingViewModel
+                    {
+                        Edition = x.Edition,
+                        Delta = x.Delta?.ToString() ?? "",
+                        DeltaFontSize = TrackDetailsListingViewModel.ConvertDeltaFontSize(x),
+                        DeltaSymbol = TrackDetailsListingViewModel.ConvertDeltaToSymbol(x),
+                        DeltaSymbolColour =
+                            new SolidColorBrush(TrackDetailsListingViewModel.ConvertDeltaSymbolColour(x)),
+                        Position = x.Position,
+                        Status = x.Status
+                    })
+                    .ToList();
+                
                 SelectedListing = new TrackDetailsViewModel
                 {
+                    ParentMainWindowViewModel = this,
                     Artist =  trackListing.Artist,
                     Title = trackListing.Title,
                     RecordedYear = details.RecordedYear,
-                    Listings = details.Listings
-                        .Select(x => new TrackDetailsListingViewModel
-                        {
-                            Edition = x.Edition.ToString(),
-                            Delta = x.Delta?.ToString() ?? "",
-                            DeltaFontSize = TrackDetailsListingViewModel.ConvertDeltaFontSize(x),
-                            DeltaSymbol = TrackDetailsListingViewModel.ConvertDeltaToSymbol(x),
-                            DeltaSymbolColour = new SolidColorBrush(TrackDetailsListingViewModel.ConvertDeltaSymbolColour(x)),
-                            Position = x.Position,
-                            Status = x.Status
-                        })
-                        .ToList()
+                    Listings = trackListings,
+                    SelectedListing = trackListings.First(x => x.Edition == SelectedEdition.Year),
                 };
-                // Title = $"{trackListing.Title} - {trackListing.Artist}";
             }
 
             if (value is TrackListingViewModelGroup group)
@@ -82,45 +160,131 @@ public partial class MainWindowViewModel : ViewModelBase
     
     public async Task InitialiseViewModelAsync()
     {
-        var editions = await _top2000Services.AllEditionsAsync();
-        SelectedEdition = editions.First();
+        Editions = await _top2000Services.AllEditionsAsync();
+        SelectedEdition = Editions.First();
         Title = "TOP2000 - " + SelectedEdition.Year;
 
         await LoadAllListingsAsync();
         
         IsLoaded = true;
     }
-   
 
-    private async Task LoadAllListingsAsync()
+    private SortedSet<Edition> Editions { get; set; }
+
+    [RelayCommand]
+    public void ShowByPosition()
     {
-        if (this.SelectedEdition is null)
-        {
-            return;
-        }
-
-        var items = new List<ITrackListingViewModel>();
-        
-        var result = (await _top2000Services.AllListingsOfEditionAsync(this.SelectedEdition.Year))
-            .GroupByPosition();
-
-        foreach (var group in result)
-        {
-            items.Add(new TrackListingViewModelGroup
-            {
-                GroupName =  group.Key,
-            });
-
-            var grouped = group
-                .Select(TransformTrackListingViewModel)
-                .ToList();
-            
-            items.AddRange(grouped);
-        }
-
-        Listings = items;
+        Listings = _filteredListings
+            .GroupByPosition()
+            .SelectMany(group => 
+                new[] { (ITrackListingViewModel)new TrackListingViewModelGroup { GroupName = group.Key } }
+                    .Concat(group.Select(TransformTrackListingViewModel)))
+            .ToList();
     }
 
+    [RelayCommand]
+    public void ShowByPlayTime()
+    {
+        Listings = _filteredListings
+            .GroupByPlayUtcDateAndTime()
+            .SelectMany(group => 
+                new[] { (ITrackListingViewModel)new TrackListingViewModelGroup { GroupName = MakeNiceDateTimeString(group.Key) } }
+                    .Concat(group.Select(TransformTrackListingViewModel)))
+            .ToList();
+    }
+    
+    public string MakeNiceDateTimeString(DateTime dateTime)
+    {
+        var hour = dateTime.ToLocalTime().Hour;
+        var hourPlus = dateTime.ToLocalTime().AddHours(1);
+
+        return $"{dateTime.ToLocalTime():dddd dd MMM HH:00}-{hourPlus:H:00}";
+    }
+    
+    public void FilterListingList()
+    {
+        if (!_isLoadingListings)
+        {
+            var showAll = Filters.All(x => !x.IsChecked);
+
+            if (showAll)
+            {
+                _filteredListings = _originalListings.ToList();
+                Listings = _filteredListings
+                    .GroupByPosition()
+                    .SelectMany(group =>
+                        new[] { (ITrackListingViewModel)new TrackListingViewModelGroup { GroupName = group.Key } }
+                            .Concat(group.Select(TransformTrackListingViewModel)))
+                    .ToList();
+            }
+            else
+            {
+                var toShow = Filters
+                    .Where(x => x.IsChecked)
+                    .Select(x => x.FilterBy)
+                    .ToList();
+
+                _filteredListings = _originalListings
+                    .Where(x => toShow.Contains(x.DeltaType))
+                    .ToList();
+
+                if (_filteredListings.Count > 100)
+                {
+                    Listings = _filteredListings
+                        .GroupByPosition()
+                        .SelectMany(group => 
+                            new[] { (ITrackListingViewModel)new TrackListingViewModelGroup { GroupName = group.Key } }
+                                .Concat(group.Select(TransformTrackListingViewModel)))
+                        .ToList();
+                }
+                else
+                {
+                    Listings = _filteredListings
+                        .Select(TransformTrackListingViewModel)
+                        .ToList();
+                }
+            }
+        }
+    }
+    
+    private bool _isLoadingListings = false;
+
+    private HashSet<TrackListing> _originalListings = [];
+    private List<TrackListing> _filteredListings = [];
+    
+    private async Task LoadAllListingsAsync()
+    {
+        _isLoadingListings = true;
+        _originalListings = await _top2000Services.AllListingsOfEditionAsync(this.SelectedEdition.Year);
+        _filteredListings = _originalListings.ToList();
+        
+        Filters = _originalListings
+            
+            .CountBy(x => x.DeltaType)
+            .Select(x => new TrackListingDeltaFilterViewModel()
+            {
+                Count = x.Value,
+                DisplayIcon = x.Key.ToSymbol(),
+                DisplayColour = x.Key.ToBrush(),
+                DisplayColourBrush = x.Key.ToBrush(),
+                FilterBy = x.Key,
+                IsChecked = false,
+                Parent = this,
+            })
+            .OrderBy(x => x.FilterBy)
+            .ToList();
+        
+        Listings = _originalListings
+            .GroupByPosition()
+            .SelectMany(group => 
+                new[] { (ITrackListingViewModel)new TrackListingViewModelGroup { GroupName = group.Key } }
+                .Concat(group.Select(TransformTrackListingViewModel)))
+            .ToList();
+
+        _isLoadingListings = false;
+    }
+    
+   
     private static ITrackListingViewModel TransformTrackListingViewModel(TrackListing x)
     {
         return new TrackListingViewModel
@@ -132,8 +296,8 @@ public partial class MainWindowViewModel : ViewModelBase
             DeltaFontSize = TrackListingViewModel.ConvertDeltaFontSize(x),
             PositionString = x.Position.ToString(),
             Position = x.Position,
-            DeltaSymbol = TrackListingViewModel.ConvertDeltaToSymbol(x),
-            DeltaSymbolColour = new SolidColorBrush(TrackListingViewModel.ConvertDeltaSymbolColour(x)),
+            DeltaSymbol = x.DeltaType.ToSymbol(),
+            DeltaSymbolColour = x.DeltaType.ToBrush(),
             LocalPlayDateTime = x.PlayUtcDateAndTime.ToLocalTime()
         };
     }

@@ -1,6 +1,5 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Top2000.Apps.AvaloniaApp.Assets;
@@ -66,36 +65,11 @@ public class TrackListingViewModel : ITrackListingViewModel
         };
     }
 
-    public static string ConvertDeltaToSymbol(TrackListing track)
-    {
-        return track.DeltaType switch
-        {
-            TrackListingDeltaType.NoChange => Symbols.Same,
-            TrackListingDeltaType.Increased => Symbols.Up,
-            TrackListingDeltaType.Decreased => Symbols.Down,
-            TrackListingDeltaType.New => Symbols.New,
-            TrackListingDeltaType.Recurring => Symbols.BackInList,
-            _ => Symbols.Same
-        };
-    }
 
     public static string ConvertDeltaToString(TrackListing track)
     {
         return track.Delta != 0
             ? Math.Abs(track.Delta).ToString()
             : string.Empty;
-    }
-
-    public static Color ConvertDeltaSymbolColour(TrackListing track)
-    {
-        return track.DeltaType switch
-        {
-            TrackListingDeltaType.NoChange => Colours.GreyColour,
-            TrackListingDeltaType.Increased => Colours.GreenColour,
-            TrackListingDeltaType.Decreased => Colours.RedColour,
-            TrackListingDeltaType.New => Colours.YellowColour,
-            TrackListingDeltaType.Recurring => Colours.YellowColour,
-            _ => Colours.GreyColour
-        };
     }
 }

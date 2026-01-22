@@ -1,0 +1,27 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Top2000.Apps.AvaloniaApp.Views.Tests"
+        Title="Tests">
+    
+    <Window.Styles>
+        <Style Selector="TextBlock.animated">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="FontSize" Duration="0:0:0.3" Easing="CubicEaseInOut"/>
+                    <BrushTransition Property="Foreground" Duration="0:0:0.3"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        
+        <Style Selector="TextBlock.animated:pointerover">
+            <Setter Property="FontSize" Value="25"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+    </Window.Styles>
+    
+
+        
+</Window>

@@ -4,11 +4,12 @@
         xmlns:cnt="using:Top2000.Apps.AvaloniaApp.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:assets="using:Top2000.Apps.AvaloniaApp.Assets"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Top2000.Apps.AvaloniaApp.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
+        Background="black"
         Icon="/Assets/avalonia-logo.ico"
-        
         Loaded="OnLoaded"
         Title="{Binding Title}">
 
@@ -18,55 +19,120 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <DockPanel>
+    <Window.Styles>
+        <Style Selector="TextBlock.animated">
+            <Setter Property="Opacity" Value="0.5" />
+            <Setter Property="FontSize" Value="14" />
+        </Style>
         
-        
-        <ListBox DockPanel.Dock="Left" Width="500" HorizontalAlignment="Left"
-                 ItemsSource="{Binding Listings}"
-                 SelectedItem="{Binding SelectedItem}"
-        >
-            <ListBox.DataTemplates>
-                <vm:TrackListingViewModelTemplateSelector>
-                    <DataTemplate x:Key="group" DataType="{x:Type vm:TrackListingViewModelGroup}">
-                        <TextBlock FontSize="20" Text="{Binding GroupName}"
-                                   Foreground="{StaticResource Top2000Colour}"
-                        />
-                    </DataTemplate>
-            
-                    <DataTemplate x:Key="item" DataType="{x:Type vm:TrackListingViewModel}">
-                        <Grid>
-                            <TextBlock>
-                                <Run Text="{Binding PositionString}"
-                                     FontSize="20" />
-                                <LineBreak />
-                                <Run Text="{Binding DeltaSymbol}"
-                                     FontSize="{Binding DeltaFontSize}"
-                                     FontFamily="{StaticResource MaterialIcons}"
-                                     Foreground="{Binding DeltaSymbolColour}" />
-                                <Run Text="{Binding Delta}"
-                                     FontSize="{Binding DeltaFontSize}"
-                                     Foreground="{Binding DeltaSymbolColour}" />
-                            </TextBlock>
-                            <TextBlock Margin="60,0,20,0">
-                                <Run Text="{Binding Title}"
-                                     FontSize="20" />
-                                <LineBreak />
-                                <Run Text="{Binding Artist}"
-                                     FontSize="15"
-                                     Foreground="Gray" />
-                            </TextBlock>
-                        </Grid>
-                    </DataTemplate>
-                    
-                </vm:TrackListingViewModelTemplateSelector>
-            </ListBox.DataTemplates>
-        </ListBox>
-        
-        <!--<cnt:TrackDetailsControl Value="{Binding SelectedListing}" /> -->
-        <cnt:TrackDetailsView DataContext="{Binding SelectedListing}" />
-
-        
-    </DockPanel>
+        <Style Selector="TextBlock.animated:pointerover">
+            <Setter Property="Opacity" Value="1"/>
+            <Setter Property="FontSize" Value="15"/>
+        </Style>
+    </Window.Styles>
     
+    <DockPanel Margin="10" >
         
+        <Border CornerRadius="10"
+                Background="{Binding ElementName=ListingListBox, Path=Background}"
+                BorderBrush="Black" DockPanel.Dock="Left" Width="500" HorizontalAlignment="Left" >
+            
+            <Grid RowDefinitions="100,*" Background="Transparent">
+
+            <Grid  Background="Transparent" >
+
+                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,5,0,0" FontSize="14" FontWeight="Bold" >
+                    <Run FontFamily="{StaticResource MaterialIcons}"
+                         Text="{x:Static assets:Symbols.Menu}" FontSize="14"
+                         BaselineAlignment="Center" />
+                    <Run Text="{Binding SelectedEdition.Year}" BaselineAlignment="Center" />
+                </TextBlock>
+                
+                <SplitButton HorizontalAlignment="Right"
+                             VerticalAlignment="Top" Margin="10,5,10,0"
+                             Content="%Position%"  >
+                    
+                    <SplitButton.Flyout>
+                        <MenuFlyout>
+                            <MenuItem Header="%Position%" Command="{Binding ShowByPositionCommand}" />
+                            <MenuItem Header="%DateTime%" Command="{Binding ShowByPlayTimeCommand}"
+                                      IsEnabled="{Binding SelectedEdition.HasPlayDateAndTime}"/>
+                        </MenuFlyout>
+                    </SplitButton.Flyout>
+                    
+                </SplitButton>
+                    
+              
+                <ItemsControl 
+                    Background="Transparent"
+                    VerticalAlignment="Bottom"
+                    Margin="10" ItemsSource="{Binding Filters}" > 
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel  />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:TrackListingDeltaFilterViewModel}">
+                           <ToggleButton CornerRadius="10" 
+                                         Width="75" 
+                                         IsChecked="{Binding IsChecked}" >
+                               <ToggleButton.Content>
+                                   <TextBlock TextAlignment="Center" VerticalAlignment="Center" Foreground="{Binding DisplayColourBrush}">
+                                       <Run  BaselineAlignment="Center" FontFamily="{StaticResource MaterialIcons}" 
+                                             Text="{Binding DisplayIcon}" />
+                                       <Run  BaselineAlignment="Center" Text="{Binding Count}" />
+                                   </TextBlock>
+                               </ToggleButton.Content>
+                           </ToggleButton>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                
+            </Grid>
+            <ListBox x:Name="ListingListBox" Grid.Row="1" ItemsSource="{Binding Listings}"
+                     SelectedItem="{Binding SelectedItem}"
+                     CornerRadius="0,0,10,10">
+                <ListBox.DataTemplates>
+                    <vm:TrackListingViewModelTemplateSelector>
+                        <DataTemplate x:Key="group" DataType="{x:Type vm:TrackListingViewModelGroup}">
+                            <TextBlock FontSize="20" Text="{Binding GroupName}"
+                                       Foreground="{StaticResource Top2000Colour}"
+                            />
+                        </DataTemplate>
+                
+                        <DataTemplate x:Key="item" DataType="{x:Type vm:TrackListingViewModel}">
+                            <Grid>
+                                <TextBlock>
+                                    <Run Text="{Binding PositionString}"
+                                         FontSize="20" />
+                                    <LineBreak />
+                                    <Run Text="{Binding DeltaSymbol}"
+                                         FontSize="{Binding DeltaFontSize}"
+                                         FontFamily="{StaticResource MaterialIcons}"
+                                         Foreground="{Binding DeltaSymbolColour}" />
+                                    <Run Text="{Binding Delta}"
+                                         FontSize="{Binding DeltaFontSize}"
+                                         Foreground="{Binding DeltaSymbolColour}" />
+                                </TextBlock>
+                                <TextBlock Margin="60,0,20,0">
+                                    <Run Text="{Binding Title}"
+                                         FontSize="20" />
+                                    <LineBreak />
+                                    <Run Text="{Binding Artist}"
+                                         FontSize="15"
+                                         Foreground="Gray" />
+                                </TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                        
+                    </vm:TrackListingViewModelTemplateSelector>
+                </ListBox.DataTemplates>
+            </ListBox>
+        </Grid>
+       </Border>
+        
+        <cnt:TrackDetailsView DataContext="{Binding SelectedListing}" Margin="10" />
+    </DockPanel>
 </Window>

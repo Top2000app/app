@@ -30,7 +30,7 @@ public static class GroupExtensions
 
             return tracks.GroupBy(x => Position(x, count));
         }
-    }
+        }
 
     private static string Position(TrackListing listing, int countOfItems)
     {

@@ -11,13 +11,17 @@
     </Application.DataTemplates>
   
     <Application.Styles>
-        <FluentTheme />
-        <StyleInclude Source="/Views/TrackDetailsControl.axaml"/>
+        <FluentTheme>
+            <FluentTheme.Palettes>
+                <ColorPaletteResources x:Key="Light" Accent="#ffda161c" AltHigh="White" AltLow="White" AltMedium="White" AltMediumHigh="White" AltMediumLow="White" BaseHigh="Black" BaseLow="#fff2f2f2" BaseMedium="#ffa7a7a7" BaseMediumHigh="#ff757575" BaseMediumLow="#ff8e8e8e" ChromeAltLow="#ff757575" ChromeBlackHigh="Black" ChromeBlackLow="#fff2f2f2" ChromeBlackMedium="#ff757575" ChromeBlackMediumLow="#ffa7a7a7" ChromeDisabledHigh="#fff2f2f2" ChromeDisabledLow="#ffa7a7a7" ChromeGray="#ff8e8e8e" ChromeHigh="#fff2f2f2" ChromeLow="#fffafafa" ChromeMedium="#fff8f8f8" ChromeMediumLow="#fffafafa" ChromeWhite="White" ListLow="#fff8f8f8" ListMedium="#fff2f2f2" RegionColor="#fff7f7f7" />
+                <ColorPaletteResources x:Key="Dark" Accent="#ffda161c" AltHigh="Black" AltLow="Black" AltMedium="Black" AltMediumHigh="Black" AltMediumLow="Black" BaseHigh="White" BaseLow="#ff3b3b3b" BaseMedium="#ff9d9d9d" BaseMediumHigh="#ffb6b6b6" BaseMediumLow="#ff6c6c6c" ChromeAltLow="#ffb6b6b6" ChromeBlackHigh="Black" ChromeBlackLow="#ffb6b6b6" ChromeBlackMedium="Black" ChromeBlackMediumLow="Black" ChromeDisabledHigh="#ff3b3b3b" ChromeDisabledLow="#ff9d9d9d" ChromeGray="#ff858585" ChromeHigh="#ff858585" ChromeLow="#ff191919" ChromeMedium="#ff212121" ChromeMediumLow="#ff323232" ChromeWhite="White" ListLow="#ff212121" ListMedium="#ff3b3b3b" RegionColor="#ff333333" />
+            </FluentTheme.Palettes>
+        </FluentTheme>
     </Application.Styles>
              
     <Application.Resources>
         <ResourceDictionary>
-            <FontFamily x:Key="MaterialIcons">Assets/Fonts/MaterialIcons.ttf#Material Icons</FontFamily>
+            <FontFamily x:Key="MaterialIcons">Assets/Fonts/MaterialIcons.ttf#Material Symbols Rounded Regular</FontFamily>
             <Color x:Key="Top2000Colour">#DA161C</Color>
         </ResourceDictionary>
         

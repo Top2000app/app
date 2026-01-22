@@ -1,10 +1,11 @@
 using Avalonia.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Top2000.Apps.AvaloniaApp.Assets;
 using Top2000.Features.TrackInformation;
 
 namespace Top2000.Apps.AvaloniaApp.ViewModels;
 
-public class DesignTimeTrackDetailsViewModel : TrackDetailsViewModel
+public partial class DesignTimeTrackDetailsViewModel : TrackDetailsViewModel
 {
     public DesignTimeTrackDetailsViewModel()
     {
@@ -74,7 +75,7 @@ public class DesignTimeTrackDetailsViewModel : TrackDetailsViewModel
         Listings = listings
             .Select(x => new TrackDetailsListingViewModel
             {
-                Edition = x.Edition.ToString(),
+                Edition = x.Edition,
                 Position = x.Position,
                 Delta = TrackDetailsListingViewModel.ConvertDeltaToString(x),
                 DeltaSymbol = TrackDetailsListingViewModel.ConvertDeltaToSymbol(x),
@@ -86,12 +87,16 @@ public class DesignTimeTrackDetailsViewModel : TrackDetailsViewModel
     }
 }
 
-public class TrackDetailsViewModel
+public partial class TrackDetailsViewModel : ViewModelBase
 {
     public required string Title { get; init; }
     public required string Artist { get; init; }
     public required int RecordedYear { get; init; }
     public required List<TrackDetailsListingViewModel> Listings { get; init; }
+
+    [ObservableProperty] private TrackDetailsListingViewModel selectedListing;
+    
+    public required MainWindowViewModel ParentMainWindowViewModel { get; init; }
     
     public TrackDetailsListingViewModel Highest => Listings
         .Where(x => x.Position.HasValue)
@@ -116,11 +121,19 @@ public class TrackDetailsViewModel
     public double SinceRelease => ((double)Appearances / AppearancesPossible) * 360;
     
     public double InTop2000 => ((double)Appearances / Listings.Count) * 360d;
+
+    async partial void OnSelectedListingChanged(TrackDetailsListingViewModel? value)
+    {
+        if (value is not null)
+        {
+            ParentMainWindowViewModel?.ChangeSelectedEditionAsync(value.Edition, value.Position);
+        }
+    }
 }
 
 public class TrackDetailsListingViewModel
 {
-    public required string Edition { get; init; }
+    public required int Edition { get; init; }
     public string PositionString => Position?.ToString() ?? "-";
     public required int? Position { get; init; }
     public required string Delta { get; init; }

@@ -7,6 +7,14 @@ using Top2000.Features.Editions;
 using Top2000.Features.Listings;
 namespace Top2000.Apps.AvaloniaApp.ViewModels;
 
+public enum ListingOrder
+{
+    Position,
+    PositionDescending,
+    PlayTime,
+    PlayTimeDescending
+}
+
 public partial class TrackListingDeltaFilterViewModel : ViewModelBase
 {
     public required TrackListingDeltaType FilterBy { get; init; }
@@ -77,6 +85,7 @@ public interface ICanFilterListings
 
 public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
 {
+    private ListingOrder _listingOrder = ListingOrder.Position;
     private readonly ITop2000Services _top2000Services;
 
     public MainWindowViewModel()
@@ -116,6 +125,14 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
             SelectedEdition = Editions.First(x => x.Year == edition);
             Title = "TOP2000 - " + SelectedEdition.Year;
             await LoadAllListingsAsync();
+            
+            if (position.HasValue)
+            {
+                
+                SelectedItem = Listings
+                    .OfType<TrackListingViewModel>()
+                    .FirstOrDefault(x => x.Position == position.Value);
+            }
         }
     }
     
@@ -172,30 +189,63 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
     private SortedSet<Edition> Editions { get; set; }
 
     [RelayCommand]
-    public void ShowByPosition()
+    private void ShowByPosition()
     {
-        Listings = _filteredListings
-            .GroupByPosition()
-            .SelectMany(group => 
-                new[] { (ITrackListingViewModel)new TrackListingViewModelGroup { GroupName = group.Key } }
-                    .Concat(group.Select(TransformTrackListingViewModel)))
-            .ToList();
+        _listingOrder = _listingOrder == ListingOrder.Position 
+            ? ListingOrder.PositionDescending 
+            : ListingOrder.Position;
+        
+        ReOrder();
     }
 
-    [RelayCommand]
-    public void ShowByPlayTime()
-    {
-        Listings = _filteredListings
-            .GroupByPlayUtcDateAndTime()
-            .SelectMany(group => 
-                new[] { (ITrackListingViewModel)new TrackListingViewModelGroup { GroupName = MakeNiceDateTimeString(group.Key) } }
-                    .Concat(group.Select(TransformTrackListingViewModel)))
-            .ToList();
-    }
     
-    public string MakeNiceDateTimeString(DateTime dateTime)
+    [RelayCommand]
+    private void ShowByPlayTime()
     {
-        var hour = dateTime.ToLocalTime().Hour;
+        _listingOrder = _listingOrder == ListingOrder.PlayTime 
+            ? ListingOrder.PlayTimeDescending 
+            : ListingOrder.PlayTime;
+
+        ReOrder();
+    }
+
+    private void ReOrder()
+    {
+        IOrderedEnumerable<TrackListing>? newOrder = null;
+        if (_listingOrder is ListingOrder.PositionDescending or ListingOrder.PlayTimeDescending)
+        {
+            newOrder = _filteredListings
+                .OrderByDescending(x => x.Position);
+              
+        }
+        else
+        {
+            newOrder = _filteredListings
+                .OrderBy(x => x.Position);
+        }
+        
+        if (_listingOrder is ListingOrder.Position or ListingOrder.PositionDescending)
+        {
+            Listings = newOrder
+                .GroupByPosition()
+                .SelectMany(group =>
+                    new[] { (ITrackListingViewModel)new TrackListingViewModelGroup { GroupName = group.Key } }
+                        .Concat(group.Select(TransformTrackListingViewModel)))
+                .ToList();
+        }
+        else
+        {
+            Listings = newOrder
+                .GroupByPlayUtcDateAndTime()
+                .SelectMany(group => 
+                    new[] { (ITrackListingViewModel)new TrackListingViewModelGroup { GroupName = MakeNiceDateTimeString(group.Key) } }
+                        .Concat(group.Select(TransformTrackListingViewModel)))
+                .ToList();
+        }
+    }
+
+    private static string MakeNiceDateTimeString(DateTime dateTime)
+    {
         var hourPlus = dateTime.ToLocalTime().AddHours(1);
 
         return $"{dateTime.ToLocalTime():dddd dd MMM HH:00}-{hourPlus:H:00}";

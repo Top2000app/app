@@ -15,4 +15,10 @@ public partial class MainWindow : Window
     {
         await ((MainWindowViewModel)DataContext!).InitialiseViewModelAsync();
     }
+
+    public void MoveSelectionInFocus()
+    {
+        
+        
+    }
 }

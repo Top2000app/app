@@ -93,6 +93,7 @@
             </Grid>
             <ListBox x:Name="ListingListBox" Grid.Row="1" ItemsSource="{Binding Listings}"
                      SelectedItem="{Binding SelectedItem}"
+                     AutoScrollToSelectedItem="True"
                      CornerRadius="0,0,10,10">
                 <ListBox.DataTemplates>
                     <vm:TrackListingViewModelTemplateSelector>
@@ -133,6 +134,14 @@
         </Grid>
        </Border>
         
-        <cnt:TrackDetailsView DataContext="{Binding SelectedListing}" Margin="10" />
+        
+        <Border CornerRadius="10" Margin="10,0,0,0"
+                Background="{Binding ElementName=ListingListBox, Path=Background}"
+                BorderBrush="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+            
+            <cnt:TrackDetailsView DataContext="{Binding SelectedListing}" Margin="10" />
+            
+        </Border>
+        
     </DockPanel>
 </Window>

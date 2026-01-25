@@ -17,28 +17,30 @@ public enum ListingOrder
 
 public partial class TrackListingDeltaFilterViewModel : ViewModelBase
 {
-    public required TrackListingDeltaType FilterBy { get; init; }
+    private static readonly SolidColorBrush WhiteColourBrush = new (Colors.White);
 
-    public required string DisplayIcon { get; init; }
+    public required TrackListingDeltaType FilterBy { get; init; }
     
+    public required string DisplayIcon { get; init; }
+
     public required SolidColorBrush DisplayColour { get; init; }
 
     public required ICanFilterListings Parent { get; init; }
-    
-    public int Count { get; set; }
+
+    [ObservableProperty] private int _count = 0;
     
     [ObservableProperty]
     private bool _isChecked;
 
     [ObservableProperty] 
     private SolidColorBrush _displayColourBrush = new (Colors.White);
-
+    
     partial void OnIsCheckedChanged(bool value)
     {
-        Parent.FilterListingList();
+        Parent.UpdateListings();
 
         DisplayColourBrush = value
-            ? new SolidColorBrush(Colors.White)
+            ? WhiteColourBrush
             : DisplayColour;
     }
 }
@@ -80,43 +82,113 @@ public static class SymbolsExtensions
 
 public interface ICanFilterListings
 {
-    void FilterListingList();
+    void UpdateListings();
 }
+
+public class FilterCollection : List<TrackListingDeltaFilterViewModel>
+{
+    private readonly Dictionary<TrackListingDeltaType, TrackListingDeltaFilterViewModel> _filters;
+
+    private FilterCollection(Dictionary<TrackListingDeltaType, TrackListingDeltaFilterViewModel> filters)
+    {
+        _filters = filters;
+    }
+    
+    public static FilterCollection Initialise(ICanFilterListings parent)
+    {
+        var filters = new Dictionary<TrackListingDeltaType, TrackListingDeltaFilterViewModel>
+        {
+            { TrackListingDeltaType.NoChange, CreateNew(TrackListingDeltaType.NoChange, parent) },
+            { TrackListingDeltaType.Increased, CreateNew(TrackListingDeltaType.Increased, parent) },
+            { TrackListingDeltaType.Decreased, CreateNew(TrackListingDeltaType.Decreased, parent) },
+            { TrackListingDeltaType.New, CreateNew(TrackListingDeltaType.New, parent) },
+            { TrackListingDeltaType.Recurring, CreateNew(TrackListingDeltaType.Increased, parent) }
+        };
+        
+        return new FilterCollection(filters)
+        {
+            filters[TrackListingDeltaType.NoChange],
+            filters[TrackListingDeltaType.Increased],
+            filters[TrackListingDeltaType.Decreased],
+            filters[TrackListingDeltaType.New],
+            filters[TrackListingDeltaType.Recurring],
+        };
+    }
+    
+    
+    private static TrackListingDeltaFilterViewModel CreateNew(TrackListingDeltaType type, ICanFilterListings parent)
+    {
+        return new TrackListingDeltaFilterViewModel
+        {
+            FilterBy = type,
+            DisplayIcon = type.ToSymbol(),
+            DisplayColour = type.ToBrush(),
+            DisplayColourBrush = type.ToBrush(),
+            Parent = parent,
+        };
+    }
+    
+    public void UpdateCounters(IEnumerable<KeyValuePair<TrackListingDeltaType, int>> newCounts)
+    {
+        foreach (var newCount in newCounts)
+        {
+            var filter = _filters[newCount.Key];
+            filter.Count = newCount.Value;
+
+            if (filter is { Count: 0, IsChecked: true })
+            {
+                filter.IsChecked = false;
+            }
+        }
+    }
+
+    public bool ShowAll() => this.All(x => !x.IsChecked);
+    
+    public bool ShouldShow(TrackListing listing) => ShowAll() || _filters[listing.DeltaType].IsChecked;
+    
+}
+
 
 public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
 {
+    private SortedSet<Edition> Editions { get; set; }
+    private HashSet<TrackListing> _originalListings = [];
+    private List<TrackListing> _filteredListings = [];
     private ListingOrder _listingOrder = ListingOrder.Position;
     private readonly ITop2000Services _top2000Services;
+    private bool _isLoadingListings = false;
 
     public MainWindowViewModel()
     {
         _top2000Services = new MockupTop2000Services();
+        Filters = FilterCollection.Initialise(this);
     }
     
     public MainWindowViewModel(ITop2000Services services)
     {
         _top2000Services = services;
+        Filters = FilterCollection.Initialise(this);
     }
 
-    [ObservableProperty] private List<TrackListingDeltaFilterViewModel> _filters = [];
-
+    public FilterCollection Filters { get; set; }
+    
     [ObservableProperty] 
-    private List<ITrackListingViewModel> listings = [];
+    private List<ITrackListingViewModel> _listings = [];
     
     [ObservableProperty]
-    private Edition selectedEdition;
+    private Edition _selectedEdition;
   
     [ObservableProperty]
-    private string title = "Top2000";
+    private string _title = "Top2000";
 
     [ObservableProperty]
-    private bool isLoaded;
+    private bool _isLoaded;
 
     [ObservableProperty] 
-    private TrackDetailsViewModel? selectedListing;
+    private TrackDetailsViewModel? _selectedListing;
     
     [ObservableProperty]
-    public ITrackListingViewModel? selectedItem;
+    private ITrackListingViewModel? _selectedItem;
     
     public async Task ChangeSelectedEditionAsync(int edition, int? position)
     {
@@ -128,7 +200,6 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
             
             if (position.HasValue)
             {
-                
                 SelectedItem = Listings
                     .OfType<TrackListingViewModel>()
                     .FirstOrDefault(x => x.Position == position.Value);
@@ -185,9 +256,8 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
         
         IsLoaded = true;
     }
-
-    private SortedSet<Edition> Editions { get; set; }
-
+    
+    
     [RelayCommand]
     private void ShowByPosition()
     {
@@ -195,9 +265,8 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
             ? ListingOrder.PositionDescending 
             : ListingOrder.Position;
         
-        ReOrder();
+        UpdateListings();
     }
-
     
     [RelayCommand]
     private void ShowByPlayTime()
@@ -206,134 +275,106 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
             ? ListingOrder.PlayTimeDescending 
             : ListingOrder.PlayTime;
 
-        ReOrder();
+        UpdateListings();
     }
 
-    private void ReOrder()
+    private async Task LoadAllListingsAsync()
     {
-        IOrderedEnumerable<TrackListing>? newOrder = null;
-        if (_listingOrder is ListingOrder.PositionDescending or ListingOrder.PlayTimeDescending)
-        {
-            newOrder = _filteredListings
-                .OrderByDescending(x => x.Position);
-              
-        }
-        else
-        {
-            newOrder = _filteredListings
-                .OrderBy(x => x.Position);
-        }
+        _isLoadingListings = true;
         
-        if (_listingOrder is ListingOrder.Position or ListingOrder.PositionDescending)
-        {
-            Listings = newOrder
-                .GroupByPosition()
-                .SelectMany(group =>
-                    new[] { (ITrackListingViewModel)new TrackListingViewModelGroup { GroupName = group.Key } }
-                        .Concat(group.Select(TransformTrackListingViewModel)))
-                .ToList();
-        }
-        else
-        {
-            Listings = newOrder
-                .GroupByPlayUtcDateAndTime()
-                .SelectMany(group => 
-                    new[] { (ITrackListingViewModel)new TrackListingViewModelGroup { GroupName = MakeNiceDateTimeString(group.Key) } }
-                        .Concat(group.Select(TransformTrackListingViewModel)))
-                .ToList();
-        }
+        _originalListings = await _top2000Services.AllListingsOfEditionAsync(this.SelectedEdition.Year);
+        Filters.UpdateCounters(_originalListings.CountBy(x => x.DeltaType));
+
+        UpdateListings();
+            
+        _isLoadingListings = false;
     }
 
-    private static string MakeNiceDateTimeString(DateTime dateTime)
+    public void UpdateListings()
     {
-        var hourPlus = dateTime.ToLocalTime().AddHours(1);
+        var newListings = _originalListings
+                .Where(Filters.ShouldShow)
+            ;
 
-        return $"{dateTime.ToLocalTime():dddd dd MMM HH:00}-{hourPlus:H:00}";
-    }
-    
-    public void FilterListingList()
-    {
-        if (!_isLoadingListings)
+        switch (_listingOrder)
         {
-            var showAll = Filters.All(x => !x.IsChecked);
+            case ListingOrder.PositionDescending:
+                newListings = newListings.OrderByDescending(y => y.Position);
+                break;
+            case ListingOrder.Position:
+                newListings = newListings.OrderBy(y => y.Position);
+                break;
+            case ListingOrder.PlayTime:
+                newListings = newListings.OrderBy(y => y.PlayUtcDateAndTime);
+                break;
+            case ListingOrder.PlayTimeDescending:
+                newListings = newListings.OrderByDescending(y => y.PlayUtcDateAndTime);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
 
-            if (showAll)
+        var filteredListing = newListings.ToList();
+        if (filteredListing.Count > 100)
+        {
+            if (_listingOrder is ListingOrder.Position or ListingOrder.PositionDescending)
             {
-                _filteredListings = _originalListings.ToList();
-                Listings = _filteredListings
+                Listings = filteredListing
                     .GroupByPosition()
-                    .SelectMany(group =>
-                        new[] { (ITrackListingViewModel)new TrackListingViewModelGroup { GroupName = group.Key } }
-                            .Concat(group.Select(TransformTrackListingViewModel)))
+                    .SelectMany(TransformPositionGrouping)
                     .ToList();
             }
             else
             {
-                var toShow = Filters
-                    .Where(x => x.IsChecked)
-                    .Select(x => x.FilterBy)
+                Listings = filteredListing
+                    .GroupByPlayUtcDateAndTime()
+                    .SelectMany(TransformDateTimeGrouping)
                     .ToList();
-
-                _filteredListings = _originalListings
-                    .Where(x => toShow.Contains(x.DeltaType))
-                    .ToList();
-
-                if (_filteredListings.Count > 100)
-                {
-                    Listings = _filteredListings
-                        .GroupByPosition()
-                        .SelectMany(group => 
-                            new[] { (ITrackListingViewModel)new TrackListingViewModelGroup { GroupName = group.Key } }
-                                .Concat(group.Select(TransformTrackListingViewModel)))
-                        .ToList();
-                }
-                else
-                {
-                    Listings = _filteredListings
-                        .Select(TransformTrackListingViewModel)
-                        .ToList();
-                }
             }
         }
+        else
+        {
+            Listings = filteredListing
+                .Select(TransformTrackListingViewModel)
+                .ToList();
+        }
     }
-    
-    private bool _isLoadingListings = false;
 
-    private HashSet<TrackListing> _originalListings = [];
-    private List<TrackListing> _filteredListings = [];
     
-    private async Task LoadAllListingsAsync()
+    private static IEnumerable<ITrackListingViewModel> TransformDateTimeGrouping(IGrouping<DateTime, TrackListing> group)
     {
-        _isLoadingListings = true;
-        _originalListings = await _top2000Services.AllListingsOfEditionAsync(this.SelectedEdition.Year);
-        _filteredListings = _originalListings.ToList();
-        
-        Filters = _originalListings
-            
-            .CountBy(x => x.DeltaType)
-            .Select(x => new TrackListingDeltaFilterViewModel()
+        return new[]
             {
-                Count = x.Value,
-                DisplayIcon = x.Key.ToSymbol(),
-                DisplayColour = x.Key.ToBrush(),
-                DisplayColourBrush = x.Key.ToBrush(),
-                FilterBy = x.Key,
-                IsChecked = false,
-                Parent = this,
-            })
-            .OrderBy(x => x.FilterBy)
-            .ToList();
-        
-        Listings = _originalListings
-            .GroupByPosition()
-            .SelectMany(group => 
-                new[] { (ITrackListingViewModel)new TrackListingViewModelGroup { GroupName = group.Key } }
-                .Concat(group.Select(TransformTrackListingViewModel)))
-            .ToList();
-
-        _isLoadingListings = false;
+                (ITrackListingViewModel)new TrackListingViewModelGroup { GroupName = MakeNiceDateTimeString(group.Key) }
+            }
+            .Concat(group.Select(TransformTrackListingViewModel));
     }
+
     
+    private static string MakeNiceDateTimeString(DateTime dateTime)
+    {
+        var hourPlus = dateTime.ToLocalTime().AddHours(1);
+        return $"{dateTime.ToLocalTime():dddd dd MMM HH:00}-{hourPlus:H:00}";
+    }
+
+    private TrackListingDeltaFilterViewModel TransformToFilter(KeyValuePair<TrackListingDeltaType, int> x)
+    {
+        return new TrackListingDeltaFilterViewModel()
+        {
+            Count = x.Value,
+            DisplayIcon = x.Key.ToSymbol(),
+            DisplayColour = x.Key.ToBrush(),
+            DisplayColourBrush = x.Key.ToBrush(),
+            FilterBy = x.Key,
+            IsChecked = false,
+            Parent = this,
+        };
+    }
+
+    private static IEnumerable<ITrackListingViewModel> TransformPositionGrouping(IGrouping<string, TrackListing> group)
+    {
+        return new[] { (ITrackListingViewModel)new TrackListingViewModelGroup { GroupName = group.Key } }.Concat(group.Select(TransformTrackListingViewModel));
+    }
    
     private static ITrackListingViewModel TransformTrackListingViewModel(TrackListing x)
     {

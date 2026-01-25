@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Top2000.Apps.AvaloniaApp.ViewModels;
 
@@ -16,9 +17,11 @@ public partial class MainWindow : Window
         await ((MainWindowViewModel)DataContext!).InitialiseViewModelAsync();
     }
 
-    public void MoveSelectionInFocus()
+    private void InputElement_OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        
-        
+        if (sender is TextBlock { ContextFlyout.IsOpen: false } textBlock)
+        {
+            textBlock.ContextFlyout.ShowAt(textBlock);
+        }
     }
 }

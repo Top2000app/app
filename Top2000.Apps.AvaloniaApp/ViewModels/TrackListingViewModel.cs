@@ -15,29 +15,40 @@ public class TrackListingViewModelTemplateSelector : IDataTemplate
 
     public Control? Build(object? param)
     {
-        return param is TrackListingViewModelGroup 
-            ? Templates["group"].Build(param) 
-            : Templates["item"].Build(param);
+        return Templates[((ITrackListingViewModel)param!).HeaderName].Build(param); 
     }
 
     public bool Match(object? data)
     {
-        return data is TrackListingViewModel or TrackListingViewModelGroup;
+        return data is ITrackListingViewModel;
     }
 }
 
 public interface ITrackListingViewModel
 {
-    
+    string HeaderName { get; }
+    bool IsHeader { get;  }
 }
 
-public class TrackListingViewModelGroup : ITrackListingViewModel
+public class TrackListingPlayTimeGroup : ITrackListingViewModel
 {
+    public string HeaderName => nameof(TrackListingPlayTimeGroup);
     public required string GroupName { get; init; }
+    public bool IsHeader => true;
+}
+
+public class TrackListingPositionGroup : ITrackListingViewModel
+{
+    public string HeaderName => nameof(TrackListingPositionGroup);
+    public required string GroupName { get; init; }
+    public bool IsHeader => true;
 }
 
 public class TrackListingViewModel : ITrackListingViewModel
 {
+    public string HeaderName => nameof(TrackListingViewModel);
+    public bool IsHeader => false;
+    
     public required int TrackId { get; init; }
     public required string PositionString { get; init; }
     public required string Delta { get; init; }
@@ -51,21 +62,8 @@ public class TrackListingViewModel : ITrackListingViewModel
     public required int Position { get; init; }
 
     public required DateTime LocalPlayDateTime { get; init; }
-
-    public static double ConvertDeltaFontSize(TrackListing track)
-    {
-        return track.DeltaType switch
-        {
-            TrackListingDeltaType.NoChange => 15,
-            TrackListingDeltaType.Increased => 11,
-            TrackListingDeltaType.Decreased => 11,
-            TrackListingDeltaType.New => 20,
-            TrackListingDeltaType.Recurring => 20,
-            _ => 11
-        };
-    }
-
-
+    
+    
     public static string ConvertDeltaToString(TrackListing track)
     {
         return track.Delta != 0

@@ -39,4 +39,8 @@ public static class Symbols
     public static string Video => "\xe63a";
     
     public static string Options => "\xe429";
+
+    public static string List => "\xe896";
+
+    public static string PartOfListUp = "\xe25a";
 }

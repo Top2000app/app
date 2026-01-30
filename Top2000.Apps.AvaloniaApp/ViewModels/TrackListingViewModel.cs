@@ -30,10 +30,49 @@ public interface ITrackListingViewModel
     bool IsHeader { get;  }
 }
 
-public class TrackListingPlayTimeGroup : ITrackListingViewModel
+public class TrackListingPosition : ITrackListingViewModel
 {
-    public string HeaderName => nameof(TrackListingPlayTimeGroup);
+    public string HeaderName => nameof(TrackListingPosition);
+    public required string ItemText { get; init; }
+    public bool IsHeader => false;
+    
+    public required ITrackListingViewModel Parent { get; init; }
+}
+
+public class TrackListingPlayDateTimeGroup : ITrackListingViewModel
+{
+    public string HeaderName => nameof(TrackListingPlayDateTimeGroup);
     public required string GroupName { get; init; }
+    public required DateTime PlayTime { get; init; }
+    public bool IsHeader => true;
+    
+    public static string MakeNiceDateTimeString(DateTime dateTime)
+    {
+        var localTime = dateTime.ToLocalTime();
+        return $"{localTime:dddd dd MMM HH:00}-{localTime.AddHours(1):H:00}";
+    }
+}
+
+public class TrackListingPlayDateGroup : ITrackListingViewModel
+{
+    public string HeaderName => nameof(TrackListingPlayDateGroup);
+    public required string GroupName { get; init; }
+    public bool IsHeader => false;
+    
+    public required ITrackListingViewModel Parent { get; init; }
+}
+
+public class TrackListingPlayTimeItem : ITrackListingViewModel
+{
+    public string HeaderName => nameof(TrackListingPlayTimeItem);
+    public required string Time { get; init; }
+    public bool IsHeader => true;
+}
+
+public class TrackListingPlayDateItem : ITrackListingViewModel
+{
+    public string HeaderName => nameof(TrackListingPlayDateItem);
+    public required string Time { get; init; }
     public bool IsHeader => true;
 }
 

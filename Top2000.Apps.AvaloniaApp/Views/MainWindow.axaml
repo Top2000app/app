@@ -84,31 +84,50 @@
                     
                 </Grid>
                 
-                <ListBox x:Name="GroupedListBox" Grid.Row="1" ItemsSource="{Binding ListingGroup}"
-                         AutoScrollToSelectedItem="True" IsVisible="{Binding }"
+                <ListBox x:Name="GroupedListBox" Grid.Row="1" 
+                         ItemsSource="{Binding GroupListing}"
+                         SelectedItem="{Binding SelectedGroupedItem}"
+                         AutoScrollToSelectedItem="True" 
+                         IsVisible="{Binding !IsShowingListItems}"
                          CornerRadius="0,0,10,10">
                     <ListBox.DataTemplates>
                         <vm:TrackListingViewModelTemplateSelector>
-                            <DataTemplate x:Key="TrackListingPlayTimeGroup" DataType="{x:Type vm:TrackListingPlayTimeGroup}">
+                            
+                            <DataTemplate x:Key="TrackListingPosition" DataType="{x:Type vm:TrackListingPosition}">
+                                <TextBlock FontSize="20" Text="{Binding ItemText}" />
+                            </DataTemplate>
+                            
+                            <DataTemplate x:Key="TrackListingPlayTimeGroup" DataType="{x:Type vm:TrackListingPlayDateTimeGroup}">
                                 <TextBlock FontSize="20" Text="{Binding GroupName}"
                                            Foreground="{StaticResource Top2000Colour}" />
                             </DataTemplate>
-                                
+                            
                             <DataTemplate x:Key="TrackListingPositionGroup" DataType="{x:Type vm:TrackListingPositionGroup}">
                                 <TextBlock FontSize="20" Text="{Binding GroupName}"
                                            Foreground="{StaticResource Top2000Colour}" />
                             </DataTemplate>
+                            
+                            <DataTemplate x:Key="TrackListingPlayDateGroup" DataType="{x:Type vm:TrackListingPlayDateGroup}">
+                                <TextBlock FontSize="20" Text="{Binding GroupName}"
+                                           Foreground="{StaticResource Top2000Colour}" />
+                            </DataTemplate>
+                            
+                            <DataTemplate x:Key="TrackListingPlayTimeItem" DataType="{x:Type vm:TrackListingPlayTimeItem}">
+                                <TextBlock FontSize="20" Text="{Binding Time }" />
+                            </DataTemplate>
                         </vm:TrackListingViewModelTemplateSelector>
                     </ListBox.DataTemplates>
+                
                 </ListBox>
                     
                 <ListBox x:Name="ListingListBox" Grid.Row="1" ItemsSource="{Binding Listings}"
-                         SelectedItem="{Binding SelectedItem}"
-                         AutoScrollToSelectedItem="True"
+                         SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                         IsVisible="{Binding IsShowingListItems}"
                          CornerRadius="0,0,10,10">
                     <ListBox.DataTemplates>
                         <vm:TrackListingViewModelTemplateSelector>
-                            <DataTemplate x:Key="TrackListingPlayTimeGroup" DataType="{x:Type vm:TrackListingPlayTimeGroup}">
+                            
+                            <DataTemplate x:Key="TrackListingPlayDateTimeGroup" DataType="{x:Type vm:TrackListingPlayDateTimeGroup}">
                                 <TextBlock FontSize="20" Text="{Binding GroupName}"
                                            Foreground="{StaticResource Top2000Colour}" />
                             </DataTemplate>

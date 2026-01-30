@@ -5,7 +5,7 @@ using Top2000.Apps.AvaloniaApp.ViewModels;
 
 namespace Top2000.Apps.AvaloniaApp.Views;
 
-public partial class MainWindow : Window
+public partial class MainWindow : Window, IScrollListingListIntoView
 {
     public MainWindow()
     {
@@ -14,14 +14,16 @@ public partial class MainWindow : Window
 
     public async void OnLoaded(object sender, RoutedEventArgs e)
     {
-        await ((MainWindowViewModel)DataContext!).InitialiseViewModelAsync();
+        await ((MainWindowViewModel)DataContext!).InitialiseViewModelAsync(this);
     }
 
-    private void InputElement_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    public void ScrollIntoView(ITrackListingViewModel item)
     {
-        if (sender is TextBlock { ContextFlyout.IsOpen: false } textBlock)
-        {
-            textBlock.ContextFlyout.ShowAt(textBlock);
-        }
+        ListingListBox.ScrollIntoView(item);
     }
+}
+
+public interface IScrollListingListIntoView
+{
+    void ScrollIntoView(ITrackListingViewModel item);
 }

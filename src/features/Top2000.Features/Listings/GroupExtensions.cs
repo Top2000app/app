@@ -28,35 +28,48 @@ public static class GroupExtensions
         {
             var count = tracks.Count();
 
-            return tracks.GroupBy(x => Position(x, count));
+            return tracks.GroupBy(x => Position(x.Position, count));
         }
+        
+        /// <summary>
+        /// Group the track by their positions in groups of 100.
+        /// 100 is put in the 100 - 200 group
+        /// 2000 is put in the 1900 - 2000 group but only if the count of items is 2000 otherwise it is grouped in the 2000 - 2100 group
+        /// </summary>
+        /// <returns>Grouped IEnumerable of TrackListing by Position</returns>
+        public IEnumerable<IGrouping<string, TrackListing>> GroupByPosition(int count)
+        {
+            return tracks.GroupBy(x => Position(x.Position, count));
         }
+        
+        
+    }
 
-    private static string Position(TrackListing listing, int countOfItems)
+    public static string Position(int position, int countOfItems)
     {
         const int groupSize = 100;
 
-        if (listing.Position < groupSize)
+        if (position < groupSize)
         {
             return "1 - 100";
         }
 
         if (countOfItems > 2000)
         {
-            if (listing.Position >= 2400)
+            if (position >= 2400)
             {
                 return "2400 - 2500";
             }
         }
         else
         {
-            if (listing.Position >= 1900)
+            if (position >= 1900)
             {
                 return "1900 - 2000";
             }
         }
 
-        var min = listing.Position / groupSize * groupSize;
+        var min = position / groupSize * groupSize;
         var max = min + groupSize;
 
         return $"{min} - {max}";

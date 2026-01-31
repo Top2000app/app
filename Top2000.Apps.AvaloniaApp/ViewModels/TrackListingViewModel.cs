@@ -72,12 +72,13 @@ public partial class TrackListingPlayTimeItem : ViewModelBase, ITrackListingView
     public required string Time { get; init; }
     public bool IsHeader => true;
     public required  ITrackListingViewModel Parent { get; init; }
-    public required IScrollListingListIntoView ScrollListingListIntoView { get; init; }
+    
+    public required IHandleGroupSelection NewGroupHandler { get; init; }
 
     [RelayCommand]
     private void GotoPlayTime()
     {
-        ScrollListingListIntoView.ScrollIntoView(Parent);
+        NewGroupHandler.SelectingGroup(Parent);
     }
 }
 

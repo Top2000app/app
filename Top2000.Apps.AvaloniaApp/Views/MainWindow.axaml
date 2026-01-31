@@ -36,7 +36,6 @@
                 BorderBrush="Black" DockPanel.Dock="Left" Width="500" HorizontalAlignment="Left" >
             
             <Grid RowDefinitions="100,*" Background="Transparent">
-
                 <Grid Background="Transparent" RowDefinitions="Auto,*,Auto" >
 
                     <TextBlock  Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,5,0,0" Classes="animated">
@@ -83,80 +82,8 @@
                     </ItemsControl>
                     
                 </Grid>
-                
-                <ScrollViewer Grid.Row="1" CornerRadius="0,0,10,10">
-                    
-                <ItemsControl IsVisible="{Binding !IsShowingListItems}"
-                              ItemsSource="{Binding GroupListing}"
-                              CornerRadius="0,0,10,10">
-                    <ItemsControl.DataTemplates>
-
-                        <DataTemplate x:DataType="vm:TrackListingPlayDateGroup">
-                            <Grid RowDefinitions="Auto,*">
-                                <TextBlock FontSize="20" Text="{Binding GroupName}"
-                                           Foreground="{StaticResource Top2000Colour}" Margin="0,5" />
-                                
-                                <ItemsControl Grid.Row="1" ItemsSource="{Binding PlayTimes}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel  />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type vm:TrackListingPlayTimeItem}">
-                                            <Button 
-                                                Width="110" Height="50" HorizontalContentAlignment="Center"
-                                                VerticalContentAlignment="Center"
-                                                Command="{Binding GotoPlayTimeCommand}"
-                                                Content="{Binding Time}"></Button>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.DataTemplates>
-                </ItemsControl>
-                </ScrollViewer>
-                    
-                <!-- -->
-                <!-- <ListBox x:Name="GroupedListBox" Grid.Row="1"  -->
-                <!--           -->
-                <!--          SelectedItem="{Binding SelectedGroupedItem}" -->
-                <!--          AutoScrollToSelectedItem="True"  -->
-                <!--          CornerRadius="0,0,10,10"> -->
-                <!--     <ListBox.DataTemplates> -->
-                <!--         <vm:TrackListingViewModelTemplateSelector> -->
-                <!--              -->
-                <!--             <DataTemplate x:Key="TrackListingPosition" DataType="{x:Type vm:TrackListingPosition}"> -->
-                <!--                 <TextBlock FontSize="20" Text="{Binding ItemText}" /> -->
-                <!--             </DataTemplate> -->
-                <!--              -->
-                <!--             <DataTemplate x:Key="TrackListingPlayTimeGroup" DataType="{x:Type vm:TrackListingPlayDateTimeGroup}"> -->
-                <!--                 <TextBlock FontSize="20" Text="{Binding GroupName}" -->
-                <!--                            Foreground="{StaticResource Top2000Colour}" /> -->
-                <!--             </DataTemplate> -->
-                <!--              -->
-                <!--             <DataTemplate x:Key="TrackListingPositionGroup" DataType="{x:Type vm:TrackListingPositionGroup}"> -->
-                <!--                 <TextBlock FontSize="20" Text="{Binding GroupName}" -->
-                <!--                            Foreground="{StaticResource Top2000Colour}" /> -->
-                <!--             </DataTemplate> -->
-                <!--              -->
-                <!--             <DataTemplate x:Key="TrackListingPlayDateGroup" DataType="{x:Type vm:TrackListingPlayDateGroup}"> -->
-                <!-- -->
-                <!--             </DataTemplate> -->
-                <!--              -->
-                <!--             <DataTemplate x:Key="TrackListingPlayTimeItem" DataType="{x:Type vm:TrackListingPlayTimeItem}"> -->
-                <!--                 <TextBlock FontSize="20" Text="{Binding Time }" /> -->
-                <!--             </DataTemplate> -->
-                <!--         </vm:TrackListingViewModelTemplateSelector> -->
-                <!--     </ListBox.DataTemplates> -->
-                <!-- -->
-                <!-- </ListBox> -->
-                    
                 <ListBox x:Name="ListingListBox" Grid.Row="1" ItemsSource="{Binding Listings}"
                          SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-                         IsVisible="{Binding IsShowingListItems}"
                          CornerRadius="0,0,10,10">
                     <ListBox.DataTemplates>
                         <vm:TrackListingViewModelTemplateSelector>
@@ -201,6 +128,42 @@
                         </vm:TrackListingViewModelTemplateSelector>
                     </ListBox.DataTemplates>
                 </ListBox>
+                <Border Grid.Row="0" Grid.RowSpan="2" Background="Black" Opacity="0.6">
+                    
+                <ScrollViewer Grid.Row="1" CornerRadius="0,0,10,10">
+                    
+                    <ItemsControl ItemsSource="{Binding GroupTimeGroupListing}"
+                                  CornerRadius="0,0,10,10">
+                        <ItemsControl.DataTemplates>
+
+                            <DataTemplate x:DataType="vm:TrackListingPlayDateGroup">
+                                <Grid RowDefinitions="Auto,*">
+                                    <TextBlock FontSize="20" Text="{Binding GroupName}"
+                                               Foreground="{StaticResource Top2000Colour}" Margin="0,5" />
+                                    
+                                    <ItemsControl Grid.Row="1" ItemsSource="{Binding PlayTimes}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel  />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate DataType="{x:Type vm:TrackListingPlayTimeItem}">
+                                                <Button 
+                                                    Width="110" Height="50" HorizontalContentAlignment="Center"
+                                                    VerticalContentAlignment="Center"
+                                                    Command="{Binding GotoPlayTimeCommand}"
+                                                    Content="{Binding Time}"></Button>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.DataTemplates>
+                    </ItemsControl>
+                </ScrollViewer>
+                </Border>
             </Grid>
        </Border>
         

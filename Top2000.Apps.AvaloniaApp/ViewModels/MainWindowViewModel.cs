@@ -15,6 +15,10 @@ public interface ICanFilterListings
     void UpdateListings();
 }
 
+public interface IHandleGroupSelection
+{
+    void SelectingGroup(ITrackListingViewModel group);
+}
 
 public enum ListingOrder
 {
@@ -28,7 +32,8 @@ public enum ListingGroup
     PlayTime
 }
 
-public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
+
+public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IHandleGroupSelection
 {
     private SortedSet<Edition> Editions { get; set; } = [];
     private HashSet<TrackListing> _originalListings = [];
@@ -84,64 +89,35 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
         }
     }
 
-    private List<ITrackListingViewModel> _oldListings = [];
     private IScrollListingListIntoView? _scrollService;
 
-    [ObservableProperty] private List<ITrackListingViewModel> _groupListing = [];
-    [ObservableProperty] private bool _isShowingListItems = true;
-    [ObservableProperty] private ITrackListingViewModel? _selectedGroupedItem;
-
-    partial void OnSelectedGroupedItemChanged(ITrackListingViewModel? value)
-    {
-        if (value is TrackListingPosition positionItem)
-        {
-            IsShowingListItems = true;
-            
-            // navigate to the selected item in the list
-            _scrollService?.ScrollIntoView(positionItem.Parent);
-        }
-
-        if (value is TrackListingPlayTimeItem playTimeItem)
-        {
-            _scrollService?.ScrollIntoView(playTimeItem.Parent);
-        }
-
-        if (value is TrackListingPlayDateGroup playDateGroup)
-        {
-            
-        }
-    }
-    
+    [ObservableProperty] private List<ITrackListingViewModel> _groupTimeGroupListing = [];
+    [ObservableProperty] private List<ITrackListingViewModel> _positionGroupListing = [];
+    [ObservableProperty] private bool _showTimeGroupSelection = false;
+    [ObservableProperty] private bool _showPositionGroupSelection = false;
 
     async partial void OnSelectedItemChanged(ITrackListingViewModel? oldValue, ITrackListingViewModel? newValue)
     {
             if (newValue is TrackListingViewModel trackListing)
             {
                 await DisplayTheSelectedListingAsync(trackListing);
-                IsShowingListItems = true;
             }
 
             if (newValue is TrackListingPositionGroup positionGroup)
             {
-                IsShowingListItems = false;
-                // show a list of position groups
-                _oldListings = Listings.ToList();
-                var itemsList = Listings
+                ShowTimeGroupSelection = true;
+                GroupTimeGroupListing = Listings
                     .Where(x => x is TrackListingPositionGroup)
                     .Cast<TrackListingPositionGroup>()
                     .Select(x => new TrackListingPosition { ItemText = x.GroupName, Parent = x})
                     .Cast<ITrackListingViewModel>()
                     .ToList();
-
-                GroupListing = itemsList;
             }
           
             if (newValue is TrackListingPlayDateTimeGroup playTimeGroup)
             {
-                IsShowingListItems = false;
-                // show a list of play time groups
-                _oldListings = Listings.ToList();
-                GroupListing = Listings.ToList()
+                ShowPositionGroupSelection = true;
+                PositionGroupListing = Listings.ToList()
                     .Where(x => x is TrackListingPlayDateTimeGroup)
                     .Cast<TrackListingPlayDateTimeGroup>()
                     .OrderBy(x => x.PlayTime)
@@ -239,6 +215,8 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
 
         UpdateListings();
     }
+    
+    
 
     public void UpdateListings()
     {
@@ -249,8 +227,6 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
             : newListings.OrderByDescending(x => x.Position);
 
         var filteredListing = newListings.ToList();
-        //if (filteredListing.Count > 100)
-        //{
             if (ListingGroup == ListingGroup.Position)
             {
                 Listings = filteredListing
@@ -265,13 +241,6 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
                     .SelectMany(TransformTrackListingPlayDateTimeGroup)
                     .ToList();
             }
-        // }
-        // else
-        // {
-        //         Listings = filteredListing
-        //             .Select(TransformTrackListingViewModel)
-        //             .ToList();
-        // }
     }
 
     
@@ -281,14 +250,20 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
             {
                 new TrackListingPlayDateTimeGroup
                 {
-                    GroupName = ViewModels.TrackListingPlayDateTimeGroup.MakeNiceDateTimeString(group.Key),
+                    GroupName = TrackListingPlayDateTimeGroup.MakeNiceDateTimeString(group.Key),
                     PlayTime = group.Key
                 }
             }
             .Concat(group.Select(TransformTrackListingViewModel));
     }
+
+    public void SelectingGroup(ITrackListingViewModel group)
+    {
+        IsShowingListItems = true;
+        _scrollService?.ScrollIntoView(group);
+    }
     
-    private static ITrackListingViewModel TransformTrackListingPlayDateGroup(IGrouping<DateTime, TrackListingPlayDateTimeGroup> group, ITrackListingViewModel parent)
+    private ITrackListingViewModel TransformTrackListingPlayDateGroup(IGrouping<DateTime, TrackListingPlayDateTimeGroup> group, ITrackListingViewModel parent)
     {
         return new TrackListingPlayDateGroup
         {
@@ -296,6 +271,7 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
             Parent = parent,
             PlayTimes = group.Select(x => new TrackListingPlayTimeItem
             {
+                NewGroupHandler = this,
                 Parent = parent,
                 Time = $"{x.PlayTime:HH:00}-{x.PlayTime.AddHours(1):H:00}",
             }).ToList()
@@ -324,3 +300,4 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
         };
     }
 }
+

@@ -93,30 +93,37 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
 
     partial void OnSelectedGroupedItemChanged(ITrackListingViewModel? value)
     {
-        IsShowingListItems = true;
-        
         if (value is TrackListingPosition positionItem)
         {
+            IsShowingListItems = true;
+            
             // navigate to the selected item in the list
             _scrollService?.ScrollIntoView(positionItem.Parent);
         }
-    }
 
-    async partial void OnSelectedItemChanged(ITrackListingViewModel? newValue, ITrackListingViewModel? oldValue)
+        if (value is TrackListingPlayTimeItem playTimeItem)
+        {
+            _scrollService?.ScrollIntoView(playTimeItem.Parent);
+        }
+
+        if (value is TrackListingPlayDateGroup playDateGroup)
+        {
+            
+        }
+    }
+    
+
+    async partial void OnSelectedItemChanged(ITrackListingViewModel? oldValue, ITrackListingViewModel? newValue)
     {
             if (newValue is TrackListingViewModel trackListing)
             {
                 await DisplayTheSelectedListingAsync(trackListing);
-                // _scrollService?.ScrollIntoView(newValue);
                 IsShowingListItems = true;
-            }
-            else
-            {
-                IsShowingListItems = false;
             }
 
             if (newValue is TrackListingPositionGroup positionGroup)
             {
+                IsShowingListItems = false;
                 // show a list of position groups
                 _oldListings = Listings.ToList();
                 var itemsList = Listings
@@ -128,29 +135,24 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
 
                 GroupListing = itemsList;
             }
-
           
             if (newValue is TrackListingPlayDateTimeGroup playTimeGroup)
             {
+                IsShowingListItems = false;
                 // show a list of play time groups
+                _oldListings = Listings.ToList();
                 GroupListing = Listings.ToList()
                     .Where(x => x is TrackListingPlayDateTimeGroup)
                     .Cast<TrackListingPlayDateTimeGroup>()
                     .OrderBy(x => x.PlayTime)
                     .GroupBy(x => x.PlayTime.Date)
-                    .SelectMany(x => TransformTrackListingPlayDateGroup(x, playTimeGroup ))
+                    .Select(x => TransformTrackListingPlayDateGroup(x, playTimeGroup ))
                     .ToList();
-            }
-
-            if (newValue is TrackListingPlayDateGroup playDateGroup)
-            {
-                // show a list of play date groups
             }
     }
 
     private async Task DisplayTheSelectedListingAsync(TrackListingViewModel trackListing)
     {
-        
         var details = await _top2000Services.TrackDetailsAsync(trackListing.TrackId);
         var trackListings = details.Listings
             .Select(Transform)
@@ -247,8 +249,8 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
             : newListings.OrderByDescending(x => x.Position);
 
         var filteredListing = newListings.ToList();
-        if (filteredListing.Count > 100)
-        {
+        //if (filteredListing.Count > 100)
+        //{
             if (ListingGroup == ListingGroup.Position)
             {
                 Listings = filteredListing
@@ -263,13 +265,13 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
                     .SelectMany(TransformTrackListingPlayDateTimeGroup)
                     .ToList();
             }
-        }
-        else
-        {
-                Listings = filteredListing
-                    .Select(TransformTrackListingViewModel)
-                    .ToList();
-        }
+        // }
+        // else
+        // {
+        //         Listings = filteredListing
+        //             .Select(TransformTrackListingViewModel)
+        //             .ToList();
+        // }
     }
 
     
@@ -286,20 +288,18 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings
             .Concat(group.Select(TransformTrackListingViewModel));
     }
     
-    private static IEnumerable<ITrackListingViewModel> TransformTrackListingPlayDateGroup(IGrouping<DateTime, TrackListingPlayDateTimeGroup> group, ITrackListingViewModel parent)
+    private static ITrackListingViewModel TransformTrackListingPlayDateGroup(IGrouping<DateTime, TrackListingPlayDateTimeGroup> group, ITrackListingViewModel parent)
     {
-        return new[]
+        return new TrackListingPlayDateGroup
+        {
+            GroupName = group.Key.ToString("dddd dd MMM "),
+            Parent = parent,
+            PlayTimes = group.Select(x => new TrackListingPlayTimeItem
             {
-                new TrackListingPlayDateGroup
-                {
-                    GroupName = group.Key.ToString("dddd dd MMM "),
-                    Parent = parent
-                }
-            }
-            .Concat(group.Select(x => (ITrackListingViewModel) new TrackListingPlayTimeItem
-            {
+                Parent = parent,
                 Time = $"{x.PlayTime:HH:00}-{x.PlayTime.AddHours(1):H:00}",
-            }));
+            }).ToList()
+        };
     }
 
     private static IEnumerable<ITrackListingViewModel> TransformPositionGrouping(IGrouping<string, TrackListing> group)

@@ -2,7 +2,9 @@ using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Media;
 using Avalonia.Metadata;
+using CommunityToolkit.Mvvm.Input;
 using Top2000.Apps.AvaloniaApp.Assets;
+using Top2000.Apps.AvaloniaApp.Views;
 using Top2000.Features.Listings;
 
 namespace Top2000.Apps.AvaloniaApp.ViewModels;
@@ -60,13 +62,23 @@ public class TrackListingPlayDateGroup : ITrackListingViewModel
     public bool IsHeader => false;
     
     public required ITrackListingViewModel Parent { get; init; }
+    
+    public required List<TrackListingPlayTimeItem> PlayTimes { get; init; } 
 }
 
-public class TrackListingPlayTimeItem : ITrackListingViewModel
+public partial class TrackListingPlayTimeItem : ViewModelBase, ITrackListingViewModel
 {
     public string HeaderName => nameof(TrackListingPlayTimeItem);
     public required string Time { get; init; }
     public bool IsHeader => true;
+    public required  ITrackListingViewModel Parent { get; init; }
+    public required IScrollListingListIntoView ScrollListingListIntoView { get; init; }
+
+    [RelayCommand]
+    private void GotoPlayTime()
+    {
+        ScrollListingListIntoView.ScrollIntoView(Parent);
+    }
 }
 
 public class TrackListingPlayDateItem : ITrackListingViewModel

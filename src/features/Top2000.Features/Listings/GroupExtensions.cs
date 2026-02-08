@@ -19,6 +19,23 @@ public static class GroupExtensions
         }
 
         /// <summary>
+        /// Grouped the Tracks by the PlayUtcDateAndTime in local time without the minute and second component
+        /// </summary>
+        /// <returns>Grouped IEnumerable of TrackListing by Year/Month/Day/Hour in Local Time</returns>
+        public IEnumerable<IGrouping<DateTime, TrackListing>> GroupByPlayLocalDateAndTime()
+        {
+            return tracks.GroupBy(x =>
+            {
+                var localTime = x.PlayUtcDateAndTime.ToLocalTime();
+                return new DateTime(
+                    localTime.Year,
+                    localTime.Month,
+                    localTime.Day,
+                    localTime.Hour, 0, 0, DateTimeKind.Local);
+            });
+        }
+        
+        /// <summary>
         /// Group the track by their positions in groups of 100.
         /// 100 is put in the 100 - 200 group
         /// 2000 is put in the 1900 - 2000 group but only if the count of items is 2000 otherwise it is grouped in the 2000 - 2100 group

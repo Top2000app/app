@@ -61,8 +61,6 @@ public class TrackListingPlayDateGroup : ITrackListingViewModel
     public required string GroupName { get; init; }
     public bool IsHeader => false;
     
-    public required ITrackListingViewModel Parent { get; init; }
-    
     public required List<TrackListingPlayTimeItem> PlayTimes { get; init; } 
 }
 

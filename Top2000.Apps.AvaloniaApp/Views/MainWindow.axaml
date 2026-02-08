@@ -83,8 +83,9 @@
                     
                 </Grid>
                 <ListBox x:Name="ListingListBox" Grid.Row="1" ItemsSource="{Binding Listings}"
-                         SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-                         CornerRadius="0,0,10,10">
+                         SelectedItem="{Binding SelectedItem, Mode=TwoWay}" AutoScrollToSelectedItem="False"
+                         CornerRadius="0,0,10,10"
+                         >
                     <ListBox.DataTemplates>
                         <vm:TrackListingViewModelTemplateSelector>
                             
@@ -128,12 +129,13 @@
                         </vm:TrackListingViewModelTemplateSelector>
                     </ListBox.DataTemplates>
                 </ListBox>
-                <Border Grid.Row="0" Grid.RowSpan="2" Background="Black" Opacity="0.6">
-                    
-                <ScrollViewer Grid.Row="1" CornerRadius="0,0,10,10">
-                    
+                <!-- Group Select -->  
+                <ScrollViewer  Grid.Row="0" Grid.RowSpan="2" CornerRadius="0,0,10,10" Background="Transparent"
+                               IsVisible="{Binding ShowTimeGroupSelection}" >
                     <ItemsControl ItemsSource="{Binding GroupTimeGroupListing}"
-                                  CornerRadius="0,0,10,10">
+                                  Background="{Binding ElementName=ListingListBox, Path=Background}"
+                                  Padding="10"
+                                 >
                         <ItemsControl.DataTemplates>
 
                             <DataTemplate x:DataType="vm:TrackListingPlayDateGroup">
@@ -154,16 +156,16 @@
                                                     Width="110" Height="50" HorizontalContentAlignment="Center"
                                                     VerticalContentAlignment="Center"
                                                     Command="{Binding GotoPlayTimeCommand}"
-                                                    Content="{Binding Time}"></Button>
+                                                    Content="{Binding Time}" />
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                 </Grid>
                             </DataTemplate>
+                            
                         </ItemsControl.DataTemplates>
                     </ItemsControl>
                 </ScrollViewer>
-                </Border>
             </Grid>
        </Border>
         

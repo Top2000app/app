@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using Top2000.Apps.AvaloniaApp.ViewModels;
 
@@ -19,6 +18,12 @@ public partial class MainWindow : Window, IScrollListingListIntoView
 
     public void ScrollIntoView(ITrackListingViewModel item)
     {
+        var lastItem = ListingListBox.Items.Last();
+        if (lastItem is not null)
+        {
+            ListingListBox.ScrollIntoView(lastItem);
+        }
+        
         ListingListBox.ScrollIntoView(item);
     }
 }

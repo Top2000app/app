@@ -94,7 +94,7 @@ public partial class TrackDetailsViewModel : ViewModelBase
     public required int RecordedYear { get; init; }
     public required List<TrackDetailsListingViewModel> Listings { get; init; }
 
-    [ObservableProperty] private TrackDetailsListingViewModel selectedListing;
+    [ObservableProperty] private TrackDetailsListingViewModel _selectedListing;
     
     public required MainWindowViewModel ParentMainWindowViewModel { get; init; }
     

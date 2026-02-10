@@ -166,6 +166,31 @@
                         </ItemsControl.DataTemplates>
                     </ItemsControl>
                 </ScrollViewer>
+                
+                 <ScrollViewer  Grid.Row="0" Grid.RowSpan="2" CornerRadius="0,0,10,10" Background="Transparent"
+                               IsVisible="{Binding ShowPositionGroupSelection}" >
+                    <ItemsControl ItemsSource="{Binding PositionGroupListing}"
+                                  Background="{Binding ElementName=ListingListBox, Path=Background}"
+                                  Padding="10"
+                                 >
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel  />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.DataTemplates>
+
+                            <DataTemplate x:DataType="vm:TrackListingPosition">
+                                <Button 
+                                    Height="50" Width="150" HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Command="{Binding GotoPositionCommand}"
+                                    Content="{Binding ItemText}" />
+                            </DataTemplate>
+                            
+                        </ItemsControl.DataTemplates>
+                    </ItemsControl>
+                </ScrollViewer>
             </Grid>
        </Border>
         

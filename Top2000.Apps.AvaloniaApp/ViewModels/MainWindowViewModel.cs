@@ -38,6 +38,7 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IH
     private SortedSet<Edition> Editions { get; set; } = [];
     private HashSet<TrackListing> _originalListings = [];
     private readonly ITop2000Services _top2000Services;
+    private ITrackListingViewModel? _selectUponGroupClosing;
 
     public MainWindowViewModel()
     {
@@ -85,6 +86,11 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IH
                 SelectedItem = Listings
                     .OfType<TrackListingViewModel>()
                     .FirstOrDefault(x => x.Position == position.Value);
+
+                if (SelectedItem is not null)
+                {
+                    _scrollService!.ScrollIntoView(SelectedItem);
+                }
             }
         }
     }
@@ -109,7 +115,6 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IH
         _scrollService?.ScrollIntoView(group);
     }
 
-    private ITrackListingViewModel? _selectUponGroupClosing;
     async partial void OnSelectedItemChanged(ITrackListingViewModel? oldValue, ITrackListingViewModel? newValue)
     {
         if (newValue is TrackListingViewModel trackListing)
@@ -125,7 +130,8 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IH
             PositionGroupListing = Listings
                 .Where(x => x is TrackListingPositionGroup)
                 .Cast<TrackListingPositionGroup>()
-                .Select(x => new TrackListingPosition { ItemText = x.GroupName, Parent = x })
+                .OrderBy(x => int.Parse(x.GroupName.Split(' ')[0]))
+                .Select(x => new TrackListingPosition { ItemText = x.GroupName, Parent = x, NewGroupHandler = this})
                 .Cast<ITrackListingViewModel>()
                 .ToList();
         }

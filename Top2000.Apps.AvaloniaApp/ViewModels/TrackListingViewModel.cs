@@ -32,14 +32,7 @@ public interface ITrackListingViewModel
     bool IsHeader { get;  }
 }
 
-public class TrackListingPosition : ITrackListingViewModel
-{
-    public string HeaderName => nameof(TrackListingPosition);
-    public required string ItemText { get; init; }
-    public bool IsHeader => false;
-    
-    public required ITrackListingViewModel Parent { get; init; }
-}
+
 
 public class TrackListingPlayDateTimeGroup : ITrackListingViewModel
 {
@@ -64,6 +57,22 @@ public class TrackListingPlayDateGroup : ITrackListingViewModel
     public required List<TrackListingPlayTimeItem> PlayTimes { get; init; } 
 }
 
+public partial class TrackListingPosition : ViewModelBase, ITrackListingViewModel
+{
+    public string HeaderName => nameof(TrackListingPosition);
+    public required string ItemText { get; init; }
+    public bool IsHeader => false;
+    
+    public required IHandleGroupSelection NewGroupHandler { get; init; }
+    public required ITrackListingViewModel Parent { get; init; }
+
+    [RelayCommand]
+    private void GotoPosition()
+    {
+        NewGroupHandler.SelectingGroup(Parent);
+    }
+}
+
 public partial class TrackListingPlayTimeItem : ViewModelBase, ITrackListingViewModel
 {
     public string HeaderName => nameof(TrackListingPlayTimeItem);
@@ -78,13 +87,6 @@ public partial class TrackListingPlayTimeItem : ViewModelBase, ITrackListingView
     {
         NewGroupHandler.SelectingGroup(Parent);
     }
-}
-
-public class TrackListingPlayDateItem : ITrackListingViewModel
-{
-    public string HeaderName => nameof(TrackListingPlayDateItem);
-    public required string Time { get; init; }
-    public bool IsHeader => true;
 }
 
 public class TrackListingPositionGroup : ITrackListingViewModel

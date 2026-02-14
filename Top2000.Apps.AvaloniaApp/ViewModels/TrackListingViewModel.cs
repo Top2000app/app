@@ -29,17 +29,13 @@ public class TrackListingViewModelTemplateSelector : IDataTemplate
 public interface ITrackListingViewModel
 {
     string HeaderName { get; }
-    bool IsHeader { get;  }
 }
-
-
 
 public class TrackListingPlayDateTimeGroup : ITrackListingViewModel
 {
     public string HeaderName => nameof(TrackListingPlayDateTimeGroup);
     public required string GroupName { get; init; }
     public required DateTime PlayTime { get; init; }
-    public bool IsHeader => true;
     
     public static string MakeNiceDateTimeString(DateTime dateTime)
     {
@@ -52,19 +48,24 @@ public class TrackListingPlayDateGroup : ITrackListingViewModel
 {
     public string HeaderName => nameof(TrackListingPlayDateGroup);
     public required string GroupName { get; init; }
-    public bool IsHeader => false;
     
     public required List<TrackListingPlayTimeItem> PlayTimes { get; init; } 
+}
+
+public class TrackListingPositionGroupHeader : ITrackListingViewModel
+{
+    public string HeaderName => nameof(TrackListingPositionGroupHeader);
+    public required string  ItemText { get; init; }
+    
+    public required List<TrackListingPosition> PositionGroups { get; init; }
 }
 
 public partial class TrackListingPosition : ViewModelBase, ITrackListingViewModel
 {
     public string HeaderName => nameof(TrackListingPosition);
     public required string ItemText { get; init; }
-    public bool IsHeader => false;
-    
     public required IHandleGroupSelection NewGroupHandler { get; init; }
-    public required ITrackListingViewModel Parent { get; init; }
+    public required TrackListingPositionGroup Parent { get; init; }
 
     [RelayCommand]
     private void GotoPosition()
@@ -93,7 +94,9 @@ public class TrackListingPositionGroup : ITrackListingViewModel
 {
     public string HeaderName => nameof(TrackListingPositionGroup);
     public required string GroupName { get; init; }
-    public bool IsHeader => true;
+    
+    public required int PositionRangStart { get; init; }
+    public required int PositionRangEnd { get; init; }
 }
 
 public class TrackListingViewModel : ITrackListingViewModel

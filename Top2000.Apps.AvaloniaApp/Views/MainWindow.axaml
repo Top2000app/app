@@ -173,19 +173,30 @@
                                   Background="{Binding ElementName=ListingListBox, Path=Background}"
                                   Padding="10"
                                  >
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel  />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.DataTemplates>
-
-                            <DataTemplate x:DataType="vm:TrackListingPosition">
-                                <Button 
-                                    Height="50" Width="150" HorizontalContentAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Command="{Binding GotoPositionCommand}"
-                                    Content="{Binding ItemText}" />
+                    <ItemsControl.DataTemplates>
+                            <DataTemplate x:DataType="vm:TrackListingPositionGroupHeader">
+                                <Grid RowDefinitions="Auto,*">
+                                    <TextBlock FontSize="20" Text="{Binding ItemText}"
+                                               Foreground="{StaticResource Top2000Colour}" Margin="0,5" />
+                                    
+                                    <ItemsControl Grid.Row="1" ItemsSource="{Binding PositionGroups}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel  />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate DataType="{x:Type vm:TrackListingPosition}">
+                                                <Button 
+                                                    Width="110" Height="50" HorizontalContentAlignment="Center"
+                                                    VerticalContentAlignment="Center"
+                                                    Command="{Binding GotoPositionCommand}"
+                                                    Content="{Binding ItemText}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Grid>
                             </DataTemplate>
                             
                         </ItemsControl.DataTemplates>

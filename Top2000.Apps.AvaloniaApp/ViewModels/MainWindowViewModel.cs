@@ -1,4 +1,5 @@
-﻿using Avalonia.Media;
+﻿using System.Collections.Frozen;
+using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Top2000.Apps.AvaloniaApp.Assets;
@@ -131,8 +132,8 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IH
                 .Where(x => x is TrackListingPositionGroup)
                 .Cast<TrackListingPositionGroup>()
                 .OrderBy(x => int.Parse(x.GroupName.Split(' ')[0]))
-                .Select(x => new TrackListingPosition { ItemText = x.GroupName, Parent = x, NewGroupHandler = this})
-                .Cast<ITrackListingViewModel>()
+                .GroupBy(x => int.Parse(x.GroupName.Split(' ')[0]) / 1000)
+                .Select(TransformTrackListingPositionGroupHeader)
                 .ToList();
         }
 
@@ -149,6 +150,22 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IH
                 .Select(TransformTrackListingPlayDateGroup)
                 .ToList();
         }
+    }
+    
+    private ITrackListingViewModel TransformTrackListingPositionGroupHeader(IGrouping<int, TrackListingPositionGroup> group)
+    {
+        var positionGroups = group.Select(x => new TrackListingPosition
+        {
+            ItemText = $"{x.PositionRangStart} - {x.PositionRangEnd}",
+            NewGroupHandler = this,
+            Parent = x,
+        }).ToList();
+        
+        return new TrackListingPositionGroupHeader
+        {
+            ItemText = $"{positionGroups[0].Parent.PositionRangStart} - {positionGroups[^1].Parent.PositionRangEnd}",
+            PositionGroups = positionGroups
+        };
     }
 
     private async Task DisplayTheSelectedListingAsync(TrackListingViewModel trackListing)
@@ -295,7 +312,8 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IH
 
     private static IEnumerable<ITrackListingViewModel> TransformPositionGrouping(IGrouping<string, TrackListing> group)
     {
-        return new[] { (ITrackListingViewModel)new TrackListingPositionGroup { GroupName = group.Key } }.Concat(group.Select(TransformTrackListingViewModel));
+        var positionRange = group.Key.Split('-').Select(x => int.Parse(x.Trim())).ToArray();
+        return new[] { (ITrackListingViewModel)new TrackListingPositionGroup { PositionRangStart = positionRange[0], PositionRangEnd = positionRange[1], GroupName = group.Key } }.Concat(group.Select(TransformTrackListingViewModel));
     }
    
     private static ITrackListingViewModel TransformTrackListingViewModel(TrackListing x)

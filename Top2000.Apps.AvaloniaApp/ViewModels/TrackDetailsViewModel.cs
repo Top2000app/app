@@ -1,5 +1,10 @@
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
+using LiveChartsCore;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.Kernel;
+using LiveChartsCore.Measure;
+using LiveChartsCore.SkiaSharpView;
 using Top2000.Apps.AvaloniaApp.Assets;
 using Top2000.Features.TrackInformation;
 
@@ -81,9 +86,54 @@ public partial class DesignTimeTrackDetailsViewModel : TrackDetailsViewModel
                 DeltaSymbol = TrackDetailsListingViewModel.ConvertDeltaToSymbol(x),
                 DeltaSymbolColour = new SolidColorBrush(TrackDetailsListingViewModel.ConvertDeltaSymbolColour(x)),
                 DeltaFontSize = TrackDetailsListingViewModel.ConvertDeltaFontSize(x),
-                Status = x.Status
+                Status = x.Status,
             })
             .ToList();
+
+        LatestEditionPosition = "2000";
+
+        var orderedListings = Listings
+            .Where(x => x.Position.HasValue)
+            .OrderBy(x => x.Position)
+            .ThenBy(x => x.Edition)
+            .ToList();
+
+        Lowest = orderedListings.First();
+        Highest = orderedListings.Last();
+        
+        var positions = Listings.Where(x => x.Position.HasValue).Select(x => x.Position.Value).ToList();
+        if (positions.Any())
+        {
+            var (ymin, ymax) = GetZoomRange(positions.Select(x => (int?)x).ToList());
+            YMin = ymin;
+            YMax = ymax;
+        }
+        else
+        {
+            YMin = 1;
+            YMax = 2000;
+        }
+        
+        
+        Series =
+        [
+            new LineSeries<ObservablePoint>
+            {
+                Values = Listings.OrderBy(x => x.Edition).Select(x => new ObservablePoint(x.Edition, x.Position)
+                {
+                    MetaData = new ChartEntityMetaData()
+                    {
+                        
+                    }
+                }).ToArray(),
+                GeometrySize = 6,
+                LineSmoothness = 0
+            }
+        ];
+
+        Positions = listings.Select(x => x.Position).ToArray();
+
+
     }
 }
 
@@ -95,20 +145,18 @@ public partial class TrackDetailsViewModel : ViewModelBase
     public required List<TrackDetailsListingViewModel> Listings { get; init; }
 
     [ObservableProperty] private TrackDetailsListingViewModel _selectedListing;
+    [ObservableProperty] private ISeries[] _series = [];
+    [ObservableProperty] private double? _yMin;
+    [ObservableProperty] private double? _yMax;
+    [ObservableProperty] private int?[] _positions = [];
+    
+    public required string LatestEditionPosition { get; init; }
     
     public required MainWindowViewModel ParentMainWindowViewModel { get; init; }
     
-    public TrackDetailsListingViewModel Highest => Listings
-        .Where(x => x.Position.HasValue)
-        .OrderBy(x => x.Position)
-        .ThenBy(x => x.Edition)
-        .First();
+    public required TrackDetailsListingViewModel Highest { get; init; }
 
-    public TrackDetailsListingViewModel Lowest => Listings
-        .Where(x => x.Position.HasValue)
-        .OrderBy(x => x.Position)
-        .ThenBy(x => x.Edition)
-        .Last();
+    public required TrackDetailsListingViewModel Lowest { get; init; }
 
     public TrackDetailsListingViewModel First => Listings.Single(x => x.Status == ListingStatus.New);
 
@@ -128,6 +176,46 @@ public partial class TrackDetailsViewModel : ViewModelBase
         {
             ParentMainWindowViewModel?.ChangeSelectedEditionAsync(value.Edition, value.Position);
         }
+    }
+    
+    public static double Percentile(List<int> values, double p)
+    {
+        if (values.Count == 0) return 0;
+        var sorted = values.OrderBy(x => x).ToList();
+        double index = (sorted.Count - 1) * p;
+        int lower = (int)Math.Floor(index);
+        int upper = (int)Math.Ceiling(index);
+        if (lower == upper) return sorted[lower];
+        double fraction = index - lower;
+        return sorted[lower] + fraction * (sorted[upper] - sorted[lower]);
+    }
+    
+    public static (double min, double max) GetZoomRange(List<int?> values)
+    {
+        var cleanValues = values.Where(x => x.HasValue).Select(x => x.Value).ToList();
+        double yMin = Percentile(cleanValues, 0.02);
+        double yMax = Percentile(cleanValues, 0.98);
+
+        double padding = (yMax - yMin) * 0.1;
+
+        yMin -= padding;
+        yMax += padding;
+
+        yMin = Math.Max(1, yMin);
+        yMax = Math.Min(2000, yMax);
+
+        double range = yMax - yMin;
+
+        int step =
+            range <= 20 ? 1 :
+            range <= 100 ? 5 :
+            range <= 500 ? 10 :
+            50;
+
+        yMin = Math.Floor(yMin / step) * step;
+        yMax = Math.Ceiling(yMax / step) * step;
+
+        return (yMin, yMax);
     }
 }
 

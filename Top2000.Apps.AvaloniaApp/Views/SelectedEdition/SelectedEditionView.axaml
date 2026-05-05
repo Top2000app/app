@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Top2000.Apps.AvaloniaApp.Views.SelectedEdition"
+             x:DataType="vm:SelectedEditionViewModel"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Top2000.Apps.AvaloniaApp.Views.SelectedEdition.SelectedEditionView">
+    <Design.DataContext>
+        <vm:DesignTimeSelectedEditionViewModel />
+    </Design.DataContext>
+    <Grid RowDefinitions="Auto,*">
+        <TextBlock Grid.Row="0" FontSize="38" Text="{Binding Year}" />
+        
+        <WrapPanel Grid.Row="1">
+            <Button Background="Aqua" CornerRadius="10" Width="150" Height="100" Padding="0" Margin="0" >
+                <Button.Content>
+                    <Grid RowDefinitions="Auto, *" >
+                        <Border Grid.Row="0" BorderBrush="Black" BorderThickness="0,0,0,1" Height="25" >
+                            <TextBlock Margin="20,0,0,0">Edition</TextBlock>
+                        </Border>
+                        <TextBlock Grid.Row="0"></TextBlock>
+                        
+                        
+                    </Grid>
+                    
+                </Button.Content>
+            </Button>
+        </WrapPanel>
+    </Grid>
+</UserControl>

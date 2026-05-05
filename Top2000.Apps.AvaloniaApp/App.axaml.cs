@@ -3,7 +3,9 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
+using Android.Util;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Top2000.Apps.AvaloniaApp.ViewModels;
 using Top2000.Apps.AvaloniaApp.Views;
@@ -47,7 +49,18 @@ public partial class App : Application
             };
         }
 
+        Dispatcher.UIThread.UnhandledException += OnUnhandledException;
+        
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+    {
+        // Log the exception
+        Console.WriteLine("Unhandled UI thread exception: " + e.Exception);
+
+        // Optionally prevent the application from crashing
+        e.Handled = true;    
     }
 
     private void DisableAvaloniaDataAnnotationValidation()

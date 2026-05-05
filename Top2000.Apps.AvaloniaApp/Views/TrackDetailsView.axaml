@@ -3,157 +3,199 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Top2000.Apps.AvaloniaApp.ViewModels"
+             xmlns:assets="using:Top2000.Apps.AvaloniaApp.Assets"
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
              mc:Ignorable="d" x:DataType="vm:TrackDetailsViewModel"
-             d:DesignHeight="600" d:DesignWidth="600"
+             d:DesignHeight="600" d:DesignWidth="1200"
              x:Class="Top2000.Apps.AvaloniaApp.Views.TrackDetailsView">
     <Design.DataContext>
         <vm:DesignTimeTrackDetailsViewModel />
     </Design.DataContext>
     
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*" Margin="20,0,20,0" >
+        <Grid Row="0" Column="0" ColumnDefinitions="*,Auto">
+            <StackPanel>
+                <TextBlock Text="{Binding Title}"
+                           FontSize="42"
+                           FontWeight="Bold"
+                           TextWrapping="Wrap" />
+                <TextBlock  FontSize="20" Opacity="0.6">
+                    <Run Text="{Binding Artist}" />
+                    <Run Text=" · " />
+                    <Run Text="{Binding RecordedYear}" />
+                </TextBlock>
+            </StackPanel>
+            
+            <Button x:Name="Button" IsVisible="False" />
+            
 
-        <TextBlock Grid.Row="0">
-            <Run Text="{Binding Title}"
-                 FontSize="38" />
-            <LineBreak />
-            <Run Text="{Binding Artist}"
-                   FontSize="30" />
-            <Run Text="(" FontSize="30" />
-            <Run Text="{Binding RecordedYear}" 
-                 FontSize="30" />
-            <Run Text=")" FontSize="30" />
-        </TextBlock>
-        
-        <TabControl Grid.Row="1">
-           
-          
-            
-             <TabItem Header="%Stats%">
-                <Grid RowDefinitions="Auto,*">
-                     <Grid Grid.Row="0" RowDefinitions="Auto,100" ColumnDefinitions="100,20 100" >
-                         <!-- Since Release Arc -->
-                         <Arc Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch"
-                              Stroke="LightGray"
-                              StartAngle="0" SweepAngle="360" StrokeThickness="10" />
-        
-                         <Arc Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch"
-                             Stroke="{StaticResource Top2000Colour}"
-                             StartAngle="270"  SweepAngle="{Binding SinceRelease}" StrokeThickness="10" />
-            
-                         <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
-                             <Run Text="{Binding Appearances}" FontSize="20" />
-                             <Run Text="/" FontSize="20" />
-                             <Run Text="{Binding AppearancesPossible}" FontSize="20" />
-                         </TextBlock>
-            
-                         <!-- In Top 2000 Arc -->
-                         <Arc Grid.Row="1" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                              Stroke="LightGray"
-                              StartAngle="0" SweepAngle="360" StrokeThickness="10" />
-            
-                         <Arc Grid.Row="1" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                              Stroke="{StaticResource Top2000Colour}"
-                              StartAngle="270"  SweepAngle="{Binding InTop2000}" StrokeThickness="10" />
-                        
-                         <TextBlock Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-                             <Run Text="{Binding Appearances}" FontSize="20" />
-                             <Run Text="/" FontSize="20" />
-                             <Run Text="{Binding Listings.Count}" FontSize="20" />
-                         </TextBlock>
-                     </Grid>
-        
-                     <ItemsControl Grid.Row="1" ItemsSource="{Binding Listings}" Margin="-20,0,0,0">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel  />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-        
-                        <ItemsControl.Items>
-                            <TextBlock Margin="20,20,0,0">
-                                <Run Text="%Record High%" />
-                                <LineBreak />
-                                <Run Text="{Binding Highest.Position}" FontSize="20" />
-                                <Run Text="(" FontSize="11" />
-                                <Run Text="{Binding Highest.Edition}" FontSize="11" />
-                                <Run Text=")" FontSize="11" />
-                            </TextBlock>
+        </Grid>
+        <Border Grid.Row="1" Background="{Binding ElementName=Button,Path=Background}" CornerRadius="10" Height="300" >
+            <Grid RowDefinitions="Auto,*">
+            <TextBlock Text="{x:Static assets:Symbols.Chart}" FontFamily="{StaticResource MaterialIcons}" Foreground="{StaticResource Top2000Colour}" ></TextBlock>
+                <lvc:CartesianChart Grid.Row="1" Background="{Binding ElementName=Button,Path=Background}" 
+                                    Series="{Binding Series}"
+                                    >
+                    <!-- X Axis -->
+                    <lvc:CartesianChart.XAxes>
+                        <lvc:XamlAxis ForceStepToMin="true" MinStep="1" MinLimit="1999" MaxLimit="2025" />
+                    </lvc:CartesianChart.XAxes>
                     
-                            <TextBlock Margin="20,20,0,0">
-                                <Run Text="%Record Low%" />
-                                <LineBreak />
-                                <Run Text="{Binding Lowest.Position}" FontSize="20" />
-                                <Run Text="(" FontSize="11" />
-                                <Run Text="{Binding Lowest.Edition}" FontSize="11" />
-                                <Run Text=")" FontSize="11" />
-                            </TextBlock>
-                    
-                            <TextBlock Margin="20,20,0,0">
-                                <Run Text="%First Position%" />
-                                <LineBreak />
-                                <Run Text="{Binding First.Position}" FontSize="20" />
-                                <Run Text="(" FontSize="11" />
-                                <Run Text="{Binding First.Edition}" FontSize="11" />
-                                <Run Text=")" FontSize="11" />
-                            </TextBlock>
-                    
-                            <TextBlock Margin="20,20,0,0">
-                                <Run Text="%Latest Position%" />
-                                <LineBreak />
-                                <Run Text="{Binding Latest.Position}" FontSize="20" />
-                                <Run Text="(" FontSize="11" />
-                                <Run Text="{Binding Latest.Edition}" FontSize="11" />
-                                <Run Text=")" FontSize="11" />
-                            </TextBlock>
-                    
-                            <!-- <Border Width="180" Height="150" BorderBrush="Gray" BorderThickness="0" -->
-                            <!--         BoxShadow="0 4 8 rgba(0,0,0,0.2)" -->
-                            <!--         CornerRadius="20"  -->
-                            <!--         Background="#f2f2f2"> -->
-                            <!-- -->
-                            <!-- -->
-                            <!--     <Grid Margin="10" RowDefinitions="Auto,*,Auto"> -->
-                            <!--         <TextBlock Grid.Row="0" FontWeight="Bold" Text="Edition 2025"/> -->
-                            <!--         <Line Grid.Row="1"/> -->
-                            <!--         <TextBlock Grid.Row="1" Text="232" FontSize="50"  -->
-                            <!--                    HorizontalAlignment="Center" VerticalAlignment="Center" /> -->
-                            <!-- -->
-                            <!--         <TextBlock Grid.Row="2" Foreground="Gray"> -->
-                            <!--             <Run Text="Vrijdag 27 dec" /> -->
-                            <!--             <LineBreak/> -->
-                            <!--             <Run Text="20:00 - 21:00" /> -->
-                            <!--         </TextBlock> -->
-                            <!--     </Grid> -->
-                            <!-- </Border> -->
-                        </ItemsControl.Items>
-                    </ItemsControl>
-                </Grid>
-            </TabItem>
+                    <!-- Y Axis -->
+                    <lvc:CartesianChart.YAxes>
+                        <lvc:XamlAxis IsInverted="true" MinLimit="{Binding YMin}" MaxLimit="{Binding YMax}" MinStep="1" />
+                    </lvc:CartesianChart.YAxes>
+                </lvc:CartesianChart>
+                
+            </Grid>
+        </Border>
+        <Border Grid.Row="2" Background="{Binding ElementName=Button,Path=Background}" CornerRadius="5" >
             
-            <TabItem Header="%All Positions%">
-                <ListBox ItemsSource="{Binding Listings}"
-                         AutoScrollToSelectedItem="True"
-                         SelectedItem="{Binding SelectedListing, Mode=TwoWay}" >
+        </Border>
        
-                    <ListBox.ItemTemplate>
-                        <DataTemplate DataType="vm:TrackDetailsListingViewModel" >
-                            <Grid Margin="0,0,20,0" ColumnDefinitions="75, 100, 75">
-                                <TextBlock Grid.Column="0" Text="{Binding Edition }"
-                                           FontSize="20"  VerticalAlignment="Center" />
-                                <TextBlock Grid.Column="1"  FontSize="20" >
-                                    <Run FontFamily="{StaticResource MaterialIcons}" BaselineAlignment="Center"
-                                         Foreground="{Binding DeltaSymbolColour}" Text="{Binding DeltaSymbol}" />
-                                    <Run Text="{Binding Delta}" BaselineAlignment="Center"
-                                         Foreground="{Binding DeltaSymbolColour}" />
-                                </TextBlock>
-                                <TextBlock Grid.Column="2" VerticalAlignment="Center"
-                                           Text="{Binding PositionString}"
-                                           FontSize="20" />
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </TabItem>
-        </TabControl>
-    </Grid>
+</Grid>
+    <!-- <Grid RowDefinitions="Auto,*"> -->
+    <!-- -->
+    <!--     <TextBlock Grid.Row="0"> -->
+    <!--         <Run Text="{Binding Title}" -->
+    <!--              FontSize="38" /> -->
+    <!--         <LineBreak /> -->
+    <!--         <Run Text="{Binding Artist}" -->
+    <!--                FontSize="30" /> -->
+    <!--         <Run Text="(" FontSize="30" /> -->
+    <!--         <Run Text="{Binding RecordedYear}"  -->
+    <!--              FontSize="30" /> -->
+    <!--         <Run Text=")" FontSize="30" /> -->
+    <!--     </TextBlock> -->
+    <!--      -->
+    <!--     <TabControl Grid.Row="1"> -->
+    <!--         -->
+    <!--          <TabItem Header="%Stats%"> -->
+    <!--             <Grid RowDefinitions="Auto,*"> -->
+    <!--                  <Grid Grid.Row="0" RowDefinitions="Auto,100" ColumnDefinitions="100,20 100" > -->
+    <!--                      ~1~ Since Release Arc @1@ -->
+    <!--                      <Arc Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" -->
+    <!--                           Stroke="LightGray" -->
+    <!--                           StartAngle="0" SweepAngle="360" StrokeThickness="10" /> -->
+    <!--      -->
+    <!--                      <Arc Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" -->
+    <!--                          Stroke="{StaticResource Top2000Colour}" -->
+    <!--                          StartAngle="270"  SweepAngle="{Binding SinceRelease}" StrokeThickness="10" /> -->
+    <!--          -->
+    <!--                      <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"> -->
+    <!--                          <Run Text="{Binding Appearances}" FontSize="20" /> -->
+    <!--                          <Run Text="/" FontSize="20" /> -->
+    <!--                          <Run Text="{Binding AppearancesPossible}" FontSize="20" /> -->
+    <!--                      </TextBlock> -->
+    <!--          -->
+    <!--                      ~1~ In Top 2000 Arc @1@ -->
+    <!--                      <Arc Grid.Row="1" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" -->
+    <!--                           Stroke="LightGray" -->
+    <!--                           StartAngle="0" SweepAngle="360" StrokeThickness="10" /> -->
+    <!--          -->
+    <!--                      <Arc Grid.Row="1" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" -->
+    <!--                           Stroke="{StaticResource Top2000Colour}" -->
+    <!--                           StartAngle="270"  SweepAngle="{Binding InTop2000}" StrokeThickness="10" /> -->
+    <!--                      -->
+    <!--                      <TextBlock Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"> -->
+    <!--                          <Run Text="{Binding Appearances}" FontSize="20" /> -->
+    <!--                          <Run Text="/" FontSize="20" /> -->
+    <!--                          <Run Text="{Binding Listings.Count}" FontSize="20" /> -->
+    <!--                      </TextBlock> -->
+    <!--                  </Grid> -->
+    <!--      -->
+    <!--                  <ItemsControl Grid.Row="1" ItemsSource="{Binding Listings}" Margin="-20,0,0,0"> -->
+    <!--                     <ItemsControl.ItemsPanel> -->
+    <!--                         <ItemsPanelTemplate> -->
+    <!--                             <WrapPanel  /> -->
+    <!--                         </ItemsPanelTemplate> -->
+    <!--                     </ItemsControl.ItemsPanel> -->
+    <!--      -->
+    <!--                     <ItemsControl.Items> -->
+    <!--                         <TextBlock Margin="20,20,0,0"> -->
+    <!--                             <Run Text="%Record High%" /> -->
+    <!--                             <LineBreak /> -->
+    <!--                             <Run Text="{Binding Highest.Position}" FontSize="20" /> -->
+    <!--                             <Run Text="(" FontSize="11" /> -->
+    <!--                             <Run Text="{Binding Highest.Edition}" FontSize="11" /> -->
+    <!--                             <Run Text=")" FontSize="11" /> -->
+    <!--                         </TextBlock> -->
+    <!--                  -->
+    <!--                         <TextBlock Margin="20,20,0,0"> -->
+    <!--                             <Run Text="%Record Low%" /> -->
+    <!--                             <LineBreak /> -->
+    <!--                             <Run Text="{Binding Lowest.Position}" FontSize="20" /> -->
+    <!--                             <Run Text="(" FontSize="11" /> -->
+    <!--                             <Run Text="{Binding Lowest.Edition}" FontSize="11" /> -->
+    <!--                             <Run Text=")" FontSize="11" /> -->
+    <!--                         </TextBlock> -->
+    <!--                  -->
+    <!--                         <TextBlock Margin="20,20,0,0"> -->
+    <!--                             <Run Text="%First Position%" /> -->
+    <!--                             <LineBreak /> -->
+    <!--                             <Run Text="{Binding First.Position}" FontSize="20" /> -->
+    <!--                             <Run Text="(" FontSize="11" /> -->
+    <!--                             <Run Text="{Binding First.Edition}" FontSize="11" /> -->
+    <!--                             <Run Text=")" FontSize="11" /> -->
+    <!--                         </TextBlock> -->
+    <!--                  -->
+    <!--                         <TextBlock Margin="20,20,0,0"> -->
+    <!--                             <Run Text="%Latest Position%" /> -->
+    <!--                             <LineBreak /> -->
+    <!--                             <Run Text="{Binding Latest.Position}" FontSize="20" /> -->
+    <!--                             <Run Text="(" FontSize="11" /> -->
+    <!--                             <Run Text="{Binding Latest.Edition}" FontSize="11" /> -->
+    <!--                             <Run Text=")" FontSize="11" /> -->
+    <!--                         </TextBlock> -->
+    <!--                  -->
+    <!--                         ~1~ <Border Width="180" Height="150" BorderBrush="Gray" BorderThickness="0" @1@ -->
+    <!--                         ~1~         BoxShadow="0 4 8 rgba(0,0,0,0.2)" @1@ -->
+    <!--                         ~1~         CornerRadius="20"  @1@ -->
+    <!--                         ~1~         Background="#f2f2f2"> @1@ -->
+    <!--                         ~1~ @1@ -->
+    <!--                         ~1~ @1@ -->
+    <!--                         ~1~     <Grid Margin="10" RowDefinitions="Auto,*,Auto"> @1@ -->
+    <!--                         ~1~         <TextBlock Grid.Row="0" FontWeight="Bold" Text="Edition 2025"/> @1@ -->
+    <!--                         ~1~         <Line Grid.Row="1"/> @1@ -->
+    <!--                         ~1~         <TextBlock Grid.Row="1" Text="232" FontSize="50"  @1@ -->
+    <!--                         ~1~                    HorizontalAlignment="Center" VerticalAlignment="Center" /> @1@ -->
+    <!--                         ~1~ @1@ -->
+    <!--                         ~1~         <TextBlock Grid.Row="2" Foreground="Gray"> @1@ -->
+    <!--                         ~1~             <Run Text="Vrijdag 27 dec" /> @1@ -->
+    <!--                         ~1~             <LineBreak/> @1@ -->
+    <!--                         ~1~             <Run Text="20:00 - 21:00" /> @1@ -->
+    <!--                         ~1~         </TextBlock> @1@ -->
+    <!--                         ~1~     </Grid> @1@ -->
+    <!--                         ~1~ </Border> @1@ -->
+    <!--                     </ItemsControl.Items> -->
+    <!--                 </ItemsControl> -->
+    <!--             </Grid> -->
+    <!--         </TabItem> -->
+    <!--          -->
+    <!--         <TabItem Header="%All Positions%"> -->
+    <!--             <ListBox ItemsSource="{Binding Listings}" -->
+    <!--                      AutoScrollToSelectedItem="True" -->
+    <!--                      SelectedItem="{Binding SelectedListing, Mode=TwoWay}" > -->
+    <!--     -->
+    <!--                 <ListBox.ItemTemplate> -->
+    <!--                     <DataTemplate DataType="vm:TrackDetailsListingViewModel" > -->
+    <!--                         <Grid Margin="0,0,20,0" ColumnDefinitions="75, 100, 75"> -->
+    <!--                             <TextBlock Grid.Column="0" Text="{Binding Edition }" -->
+    <!--                                        FontSize="20"  VerticalAlignment="Center" /> -->
+    <!--                             <TextBlock Grid.Column="1"  FontSize="20" > -->
+    <!--                                 <Run FontFamily="{StaticResource MaterialIcons}" BaselineAlignment="Center" -->
+    <!--                                      Foreground="{Binding DeltaSymbolColour}" Text="{Binding DeltaSymbol}" /> -->
+    <!--                                 <Run Text="{Binding Delta}" BaselineAlignment="Center" -->
+    <!--                                      Foreground="{Binding DeltaSymbolColour}" /> -->
+    <!--                             </TextBlock> -->
+    <!--                             <TextBlock Grid.Column="2" VerticalAlignment="Center" -->
+    <!--                                        Text="{Binding PositionString}" -->
+    <!--                                        FontSize="20" /> -->
+    <!--                         </Grid> -->
+    <!--                     </DataTemplate> -->
+    <!--                 </ListBox.ItemTemplate> -->
+    <!--             </ListBox> -->
+    <!--         </TabItem> -->
+    <!--     </TabControl> -->
+    <!-- </Grid> -->
 </UserControl>

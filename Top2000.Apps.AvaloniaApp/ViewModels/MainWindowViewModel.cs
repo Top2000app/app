@@ -1,9 +1,11 @@
-﻿using System.Collections.Frozen;
-using Avalonia.Media;
+﻿using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.SkiaSharpView;
 using Top2000.Apps.AvaloniaApp.Assets;
 using Top2000.Apps.AvaloniaApp.Views;
+using Top2000.Apps.AvaloniaApp.Views.SelectedEdition;
 using Top2000.Features;
 using Top2000.Features.Editions;
 using Top2000.Features.Listings;
@@ -56,16 +58,21 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IH
     public FilterCollection Filters { get; set; }
     
     [ObservableProperty] private List<ITrackListingViewModel> _listings = [];
-    [ObservableProperty] private Edition? _selectedEdition;
+    [ObservableProperty] private SelectedEditionViewModel? _selectedEdition;
     [ObservableProperty] private string _title = "Top2000";
     [ObservableProperty] private bool _isLoaded;
-    [ObservableProperty] private TrackDetailsViewModel? _selectedListing;
     [ObservableProperty] private ITrackListingViewModel? _selectedItem;
     [ObservableProperty] private ListingOrder _listingOrder = ListingOrder.Ascending;
     [ObservableProperty] private ListingGroup _listingGroup = ListingGroup.Position;
     [ObservableProperty] private string _orderIcon = Symbols.Up;
     [ObservableProperty] private string _groupIcon = Symbols.ListingMenu;
     [ObservableProperty] private bool _canToggleGrouping = true;
+    
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsListingSelected))]
+    private TrackDetailsViewModel? _selectedListing;
+    
+    public bool IsListingSelected => SelectedListing != null;
     
     public async Task ChangeSelectedEditionAsync(int edition, int? position)
     {
@@ -79,7 +86,10 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IH
                 ListingGroup = ListingGroup.Position;
             }
 
-            SelectedEdition = newSelectedEdition;
+            SelectedEdition = new SelectedEditionViewModel
+            {
+                Year = newSelectedEdition.Year
+            };
             await LoadAllListingsAsync();
             
             if (position.HasValue)
@@ -174,18 +184,68 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IH
         var trackListings = details.Listings
             .Select(Transform)
             .ToList();
-                
-        SelectedListing = new TrackDetailsViewModel
+        
+        var orderedListings = trackListings
+            .Where(x => x.Position.HasValue)
+            .OrderBy(x => x.Position)
+            .ThenBy(x => x.Edition)
+            .ToList();
+
+        var trackListingsForGraph = trackListings
+            .OrderBy(x => x.Edition)
+            .Select(x => new ObservablePoint
+            {
+               X = x.Edition,
+               Y = x.Position,
+            })
+            .ToArray();
+
+        var xxx = trackListingsForGraph.Select(x => (int?)x.Y).ToList();
+
+        var zoomRange = TrackDetailsViewModel.GetZoomRange(xxx);
+        
+        if (SelectedListing is null)
         {
-            ParentMainWindowViewModel = this,
-            Artist =  trackListing.Artist,
-            Title = trackListing.Title,
-            RecordedYear = details.RecordedYear,
-            Listings = trackListings,
-            SelectedListing = trackListings.First(x => x.Edition == SelectedEdition!.Year),
-        };
+            
+            SelectedListing = new TrackDetailsViewModel
+            {
+                ParentMainWindowViewModel = this,
+                Artist =  trackListing.Artist,
+                Title = trackListing.Title,
+                RecordedYear = details.RecordedYear,
+                Listings = trackListings,
+                SelectedListing = trackListings.First(x => x.Edition == SelectedEdition!.Year),
+                LatestEditionPosition = trackListings.Last(x => x.Position.HasValue)?.Position.ToString() ?? "-",
+                Highest = orderedListings.Last(),
+                Lowest = orderedListings.First(),
+                YMax = zoomRange.max,
+                YMin = zoomRange.min,
+              //  Positions = trackListingsForGraph.ToArray(),
+                Series =
+                [
+                    new LineSeries<ObservablePoint>
+                    {
+                        Values = trackListingsForGraph,
+                        GeometrySize = 6
+                    }
+                ]
+            };
+        }
+
+        else
+        {
+            SelectedListing.YMax = zoomRange.max;
+            SelectedListing.YMin = zoomRange.min;
+            SelectedListing.Series =
+            [
+                new LineSeries<ObservablePoint>
+                {
+                    Values = trackListingsForGraph,
+                    GeometrySize = 6
+                }
+            ];
+        }
     }
-    
 
     private static TrackDetailsListingViewModel Transform(ListingInformation x)
     {
@@ -206,7 +266,7 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IH
     {
         _scrollService = scrollService; 
         Editions = await _top2000Services.AllEditionsAsync();
-        SelectedEdition = Editions.First();
+        SelectedEdition = new SelectedEditionViewModel { Year = Editions.First().Year };
         Title = "TOP2000 - " + SelectedEdition.Year;
 
         await LoadAllListingsAsync();

@@ -4,6 +4,7 @@
         xmlns:cnt="using:Top2000.Apps.AvaloniaApp.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:se="using:Top2000.Apps.AvaloniaApp.Views.SelectedEdition"
         xmlns:assets="using:Top2000.Apps.AvaloniaApp.Assets"
         mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="450"
         x:Class="Top2000.Apps.AvaloniaApp.Views.MainWindow"
@@ -207,10 +208,16 @@
         
         <Border CornerRadius="10" Margin="10,0,0,0"
                 Background="{Binding ElementName=ListingListBox, Path=Background}"
-                BorderBrush="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
-            
-            <cnt:TrackDetailsView DataContext="{Binding SelectedListing}" Margin="10" />
-            
+                BorderBrush="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="10" >
+            <Grid>
+                <Border IsVisible="{Binding IsListingSelected}">
+                    <cnt:TrackDetailsView DataContext="{Binding SelectedListing}" />
+                </Border>
+             
+                <Border IsVisible="{Binding !IsListingSelected}">
+                    <se:SelectedEditionView DataContext="{Binding SelectedEdition}" />
+                </Border>
+            </Grid>
         </Border>
         
     </DockPanel>

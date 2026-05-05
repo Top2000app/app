@@ -16,6 +16,8 @@ public static class Symbols
 
     public static string Menu => "\xe5d2";
 
+    public static string Chart => "\xe6e1";
+
     public static string ListingMenu => "\xe242";
 
     public static string FilterList => "\xe152";

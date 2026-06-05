@@ -1,24 +1,22 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:Top2000.Apps.AvaloniaApp.ViewModels"
-        xmlns:cnt="using:Top2000.Apps.AvaloniaApp.Views"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:se="using:Top2000.Apps.AvaloniaApp.Views.SelectedEdition"
-        xmlns:assets="using:Top2000.Apps.AvaloniaApp.Assets"
-        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="450"
-        x:Class="Top2000.Apps.AvaloniaApp.Views.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
-        Background="black"
-        Icon="/Assets/avalonia-logo.ico"
-        Loaded="OnLoaded"
-        Title="{Binding Title}">
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Top2000.Apps.AvaloniaApp.ViewModels"
+             xmlns:cnt="using:Top2000.Apps.AvaloniaApp.Views"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:se="using:Top2000.Apps.AvaloniaApp.Views.SelectedEdition"
+             xmlns:assets="using:Top2000.Apps.AvaloniaApp.Assets"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="450"
+             x:Class="Top2000.Apps.AvaloniaApp.Views.MainWindow"
+             x:DataType="vm:MainWindowViewModel"
+             Background="black"
+             >
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Window.Styles>
+    <UserControl.Styles>
         <Style Selector="TextBlock.animated">
             <Setter Property="FontSize" Value="20" />
         </Style>
@@ -28,7 +26,7 @@
             <Setter Property="FontSize" Value="21"/>
             <Setter Property="Cursor" Value="Hand" />
         </Style>
-    </Window.Styles>
+    </UserControl.Styles>
     
     <DockPanel Margin="10" >
         
@@ -221,4 +219,4 @@
         </Border>
         
     </DockPanel>
-</Window>
+</UserControl>

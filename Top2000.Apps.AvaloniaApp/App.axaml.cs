@@ -1,14 +1,11 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
-using System.Linq;
-using Android.Util;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Top2000.Apps.AvaloniaApp.ViewModels;
-using Top2000.Apps.AvaloniaApp.Views;
+using Top2000.Apps.AvaloniaApp.Views.Shell;
 using Top2000.Features;
 using Top2000.Features.SQLite;
 
@@ -28,60 +25,38 @@ public partial class App : Application
         BindingPlugins.DataValidators.RemoveAt(0);
 
         // Register all the services needed for the application to run
-        var collection = new ServiceCollection();
-        collection.AddCommonServices();
+        var services = new ServiceCollection()
+            .AddTransient<ShellViewModel>()
+            .AddTransient<MainWindowViewModel>()
+            .AddTop2000Features<SqliteFeatureAdapter>()
+            .BuildServiceProvider();
 
         // Creates a ServiceProvider containing services from the provided IServiceCollection
-        var services = collection.BuildServiceProvider();
-        var vm = services.GetRequiredService<MainWindowViewModel>();
+        var vm = services.GetRequiredService<ShellViewModel>();
+        var mainWindow = new ShellWindow() {  DataContext = vm };
+        
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = vm
-            };
+            desktop.MainWindow = mainWindow;
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
-            singleViewPlatform.MainView = new MainWindow()
-            {
-                DataContext = vm
-            };
+            singleViewPlatform.MainView = mainWindow;
         }
 
         Dispatcher.UIThread.UnhandledException += OnUnhandledException;
         
         base.OnFrameworkInitializationCompleted();
+
+        _ = vm.InitialiseAsync();
     }
 
-    private void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+    private static void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
         // Log the exception
         Console.WriteLine("Unhandled UI thread exception: " + e.Exception);
 
         // Optionally prevent the application from crashing
-        e.Handled = true;    
-    }
-
-    private void DisableAvaloniaDataAnnotationValidation()
-    {
-        // Get an array of plugins to remove
-        var dataValidationPluginsToRemove =
-            BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
-
-        // remove each entry found
-        foreach (var plugin in dataValidationPluginsToRemove)
-        {
-            BindingPlugins.DataValidators.Remove(plugin);
-        }
-    }
-}
-
-public static class ServiceCollectionExtensions
-{
-    public static void AddCommonServices(this IServiceCollection collection)
-    {
-        collection.AddTransient<MainWindowViewModel>();
-        collection.AddTop2000Features<SqliteFeatureAdapter>();
+        e.Handled = false;    
     }
 }

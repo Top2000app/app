@@ -1,5 +1,4 @@
 ﻿using Avalonia;
-using System;
 
 namespace Top2000.Apps.AvaloniaApp;
 

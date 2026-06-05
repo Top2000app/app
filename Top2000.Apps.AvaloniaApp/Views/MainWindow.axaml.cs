@@ -4,16 +4,11 @@ using Top2000.Apps.AvaloniaApp.ViewModels;
 
 namespace Top2000.Apps.AvaloniaApp.Views;
 
-public partial class MainWindow : Window, IScrollListingListIntoView
+public partial class MainWindow : UserControl, IScrollListingListIntoView
 {
     public MainWindow()
     {
         InitializeComponent();
-    }
-
-    public async void OnLoaded(object sender, RoutedEventArgs e)
-    {
-        await ((MainWindowViewModel)DataContext!).InitialiseViewModelAsync(this);
     }
 
     public void ScrollIntoView(ITrackListingViewModel item)

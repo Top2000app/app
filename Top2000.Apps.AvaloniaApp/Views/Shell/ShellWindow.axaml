@@ -1,0 +1,58 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:Top2000.Apps.AvaloniaApp.Views.Shell"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Top2000.Apps.AvaloniaApp.Views.Shell.ShellWindow"
+        x:DataType="vm:ShellViewModel"
+        Title="{Binding Title}">
+    
+    <Design.DataContext>
+        <vm:ShellViewModel/>
+    </Design.DataContext>
+    
+    <Window.Styles>
+        <Style Selector="Path.loadingSpinnerArc">
+            <Style.Animations>
+                <Animation Duration="0:0:0.9"
+                           IterationCount="Infinite">
+                    <KeyFrame Cue="0%">
+                        <Setter Property="RotateTransform.Angle" Value="0" />
+                    </KeyFrame>
+                    <KeyFrame Cue="100%">
+                        <Setter Property="RotateTransform.Angle" Value="360" />
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+    </Window.Styles>
+
+    <Grid>
+        
+        <ContentControl Content="{Binding MainWindow}"
+                        IsVisible="{Binding !IsLoading}" />
+    
+        <Grid 
+            IsVisible="{Binding IsLoading}"
+            HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Height="100"
+              Width="100">
+            <Ellipse Stroke="#33DA161C"
+                     StrokeThickness="8" />
+
+            <Path Classes="loadingSpinnerArc"
+                  Data="M 50,8 A 42,42 0 0 1 92,50"
+                  Stroke="{StaticResource Top2000Colour}"
+                  StrokeThickness="8"
+                  StrokeLineCap="Round"
+                  RenderTransformOrigin="50%,50%">
+                <Path.RenderTransform>
+                    <RotateTransform />
+                </Path.RenderTransform>
+            </Path>
+        </Grid>
+    </Grid>
+
+</Window>

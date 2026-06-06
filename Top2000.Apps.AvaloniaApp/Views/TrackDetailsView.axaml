@@ -27,22 +27,21 @@
             </StackPanel>
             
             <Button x:Name="Button" IsVisible="False" />
-            
 
         </Grid>
         <Border Grid.Row="1" Background="{Binding ElementName=Button,Path=Background}" CornerRadius="10" Height="300" >
             <Grid RowDefinitions="Auto,*">
-            <TextBlock Text="{x:Static assets:Symbols.Chart}" FontFamily="{StaticResource MaterialIcons}" Foreground="{StaticResource Top2000Colour}" ></TextBlock>
+            <TextBlock Text="{x:Static assets:Symbols.Chart}" FontFamily="{StaticResource MaterialIcons}" 
+                       Foreground="{StaticResource Top2000Colour}" ></TextBlock>
                 <lvc:CartesianChart Grid.Row="1" Background="{Binding ElementName=Button,Path=Background}" 
                                     Series="{Binding Series}"
+                                    Foreground="{StaticResource Top2000Colour}"
                                     >
-                    <!-- X Axis -->
-                    <lvc:CartesianChart.XAxes>
+                <lvc:CartesianChart.XAxes>
                         <lvc:XamlAxis ForceStepToMin="true" MinStep="1" MinLimit="1999" MaxLimit="2025" />
                     </lvc:CartesianChart.XAxes>
                     
-                    <!-- Y Axis -->
-                    <lvc:CartesianChart.YAxes>
+                 <lvc:CartesianChart.YAxes>
                         <lvc:XamlAxis IsInverted="true" MinLimit="{Binding YMin}" MaxLimit="{Binding YMax}" MinStep="1" />
                     </lvc:CartesianChart.YAxes>
                 </lvc:CartesianChart>

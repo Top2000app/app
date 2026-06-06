@@ -33,10 +33,7 @@ public partial class ShellViewModel : ViewModelBase, IShell
     {
         try
         {
-            await Task.WhenAll([
-                Task.Delay(1),
-                _top2000Services.InitialiseDataAsync()  
-            ]);
+            await _top2000Services.InitialiseDataAsync();
 
             MainWindow = new MainWindow
             {

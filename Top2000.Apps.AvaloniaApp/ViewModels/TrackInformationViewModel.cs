@@ -1,8 +1,9 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using Top2000.Features;
 
 namespace Top2000.Apps.AvaloniaApp.ViewModels;
 
-public class TrackInformationViewModel : ViewModelBase
+public class TrackInformationViewModel : ObservableObject
 {
     private readonly ITop2000Services _top2000Services;
 

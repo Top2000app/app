@@ -2,13 +2,14 @@ using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Media;
 using Avalonia.Metadata;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Top2000.Apps.AvaloniaApp.Assets;
+using Top2000.Apps.AvaloniaApp.ViewModels;
 using Top2000.Apps.AvaloniaApp.Views;
 using Top2000.Features.Listings;
 
-namespace Top2000.Apps.AvaloniaApp.ViewModels;
-
+namespace Top2000.Apps.AvaloniaApp.Views.TrackMenu;
 
 public class TrackListingViewModelTemplateSelector : IDataTemplate
 {
@@ -60,7 +61,7 @@ public class TrackListingPositionGroupHeader : ITrackListingViewModel
     public required List<TrackListingPosition> PositionGroups { get; init; }
 }
 
-public partial class TrackListingPosition : ViewModelBase, ITrackListingViewModel
+public partial class TrackListingPosition : ObservableObject, ITrackListingViewModel
 {
     public string HeaderName => nameof(TrackListingPosition);
     public required string ItemText { get; init; }
@@ -74,7 +75,7 @@ public partial class TrackListingPosition : ViewModelBase, ITrackListingViewMode
     }
 }
 
-public partial class TrackListingPlayTimeItem : ViewModelBase, ITrackListingViewModel
+public partial class TrackListingPlayTimeItem : ObservableObject, ITrackListingViewModel
 {
     public string HeaderName => nameof(TrackListingPlayTimeItem);
     public required string Time { get; init; }
@@ -102,7 +103,6 @@ public class TrackListingPositionGroup : ITrackListingViewModel
 public class TrackListingViewModel : ITrackListingViewModel
 {
     public string HeaderName => nameof(TrackListingViewModel);
-    public bool IsHeader => false;
     
     public required int TrackId { get; init; }
     public required string PositionString { get; init; }

@@ -1,17 +1,18 @@
-﻿using Avalonia.Media;
+using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using Top2000.Apps.AvaloniaApp.Assets;
-using Top2000.Apps.AvaloniaApp.Views;
+using Top2000.Apps.AvaloniaApp.ViewModels;
 using Top2000.Apps.AvaloniaApp.Views.SelectedEdition;
+using Top2000.Apps.AvaloniaApp.Views.Shell;
 using Top2000.Features;
 using Top2000.Features.Editions;
 using Top2000.Features.Listings;
 using Top2000.Features.TrackInformation;
 
-namespace Top2000.Apps.AvaloniaApp.ViewModels;
+namespace Top2000.Apps.AvaloniaApp.Views.TrackMenu;
 
 public interface ICanFilterListings
 {
@@ -23,55 +24,167 @@ public interface IHandleGroupSelection
     void SelectingGroup(ITrackListingViewModel group);
 }
 
-public enum ListingOrder
+public class ListingGroupedByPosition : ListingsViewModel
 {
-    Ascending,
-    Descending,
+   public override ListingsViewModel ToggleGrouping() => new ListingGroupByPlayTime
+   {
+       IsOrderAscending = IsOrderAscending
+   };
+
+   public override string NextGroupSymbol => Symbols.Clock;
+
+   protected override IEnumerable<ITrackListingViewModel> GroupListing(IOrderedEnumerable<TrackListing> listings, int originalListingCount)
+   {
+       return listings
+           .GroupByPosition(originalListingCount)
+           .SelectMany(Transform);
+
+       static IEnumerable<ITrackListingViewModel> Transform(IGrouping<string, TrackListing> group)
+       {
+           var positionRange = group.Key.Split('-').Select(x => int.Parse(x.Trim())).ToArray();
+
+           return new[]
+           {
+                new TrackListingPositionGroup
+               {
+                   PositionRangStart = positionRange[0],
+                   PositionRangEnd = positionRange[1],
+                   GroupName = group.Key
+               }
+           }.Concat(group.Select(TransformTrackListingViewModel));
+       }
+   }
+
 }
 
-public enum ListingGroup
+public  class ListingGroupByPlayTime : ListingsViewModel
 {
-    Position,
-    PlayTime
+
+    public override ListingsViewModel ToggleGrouping() => new ListingGroupedByPosition
+    {
+        IsOrderAscending = IsOrderAscending
+    };
+
+    public override string NextGroupSymbol => Symbols.List;
+
+    protected override IEnumerable<ITrackListingViewModel> GroupListing(IOrderedEnumerable<TrackListing> listings, int _)
+    {
+        return listings
+            .GroupByPlayLocalDateAndTime()
+            .SelectMany(Transform);
+        
+        static IEnumerable<ITrackListingViewModel> Transform(IGrouping<DateTime, TrackListing> group)
+        {
+            return new[]
+            {
+                new TrackListingPlayDateTimeGroup
+                {
+                    GroupName = TrackListingPlayDateTimeGroup.MakeNiceDateTimeString(group.Key),
+                    PlayTime = group.Key
+                }
+            }
+            .Concat(group.Select(TransformTrackListingViewModel));
+        }
+    }
+    
 }
 
+public abstract partial class ListingsViewModel : ObservableObject
+{
+    public abstract ListingsViewModel ToggleGrouping();
 
-public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IHandleGroupSelection
+    public bool IsOrderAscending { get; set; } = true;
+
+    public abstract string NextGroupSymbol { get; }
+
+    public string NextOrderSymbol { get; private set; } = Symbols.Down;
+    
+    public void ToggleOrder()
+    {
+        IsOrderAscending = !IsOrderAscending;
+        NextOrderSymbol = IsOrderAscending
+            ? Symbols.Down
+            : Symbols.Up;
+    }
+
+    public List<ITrackListingViewModel> CreateListing(IEnumerable<TrackListing> listings, int originalListingCount)
+    {
+        var orderedListings = IsOrderAscending
+            ? listings.OrderBy(x => x.Position)
+            : listings.OrderByDescending(x => x.Position);
+
+        return GroupListing(orderedListings, originalListingCount)
+            .ToList();
+    }
+
+    protected abstract IEnumerable<ITrackListingViewModel> GroupListing(IOrderedEnumerable<TrackListing> listings, int originalListingCount);
+    
+    protected static ITrackListingViewModel TransformTrackListingViewModel(TrackListing x)
+    {
+        return new TrackListingViewModel
+        {
+            TrackId = x.TrackId,
+            Artist = x.Artist,
+            Title = x.Title,
+            Delta = TrackListingViewModel.ConvertDeltaToString(x),
+            DeltaFontSize = x.DeltaType.ToFontSize(),
+            PositionString = x.Position.ToString(),
+            Position = x.Position,
+            DeltaSymbol = x.DeltaType.ToSymbol(),
+            DeltaSymbolColour = x.DeltaType.ToBrush(),
+            LocalPlayDateTime = x.PlayUtcDateAndTime.ToLocalTime()
+        };
+    }
+}
+
+public class DesignTrackMenuViewModel : TrackMenuViewModel
+{
+    public DesignTrackMenuViewModel() : base(new MockupTop2000Services())
+    {
+        Filters = FilterCollection.Initialise(this);
+    }
+}
+
+public partial class TrackMenuViewModel : ObservableObject, ICanFilterListings, IHandleGroupSelection
 {
     private SortedSet<Edition> Editions { get; set; } = [];
     private HashSet<TrackListing> _originalListings = [];
     private readonly ITop2000Services _top2000Services;
     private ITrackListingViewModel? _selectUponGroupClosing;
+    private IShell? _shell;
+   
 
-    public MainWindowViewModel()
-    {
-        _top2000Services = new MockupTop2000Services();
-        Filters = FilterCollection.Initialise(this);
-    }
-    
-    public MainWindowViewModel(ITop2000Services services)
+    public TrackMenuViewModel(ITop2000Services services)
     {
         _top2000Services = services;
         Filters = FilterCollection.Initialise(this);
     }
-
+    
     public FilterCollection Filters { get; set; }
     
     [ObservableProperty] private List<ITrackListingViewModel> _listings = [];
     [ObservableProperty] private SelectedEditionViewModel? _selectedEdition;
-    [ObservableProperty] private string _title = "Top2000";
-    [ObservableProperty] private bool _isLoaded;
-    [ObservableProperty] private ITrackListingViewModel? _selectedItem;
-    [ObservableProperty] private ListingOrder _listingOrder = ListingOrder.Ascending;
-    [ObservableProperty] private ListingGroup _listingGroup = ListingGroup.Position;
-    [ObservableProperty] private string _orderIcon = Symbols.Up;
-    [ObservableProperty] private string _groupIcon = Symbols.ListingMenu;
-    [ObservableProperty] private bool _canToggleGrouping = true;
     
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsListingSelected))]
-    private TrackDetailsViewModel? _selectedListing;
+    public partial ITrackListingViewModel? SelectedItem { get; set; }
+
+    [ObservableProperty]
+    public partial string OrderIcon { get; set; } = Symbols.Up;
     
+    [ObservableProperty]
+    public partial string GroupIcon { get; set; } = Symbols.Clock;
+
+    [ObservableProperty]
+    public partial bool CanToggleGrouping { get; set; } = true;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsListingSelected))]
+    public partial TrackDetailsViewModel? SelectedListing { get; set; }
+    
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(GroupIcon))]
+    public partial ListingsViewModel SelectedListingsViewModel { get; set; } = new ListingGroupedByPosition();
+
     public bool IsListingSelected => SelectedListing != null;
     
     public async Task ChangeSelectedEditionAsync(int edition, int? position)
@@ -79,17 +192,18 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IH
         if (SelectedEdition?.Year != edition)
         {
             var newSelectedEdition = Editions.First(x => x.Year == edition);
-            Title = "TOP2000 - " + newSelectedEdition.Year;
+            _shell?.Title = "TOP2000 - " + newSelectedEdition.Year;
             CanToggleGrouping = newSelectedEdition.HasPlayDateAndTime;
-            if (!CanToggleGrouping && ListingGroup == ListingGroup.PlayTime)
+            if (!CanToggleGrouping && SelectedListingsViewModel is ListingGroupByPlayTime)
             {
-                ListingGroup = ListingGroup.Position;
+                SelectedListingsViewModel = SelectedListingsViewModel.ToggleGrouping();
             }
 
             SelectedEdition = new SelectedEditionViewModel
             {
                 Year = newSelectedEdition.Year
             };
+            
             await LoadAllListingsAsync();
             
             if (position.HasValue)
@@ -108,11 +222,23 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IH
 
     private IScrollListingListIntoView? _scrollService;
 
-    [ObservableProperty] private List<ITrackListingViewModel> _groupTimeGroupListing = [];
-    [ObservableProperty] private List<ITrackListingViewModel> _positionGroupListing = [];
-    [ObservableProperty] private bool _showTimeGroupSelection = false;
-    [ObservableProperty] private bool _showPositionGroupSelection = false;
-    [ObservableProperty] private bool _showGroupSelection = false;
+    [ObservableProperty]
+    public partial List<ITrackListingViewModel> GroupTimeGroupListing { get; set; } = [];
+
+    [ObservableProperty]
+    public partial List<ITrackListingViewModel> PositionGroupListing { get; set; } = [];
+
+    [ObservableProperty]
+    public partial bool ShowTimeGroupSelection { get; set; }
+
+    [ObservableProperty]
+    public partial bool ShowPositionGroupSelection { get; set; }
+
+    [ObservableProperty]
+    public partial bool ShowGroupSelection { get; set; }
+
+    [ObservableProperty]
+    public partial bool ShowSearchBar { get; set; }
 
     public void SelectingGroup(ITrackListingViewModel group)
     {
@@ -146,7 +272,7 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IH
                 .Select(TransformTrackListingPositionGroupHeader)
                 .ToList();
         }
-
+        
         if (newValue is TrackListingPlayDateTimeGroup)
         {
             ShowGroupSelection = true;
@@ -262,39 +388,40 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IH
         };
     }
     
-    public async Task InitialiseViewModelAsync(IScrollListingListIntoView scrollService)
+    public async Task InitialiseViewModelAsync(IScrollListingListIntoView scrollService, IShell shell)
     {
+        _shell = shell;
         _scrollService = scrollService; 
         Editions = await _top2000Services.AllEditionsAsync();
         SelectedEdition = new SelectedEditionViewModel { Year = Editions.First().Year };
-        Title = "TOP2000 - " + SelectedEdition.Year;
+        shell.Title = "TOP2000 - " + SelectedEdition.Year;
 
         await LoadAllListingsAsync();
-        
-        IsLoaded = true;
     }
     
     
     [RelayCommand]
     private void ToggleOrder()
     {
-        ListingOrder = ListingOrder == ListingOrder.Ascending 
-            ? ListingOrder.Descending 
-            : ListingOrder.Ascending;
-        
+        SelectedListingsViewModel.ToggleOrder();
+        OrderIcon = SelectedListingsViewModel.NextOrderSymbol;
         UpdateListings();
     }
     
     [RelayCommand]
     private void ToggleGrouping()
     {
-        ListingGroup = ListingGroup == ListingGroup.Position 
-            ? ListingGroup.PlayTime 
-            : ListingGroup.Position;
-
+        SelectedListingsViewModel = SelectedListingsViewModel.ToggleGrouping();
+        GroupIcon = SelectedListingsViewModel.NextGroupSymbol;
         UpdateListings();
     }
 
+    [RelayCommand]
+    private void ActivateSearch()
+    {
+        ShowSearchBar = !ShowSearchBar;
+    }
+/*
     partial void OnListingOrderChanged(ListingOrder value)
     {
         OrderIcon = value == ListingOrder.Ascending
@@ -308,6 +435,7 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IH
             ? Symbols.ListingMenu
             : Symbols.Clock;
     }
+*/
 
     private async Task LoadAllListingsAsync()
     {
@@ -319,42 +447,11 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IH
 
     public void UpdateListings()
     {
-        var newListings = _originalListings.Where(Filters.ShouldShow);
-
-        newListings = ListingOrder == ListingOrder.Ascending
-            ? newListings.OrderBy(x => x.Position)
-            : newListings.OrderByDescending(x => x.Position);
-
-        var filteredListing = newListings.ToList();
-        if (ListingGroup == ListingGroup.Position)
-        {
-            Listings = filteredListing
-                .GroupByPosition(_originalListings.Count)
-                .SelectMany(TransformPositionGrouping)
-                .ToList();
-        }
-        else
-        {
-            Listings = filteredListing
-                .GroupByPlayLocalDateAndTime()
-                .SelectMany(TransformTrackListingPlayDateTimeGroup)
-                .ToList();
-        }
+        var newListings = _originalListings
+            .Where(Filters.ShouldShow);
+        
+        Listings = SelectedListingsViewModel.CreateListing(newListings, _originalListings.Count);
     }
-    
-    private static IEnumerable<ITrackListingViewModel> TransformTrackListingPlayDateTimeGroup(IGrouping<DateTime, TrackListing> group)
-    {
-        return new[]
-            {
-                new TrackListingPlayDateTimeGroup
-                {
-                    GroupName = TrackListingPlayDateTimeGroup.MakeNiceDateTimeString(group.Key),
-                    PlayTime = group.Key
-                }
-            }
-            .Concat(group.Select(TransformTrackListingViewModel));
-    }
-
 
     private ITrackListingViewModel TransformTrackListingPlayDateGroup(IGrouping<DateTime, TrackListingPlayDateTimeGroup> group)
     {
@@ -369,28 +466,4 @@ public partial class MainWindowViewModel : ViewModelBase, ICanFilterListings, IH
             }).ToList()
         };
     }
-
-    private static IEnumerable<ITrackListingViewModel> TransformPositionGrouping(IGrouping<string, TrackListing> group)
-    {
-        var positionRange = group.Key.Split('-').Select(x => int.Parse(x.Trim())).ToArray();
-        return new[] { (ITrackListingViewModel)new TrackListingPositionGroup { PositionRangStart = positionRange[0], PositionRangEnd = positionRange[1], GroupName = group.Key } }.Concat(group.Select(TransformTrackListingViewModel));
-    }
-   
-    private static ITrackListingViewModel TransformTrackListingViewModel(TrackListing x)
-    {
-        return new TrackListingViewModel
-        {
-            TrackId = x.TrackId,
-            Artist = x.Artist,
-            Title = x.Title,
-            Delta = TrackListingViewModel.ConvertDeltaToString(x),
-            DeltaFontSize = x.DeltaType.ToFontSize(),
-            PositionString = x.Position.ToString(),
-            Position = x.Position,
-            DeltaSymbol = x.DeltaType.ToSymbol(),
-            DeltaSymbolColour = x.DeltaType.ToBrush(),
-            LocalPlayDateTime = x.PlayUtcDateAndTime.ToLocalTime()
-        };
-    }
 }
-

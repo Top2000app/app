@@ -3,7 +3,7 @@ using Top2000.Apps.AvaloniaApp.ViewModels;
 
 namespace Top2000.Apps.AvaloniaApp.Views.SelectedEdition;
 
-public partial class SelectedEditionViewModel : ViewModelBase
+public partial class SelectedEditionViewModel : ObservableObject
 {
     [ObservableProperty] public int _year;
 }

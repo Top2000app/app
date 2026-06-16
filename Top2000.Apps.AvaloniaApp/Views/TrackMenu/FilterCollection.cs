@@ -1,6 +1,7 @@
+using Top2000.Apps.AvaloniaApp.ViewModels;
 using Top2000.Features.Listings;
 
-namespace Top2000.Apps.AvaloniaApp.ViewModels;
+namespace Top2000.Apps.AvaloniaApp.Views.TrackMenu;
 
 public class FilterCollection : List<TrackListingDeltaFilterViewModel>
 {

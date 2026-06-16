@@ -6,6 +6,7 @@ using LiveChartsCore.Kernel;
 using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
 using Top2000.Apps.AvaloniaApp.Assets;
+using Top2000.Apps.AvaloniaApp.Views.TrackMenu;
 using Top2000.Features.TrackInformation;
 
 namespace Top2000.Apps.AvaloniaApp.ViewModels;
@@ -137,7 +138,7 @@ public partial class DesignTimeTrackDetailsViewModel : TrackDetailsViewModel
     }
 }
 
-public partial class TrackDetailsViewModel : ViewModelBase
+public partial class TrackDetailsViewModel : ObservableObject
 {
     public required string Title { get; init; }
     public required string Artist { get; init; }
@@ -152,7 +153,7 @@ public partial class TrackDetailsViewModel : ViewModelBase
     
     public required string LatestEditionPosition { get; init; }
     
-    public required MainWindowViewModel ParentMainWindowViewModel { get; init; }
+    public required TrackMenuViewModel ParentMainWindowViewModel { get; init; }
     
     public required TrackDetailsListingViewModel Highest { get; init; }
 

@@ -1,0 +1,282 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Top2000.Apps.AvaloniaApp.Views.TrackMenu"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:assets="using:Top2000.Apps.AvaloniaApp.Assets"
+             x:DataType="vm:TrackMenuViewModel"
+             x:Class="Top2000.Apps.AvaloniaApp.Views.TrackMenu.TrackMenuView">
+    
+    <Design.DataContext>
+        <vm:DesignTrackMenuViewModel/>
+    </Design.DataContext>
+    
+    <UserControl.Styles>
+        <Style Selector="TextBlock.animated">
+            <Setter Property="FontSize" Value="20" />
+        </Style>
+        
+        <Style Selector="TextBlock.animated:pointerover">
+            <Setter Property="Foreground" Value="{StaticResource Top2000Colour}"/>
+            <Setter Property="FontSize" Value="21"/>
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
+        <Style Selector="TextBox.plainSearchBox">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+
+        <Style Selector="TextBox.plainSearchBox:pointerover">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+
+        <Style Selector="TextBox.plainSearchBox:focus">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+
+        <Style Selector="TextBox.plainSearchBox:focus-within">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+
+        <Style Selector="TextBox.plainSearchBox:disabled">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+
+        <Style Selector="TextBox.plainSearchBox /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="0" />
+        </Style>
+
+        <Style Selector="TextBox.plainSearchBox:pointerover /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="0" />
+        </Style>
+
+        <Style Selector="TextBox.plainSearchBox:focus /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="0" />
+        </Style>
+
+        <Style Selector="TextBox.plainSearchBox:focus-within /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="0" />
+        </Style>
+
+        <Style Selector="TextBox.plainSearchBox:disabled /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="0" />
+        </Style>
+    </UserControl.Styles>
+    
+    <Grid RowDefinitions="100, Auto ,*" Background="Transparent">
+        <!-- Year selected and group/order buttons -->
+        <Grid Background="Transparent" RowDefinitions="Auto,*,Auto" >
+
+            <TextBlock  Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,5,0,0" Classes="animated">
+                <Run FontFamily="{StaticResource MaterialIcons}" 
+                     Text="{x:Static assets:Symbols.Menu}" FontSize="25"
+                     BaselineAlignment="Center" />
+                <Run Text="{Binding SelectedEdition?.Year, FallbackValue=2026}" BaselineAlignment="Center"   />
+            </TextBlock>
+            
+            <!-- Buttons -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
+                <Button x:Name="Button"
+                    FontFamily="{StaticResource MaterialIcons}" CornerRadius="50" IsEnabled="{Binding CanToggleGrouping}"
+                         Content="{x:Static assets:Symbols.Search}" Command="{Binding ActivateSearchCommand}"
+                />
+                <Button FontFamily="{StaticResource MaterialIcons}" CornerRadius="50" IsEnabled="{Binding CanToggleGrouping}"
+                        Content="{Binding GroupIcon}" Command="{Binding ToggleGroupingCommand}"
+                />
+                <Button FontFamily="{StaticResource MaterialIcons}" CornerRadius="50"
+                        Content="{Binding OrderIcon}" Command="{Binding ToggleOrderCommand}"
+                />
+            </StackPanel>
+            
+            <!-- Filter buttons --> 
+            <ItemsControl Grid.Row="1"  Background="Transparent" VerticalAlignment="Bottom"
+                          Margin="10" ItemsSource="{Binding Filters}" >
+                 
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel  />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:TrackListingDeltaFilterViewModel}">
+                       <ToggleButton CornerRadius="10" 
+                                     Width="75" 
+                                     IsChecked="{Binding IsChecked}" >
+                           <ToggleButton.Content>
+                               <TextBlock TextAlignment="Center" VerticalAlignment="Center" Foreground="{Binding DisplayColourBrush}">
+                                   <Run  BaselineAlignment="Center" FontFamily="{StaticResource MaterialIcons}" 
+                                         Text="{Binding DisplayIcon}" />
+                                   <Run  BaselineAlignment="Center" Text="{Binding Count}" />
+                               </TextBlock>
+                           </ToggleButton.Content>
+                       </ToggleButton>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            
+           
+        </Grid>
+        <!-- Search bar -->
+        <Grid Grid.Row="1" Height="50" Background="{Binding ElementName=Button, Path=Background}" Opacity="0.8" IsVisible="{Binding ShowSearchBar}"
+              ColumnDefinitions="Auto, *">
+                <TextBlock Margin="10,0,10,0" Text="{x:Static assets:Symbols.Search}" FontFamily="{StaticResource MaterialIcons}" FontSize="20" 
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                
+            <TextBox Classes="plainSearchBox" Margin="0,0, 10,0" Grid.Column="1"
+                     PlaceholderText="Search" VerticalAlignment="Center" VerticalContentAlignment="Center" />
+            
+        </Grid>
+        
+        <!-- Track Listings -->
+        <ListBox x:Name="ListingListBox" Grid.Row="2" ItemsSource="{Binding Listings}"
+                 SelectedItem="{Binding SelectedItem, Mode=TwoWay}" AutoScrollToSelectedItem="False"
+                 CornerRadius="0,0,10,10"
+                 >
+            <ListBox.DataTemplates>
+                <vm:TrackListingViewModelTemplateSelector>
+                    
+                    <DataTemplate x:Key="TrackListingPlayDateTimeGroup" DataType="{x:Type vm:TrackListingPlayDateTimeGroup}">
+                        <TextBlock FontSize="20" Text="{Binding GroupName}"
+                                   Foreground="{StaticResource Top2000Colour}" />
+                    </DataTemplate>
+                    
+                    <DataTemplate x:Key="TrackListingPositionGroup" DataType="{x:Type vm:TrackListingPositionGroup}">
+                        <TextBlock FontSize="20" Text="{Binding GroupName}"
+                                   Foreground="{StaticResource Top2000Colour}" />
+                    </DataTemplate>
+            
+                    <DataTemplate x:Key="TrackListingViewModel" DataType="{x:Type vm:TrackListingViewModel}">
+                        <Grid>
+                            <TextBlock>
+                                <Run Text="{Binding PositionString}"
+                                     FontSize="20" />
+                                <LineBreak />
+                                <Run BaselineAlignment="Center" 
+                                     Text="{Binding DeltaSymbol}"
+                                     FontSize="{Binding DeltaFontSize}"
+                                     FontFamily="{StaticResource MaterialIcons}"
+                                     Foreground="{Binding DeltaSymbolColour}" />
+                                <Run BaselineAlignment="Center" 
+                                     Text="{Binding Delta}"
+                                     FontSize="{Binding DeltaFontSize}"
+                                     Foreground="{Binding DeltaSymbolColour}" />
+                            </TextBlock>
+                            <TextBlock Margin="60,0,20,0">
+                                <Run Text="{Binding Title}"
+                                     FontSize="20" />
+                                <LineBreak />
+                                <Run Text="{Binding Artist}"
+                                     FontSize="15"
+                                     Foreground="Gray" />
+                            </TextBlock>
+                        </Grid>
+                    </DataTemplate>
+                    
+                </vm:TrackListingViewModelTemplateSelector>
+            </ListBox.DataTemplates>
+        </ListBox>
+        
+        <!-- Group Select -->  
+        <ScrollViewer  Grid.Row="0" Grid.RowSpan="3" CornerRadius="0,0,10,10" Background="Transparent"
+                       IsVisible="{Binding ShowTimeGroupSelection}" >
+            <ItemsControl ItemsSource="{Binding GroupTimeGroupListing}"
+                          Background="{Binding ElementName=ListingListBox, Path=Background}"
+                          Padding="10"
+                         >
+                <ItemsControl.DataTemplates>
+
+                    <DataTemplate x:DataType="vm:TrackListingPlayDateGroup">
+                        <Grid RowDefinitions="Auto,*">
+                            <TextBlock FontSize="20" Text="{Binding GroupName}"
+                                       Foreground="{StaticResource Top2000Colour}" Margin="0,5" />
+                            
+                            <ItemsControl Grid.Row="1" ItemsSource="{Binding PlayTimes}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel  />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type vm:TrackListingPlayTimeItem}">
+                                        <Button 
+                                            Width="110" Height="50" HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Command="{Binding GotoPlayTimeCommand}"
+                                            Content="{Binding Time}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </DataTemplate>
+                    
+                </ItemsControl.DataTemplates>
+            </ItemsControl>
+        </ScrollViewer>
+        
+        <ScrollViewer  Grid.Row="0" Grid.RowSpan="3" CornerRadius="0,0,10,10" Background="Transparent"
+                       IsVisible="{Binding ShowPositionGroupSelection}" >
+            <ItemsControl ItemsSource="{Binding PositionGroupListing}"
+                          Background="{Binding ElementName=ListingListBox, Path=Background}"
+                          Padding="10"
+                         >
+            <ItemsControl.DataTemplates>
+                    <DataTemplate x:DataType="vm:TrackListingPositionGroupHeader">
+                        <Grid RowDefinitions="Auto,*">
+                            <TextBlock FontSize="20" Text="{Binding ItemText}"
+                                       Foreground="{StaticResource Top2000Colour}" Margin="0,5" />
+                            
+                            <ItemsControl Grid.Row="1" ItemsSource="{Binding PositionGroups}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel  />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type vm:TrackListingPosition}">
+                                        <Button 
+                                            Width="110" Height="50" HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Command="{Binding GotoPositionCommand}"
+                                            Content="{Binding ItemText}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </DataTemplate>
+                    
+                </ItemsControl.DataTemplates>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

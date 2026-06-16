@@ -9,7 +9,7 @@
         Title="{Binding Title}">
     
     <Design.DataContext>
-        <vm:ShellViewModel/>
+        <vm:DesignTimeShellViewModel/>
     </Design.DataContext>
     
     <Window.Styles>
@@ -28,17 +28,36 @@
         </Style>
     </Window.Styles>
 
-    <Grid>
+    <DockPanel Margin="10" >
+        <ListBox IsVisible="False" x:Name="ListBoxHidden"></ListBox>
         
-        <ContentControl Content="{Binding MainWindow}"
-                        IsVisible="{Binding !IsLoading}" />
-    
+        <Border CornerRadius="10" IsVisible="{Binding !IsLoading}"
+                Background="{Binding ElementName=ListBoxHidden, Path=Background}"
+                BorderBrush="Black" DockPanel.Dock="Left" Width="500" HorizontalAlignment="Left" >
+            
+            <ContentControl Content="{Binding TrackMenuView}"  />
+        </Border>
+        
+        <Border CornerRadius="10" Margin="10,0,0,0" IsVisible="{Binding !IsLoading}"
+                Background="{Binding ElementName=ListBoxHidden, Path=Background}"
+                BorderBrush="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="10" >
+            <Grid>
+                <!-- <Border IsVisible="{Binding IsListingSelected}">
+                    <cnt:TrackDetailsView DataContext="{Binding SelectedListing}" />
+                </Border>
+             
+                <Border IsVisible="{Binding !IsListingSelected}">
+                    <se:SelectedEditionView DataContext="{Binding SelectedEdition}" />
+                </Border> -->
+            </Grid>
+        </Border>
+        
         <Grid 
             IsVisible="{Binding IsLoading}"
             HorizontalAlignment="Center"
-              VerticalAlignment="Center"
-              Height="100"
-              Width="100">
+            VerticalAlignment="Center"
+            Height="100"
+            Width="100">
             <Ellipse Stroke="#33DA161C"
                      StrokeThickness="8" />
 
@@ -53,6 +72,17 @@
                 </Path.RenderTransform>
             </Path>
         </Grid>
+        
+    </DockPanel>
+    <!--
+    <Grid>
+        
+        
+        
+       
+    
+       
     </Grid>
+    -->
 
 </Window>

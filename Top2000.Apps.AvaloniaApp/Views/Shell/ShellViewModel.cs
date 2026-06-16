@@ -1,46 +1,49 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Top2000.Apps.AvaloniaApp.ViewModels;
+using Top2000.Apps.AvaloniaApp.Views.TrackMenu;
 using Top2000.Features;
 
 namespace Top2000.Apps.AvaloniaApp.Views.Shell;
 
-public interface IShell
+public partial class DesignTimeShellViewModel : ShellViewModel
 {
-    public string Title { get; }
+    public DesignTimeShellViewModel()
+        : base(new MockupTop2000Services(), new DesignTrackMenuViewModel())
+    {
+        
+    }
 }
 
-public partial class ShellViewModel : ViewModelBase, IShell
+public partial class ShellViewModel : ObservableObject, IShell
 {
     private readonly ITop2000Services _top2000Services;
-    private readonly MainWindowViewModel _mainWindowViewModel;
-    [ObservableProperty] private bool _isLoading = true;
-    [ObservableProperty] private string _loadingMessage = "Loading database...";
-    [ObservableProperty] private string _title = "Top 2000";
-    [ObservableProperty] private MainWindow? _mainWindow;
+    [ObservableProperty]
+    public partial bool IsLoading { get; set; } = true;
 
-//    public ShellViewModel()
-  //  {
-    //    _top2000Services = new MockupTop2000Services();
-    //}
-    
-    public ShellViewModel(ITop2000Services top2000Services, MainWindowViewModel  mainWindowViewModel)
+    [ObservableProperty]
+    public partial string Title { get; set; } = "Top 2000";
+
+    [ObservableProperty]
+    public partial TrackMenuView? TrackMenuView { get; set; }
+
+    public ShellViewModel(ITop2000Services top2000Services, TrackMenuViewModel trackMenuViewModel)
     {
         _top2000Services = top2000Services;
-        _mainWindowViewModel = mainWindowViewModel;
     }
     
-    public async Task InitialiseAsync()
+    public async Task InitialiseAsync(TrackMenuViewModel trackMenuViewModel)
     {
         try
         {
+            await Task.Delay(2000);
             await _top2000Services.InitialiseDataAsync();
 
-            MainWindow = new MainWindow
+            TrackMenuView = new TrackMenuView
             {
-                DataContext = _mainWindowViewModel
+                DataContext = trackMenuViewModel
             };
             
-            await _mainWindowViewModel.InitialiseViewModelAsync(MainWindow);
+            await trackMenuViewModel.InitialiseViewModelAsync(TrackMenuView, this);
             
             IsLoading = false;
         }

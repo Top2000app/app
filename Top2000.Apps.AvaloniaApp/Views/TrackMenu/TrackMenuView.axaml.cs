@@ -1,16 +1,14 @@
 using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Top2000.Apps.AvaloniaApp.ViewModels;
 
-namespace Top2000.Apps.AvaloniaApp.Views;
+namespace Top2000.Apps.AvaloniaApp.Views.TrackMenu;
 
-public partial class MainWindow : UserControl, IScrollListingListIntoView
+public partial class TrackMenuView : UserControl, IScrollListingListIntoView
 {
-    public MainWindow()
+    public TrackMenuView()
     {
         InitializeComponent();
     }
-
+    
     public void ScrollIntoView(ITrackListingViewModel item)
     {
         var lastItem = ListingListBox.Items.Last();
@@ -22,6 +20,7 @@ public partial class MainWindow : UserControl, IScrollListingListIntoView
         ListingListBox.ScrollIntoView(item);
     }
 }
+
 
 public interface IScrollListingListIntoView
 {

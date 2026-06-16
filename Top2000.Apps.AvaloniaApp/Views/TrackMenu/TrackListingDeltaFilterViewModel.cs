@@ -1,10 +1,11 @@
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Top2000.Apps.AvaloniaApp.ViewModels;
 using Top2000.Features.Listings;
 
-namespace Top2000.Apps.AvaloniaApp.ViewModels;
+namespace Top2000.Apps.AvaloniaApp.Views.TrackMenu;
 
-public partial class TrackListingDeltaFilterViewModel : ViewModelBase
+public partial class TrackListingDeltaFilterViewModel : ObservableObject
 {
     private static readonly SolidColorBrush WhiteColourBrush = new (Colors.White);
 
@@ -16,14 +17,15 @@ public partial class TrackListingDeltaFilterViewModel : ViewModelBase
 
     public required ICanFilterListings Parent { get; init; }
 
-    [ObservableProperty] private int _count = 0;
+    [ObservableProperty]
+    public partial int Count { get; set; } = 0;
     
     [ObservableProperty]
-    private bool _isChecked;
+    public partial bool IsChecked { get; set; }
 
-    [ObservableProperty] 
-    private SolidColorBrush _displayColourBrush = new (Colors.White);
-    
+    [ObservableProperty]
+    public partial SolidColorBrush DisplayColourBrush { get; set; } = new(Colors.White);
+
     partial void OnIsCheckedChanged(bool value)
     {
         Parent.UpdateListings();

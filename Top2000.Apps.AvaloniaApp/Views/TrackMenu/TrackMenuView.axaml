@@ -92,32 +92,38 @@
     </UserControl.Styles>
     
     <Grid RowDefinitions="100, Auto ,*" Background="Transparent">
-        <!-- Year selected and group/order buttons -->
+        <!-- Header -->
         <Grid Background="Transparent" RowDefinitions="Auto,*,Auto" >
 
-            <TextBlock  Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,5,0,0" Classes="animated">
+            <!-- Year selected and group/order buttons -->
+            <TextBlock Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,5,0,0" Classes="animated">
                 <Run FontFamily="{StaticResource MaterialIcons}" 
                      Text="{x:Static assets:Symbols.Menu}" FontSize="25"
                      BaselineAlignment="Center" />
                 <Run Text="{Binding SelectedEdition?.Year, FallbackValue=2026}" BaselineAlignment="Center"   />
             </TextBlock>
             
-            <!-- Buttons -->
+            <!-- Buttons On the Right -->
             <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
+                <!-- Search -->
                 <Button x:Name="Button"
-                    FontFamily="{StaticResource MaterialIcons}" CornerRadius="50" IsEnabled="{Binding CanToggleGrouping}"
-                         Content="{x:Static assets:Symbols.Search}" Command="{Binding ActivateSearchCommand}"
-                />
+                        FontFamily="{StaticResource MaterialIcons}" CornerRadius="50" IsEnabled="{Binding CanToggleGrouping}"
+                        Content="{x:Static assets:Symbols.Search}" Command="{Binding ActivateSearchCommand}" 
+                        />
+                
+                <!-- Grouping -->
                 <Button FontFamily="{StaticResource MaterialIcons}" CornerRadius="50" IsEnabled="{Binding CanToggleGrouping}"
-                        Content="{Binding GroupIcon}" Command="{Binding ToggleGroupingCommand}"
-                />
+                        Content="{Binding GroupIcon}" Command="{Binding ToggleGroupingCommand}" />
+                
+                <!-- Order -->
                 <Button FontFamily="{StaticResource MaterialIcons}" CornerRadius="50"
-                        Content="{Binding OrderIcon}" Command="{Binding ToggleOrderCommand}"
-                />
+                        Content="{Binding OrderIcon}" Command="{Binding ToggleOrderCommand}" />
+                
             </StackPanel>
             
             <!-- Filter buttons --> 
             <ItemsControl Grid.Row="1"  Background="Transparent" VerticalAlignment="Bottom"
+                          IsVisible="{Binding !ShowSearchBar}"
                           Margin="10" ItemsSource="{Binding Filters}" >
                  
                 <ItemsControl.ItemsPanel>
@@ -142,17 +148,16 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            
            
-        </Grid>
-        <!-- Search bar -->
-        <Grid Grid.Row="1" Height="50" Background="{Binding ElementName=Button, Path=Background}" Opacity="0.8" IsVisible="{Binding ShowSearchBar}"
-              ColumnDefinitions="Auto, *">
+            <!-- Search bar -->
+            <Grid Name="SearchGrid" Grid.Row="1" Height="50" Background="{Binding ElementName=Button, Path=Background}" Opacity="0.8" IsVisible="{Binding ShowSearchBar}"
+                  ColumnDefinitions="Auto, *"  >
                 <TextBlock Margin="10,0,10,0" Text="{x:Static assets:Symbols.Search}" FontFamily="{StaticResource MaterialIcons}" FontSize="20" 
                            VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 
-            <TextBox Classes="plainSearchBox" Margin="0,0, 10,0" Grid.Column="1"
-                     PlaceholderText="Search" VerticalAlignment="Center" VerticalContentAlignment="Center" />
+                <TextBox Name="SearchText" Classes="plainSearchBox" Margin="0,0, 10,0" Grid.Column="1"
+                         PlaceholderText="Search" VerticalAlignment="Center" VerticalContentAlignment="Center" />
+            </Grid>
             
         </Grid>
         
@@ -205,7 +210,7 @@
             </ListBox.DataTemplates>
         </ListBox>
         
-        <!-- Group Select -->  
+        <!-- DateTime Group Select -->  
         <ScrollViewer  Grid.Row="0" Grid.RowSpan="3" CornerRadius="0,0,10,10" Background="Transparent"
                        IsVisible="{Binding ShowTimeGroupSelection}" >
             <ItemsControl ItemsSource="{Binding GroupTimeGroupListing}"
@@ -243,6 +248,7 @@
             </ItemsControl>
         </ScrollViewer>
         
+        <!-- 100-position group select -->
         <ScrollViewer  Grid.Row="0" Grid.RowSpan="3" CornerRadius="0,0,10,10" Background="Transparent"
                        IsVisible="{Binding ShowPositionGroupSelection}" >
             <ItemsControl ItemsSource="{Binding PositionGroupListing}"
@@ -278,5 +284,6 @@
                 </ItemsControl.DataTemplates>
             </ItemsControl>
         </ScrollViewer>
+        
     </Grid>
 </UserControl>

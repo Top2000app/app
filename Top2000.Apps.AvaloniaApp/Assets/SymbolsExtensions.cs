@@ -1,8 +1,7 @@
 using Avalonia.Media;
-using Top2000.Apps.AvaloniaApp.Assets;
 using Top2000.Features.Listings;
 
-namespace Top2000.Apps.AvaloniaApp.ViewModels;
+namespace Top2000.Apps.AvaloniaApp.Assets;
 
 public static class SymbolsExtensions
 {

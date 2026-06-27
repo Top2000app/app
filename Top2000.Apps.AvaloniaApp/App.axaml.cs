@@ -5,6 +5,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Top2000.Apps.AvaloniaApp.ViewModels;
+using Top2000.Apps.AvaloniaApp.Views.Details;
 using Top2000.Apps.AvaloniaApp.Views.Shell;
 using Top2000.Apps.AvaloniaApp.Views.TrackMenu;
 using Top2000.Features;
@@ -25,6 +26,7 @@ public partial class App : Application
         var services = new ServiceCollection()
             .AddTransient<ShellViewModel>()
             .AddTransient<TrackMenuViewModel>()
+            .AddTransient<DetailsViewModel>()
             .AddTop2000Features<SqliteFeatureAdapter>()
             .BuildServiceProvider();
 
@@ -45,7 +47,10 @@ public partial class App : Application
         
         base.OnFrameworkInitializationCompleted();
 
-        _ = vm.InitialiseAsync(services.GetRequiredService<TrackMenuViewModel>());
+        _ = vm.InitialiseAsync(
+            trackMenuViewModel: services.GetRequiredService<TrackMenuViewModel>(),
+            detailsViewModel: services.GetRequiredService<DetailsViewModel>()
+            );
     }
 
     private static void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)

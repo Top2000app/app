@@ -1,3 +1,4 @@
+using Top2000.Apps.AvaloniaApp.Assets;
 using Top2000.Apps.AvaloniaApp.ViewModels;
 using Top2000.Features.Listings;
 

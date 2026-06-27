@@ -2,12 +2,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="using:Top2000.Apps.AvaloniaApp.ViewModels"
+             xmlns:vm="using:Top2000.Apps.AvaloniaApp.Views.Details.TrackDetails"
              xmlns:assets="using:Top2000.Apps.AvaloniaApp.Assets"
              xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
-             mc:Ignorable="d" x:DataType="vm:TrackDetailsViewModel"
-             d:DesignHeight="600" d:DesignWidth="1200"
-             x:Class="Top2000.Apps.AvaloniaApp.Views.TrackDetailsView">
+             x:DataType="vm:TrackDetailsViewModel"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Top2000.Apps.AvaloniaApp.Views.Details.TrackDetails.TrackDetailsView">
     <Design.DataContext>
         <vm:DesignTimeTrackDetailsViewModel />
     </Design.DataContext>

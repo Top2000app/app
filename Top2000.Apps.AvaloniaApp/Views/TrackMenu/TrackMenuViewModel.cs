@@ -1,17 +1,14 @@
-using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using LiveChartsCore.Defaults;
-using LiveChartsCore.SkiaSharpView;
 using Top2000.Apps.AvaloniaApp.Assets;
 using Top2000.Apps.AvaloniaApp.ViewModels;
+using Top2000.Apps.AvaloniaApp.Views.Details.TrackDetails;
 using Top2000.Apps.AvaloniaApp.Views.SelectedEdition;
 using Top2000.Apps.AvaloniaApp.Views.Shell;
 using Top2000.Features;
 using Top2000.Features.Editions;
 using Top2000.Features.Listings;
 using Top2000.Features.Searching;
-using Top2000.Features.TrackInformation;
 
 namespace Top2000.Apps.AvaloniaApp.Views.TrackMenu;
 
@@ -48,6 +45,9 @@ public partial class TrackMenuViewModel : ObservableObject, ICanFilterListings, 
     
     [ObservableProperty]
     public partial ITrackListingViewModel? SelectedItem { get; set; }
+    
+    [ObservableProperty]
+    public partial SearchTrackResultViewModel SelectedSearchTrackResultViewModel { get; set; }
 
     [ObservableProperty]
     public partial string OrderIcon { get; set; } = Symbols.Up;
@@ -138,6 +138,7 @@ public partial class TrackMenuViewModel : ObservableObject, ICanFilterListings, 
 
     private CancellationTokenSource? _debounceCts;
     private readonly TimeSpan _debounceDelay = TimeSpan.FromMilliseconds(300);
+    private IShowTrackDetails? _trackDetails;
 
 
     async partial void OnSearchStringChanged(string value)
@@ -202,11 +203,19 @@ public partial class TrackMenuViewModel : ObservableObject, ICanFilterListings, 
         }
     }
 
+    async partial void OnSelectedSearchTrackResultViewModelChanged(SearchTrackResultViewModel value)
+    {
+        if (_trackDetails is not null)
+        {
+            await _trackDetails.ShowTrackDetailsAsync(value.TrackId);
+        }
+    }
+
     async partial void OnSelectedItemChanged(ITrackListingViewModel? oldValue, ITrackListingViewModel? newValue)
     {
-        if (newValue is TrackListingViewModel trackListing)
+        if (newValue is TrackListingViewModel trackListing && _trackDetails is not null)
         {
-            await DisplayTheSelectedListingAsync(trackListing);
+            await _trackDetails.ShowTrackDetailsAsync(trackListing.TrackId);
         }
 
         if (newValue is TrackListingPositionGroup)
@@ -216,7 +225,7 @@ public partial class TrackMenuViewModel : ObservableObject, ICanFilterListings, 
             ShowPositionGroupSelection = true;
             PositionGroupListing = Listings
                 .Where(x => x is TrackListingPositionGroup)
-                .Cast<TrackListingPositionGroup>()
+                .OfType<TrackListingPositionGroup>()
                 .OrderBy(x => int.Parse(x.GroupName.Split(' ')[0]))
                 .GroupBy(x => int.Parse(x.GroupName.Split(' ')[0]) / 1000)
                 .Select(TransformTrackListingPositionGroupHeader)
@@ -230,7 +239,7 @@ public partial class TrackMenuViewModel : ObservableObject, ICanFilterListings, 
             ShowTimeGroupSelection = true;
             GroupTimeGroupListing = Listings
                 .Where(x => x is TrackListingPlayDateTimeGroup)
-                .Cast<TrackListingPlayDateTimeGroup>()
+                .OfType<TrackListingPlayDateTimeGroup>()
                 .OrderBy(x => x.PlayTime)
                 .GroupBy(x => x.PlayTime.Date)
                 .Select(TransformTrackListingPlayDateGroup)
@@ -254,94 +263,11 @@ public partial class TrackMenuViewModel : ObservableObject, ICanFilterListings, 
         };
     }
 
-    private async Task DisplayTheSelectedListingAsync(TrackListingViewModel trackListing)
-    {
-        var details = await _top2000Services.TrackDetailsAsync(trackListing.TrackId);
-        var trackListings = details.Listings
-            .Select(Transform)
-            .ToList();
-        
-        var orderedListings = trackListings
-            .Where(x => x.Position.HasValue)
-            .OrderBy(x => x.Position)
-            .ThenBy(x => x.Edition)
-            .ToList();
-
-        var trackListingsForGraph = trackListings
-            .OrderBy(x => x.Edition)
-            .Select(x => new ObservablePoint
-            {
-               X = x.Edition,
-               Y = x.Position,
-            })
-            .ToArray();
-
-        var xxx = trackListingsForGraph.Select(x => (int?)x.Y).ToList();
-
-        var zoomRange = TrackDetailsViewModel.GetZoomRange(xxx);
-        
-        if (SelectedListing is null)
-        {
-            
-            SelectedListing = new TrackDetailsViewModel
-            {
-                ParentMainWindowViewModel = this,
-                Artist =  trackListing.Artist,
-                Title = trackListing.Title,
-                RecordedYear = details.RecordedYear,
-                Listings = trackListings,
-                SelectedListing = trackListings.First(x => x.Edition == SelectedEdition!.Year),
-                LatestEditionPosition = trackListings.Last(x => x.Position.HasValue)?.Position.ToString() ?? "-",
-                Highest = orderedListings.Last(),
-                Lowest = orderedListings.First(),
-                YMax = zoomRange.max,
-                YMin = zoomRange.min,
-              //  Positions = trackListingsForGraph.ToArray(),
-                Series =
-                [
-                    new LineSeries<ObservablePoint>
-                    {
-                        Values = trackListingsForGraph,
-                        GeometrySize = 6
-                    }
-                ]
-            };
-        }
-
-        else
-        {
-            SelectedListing.YMax = zoomRange.max;
-            SelectedListing.YMin = zoomRange.min;
-            SelectedListing.Series =
-            [
-                new LineSeries<ObservablePoint>
-                {
-                    Values = trackListingsForGraph,
-                    GeometrySize = 6
-                }
-            ];
-        }
-    }
-
-    private static TrackDetailsListingViewModel Transform(ListingInformation x)
-    {
-        return new TrackDetailsListingViewModel
-        {
-            Edition = x.Edition,
-            Delta = x.Delta?.ToString() ?? "",
-            DeltaFontSize = TrackDetailsListingViewModel.ConvertDeltaFontSize(x),
-            DeltaSymbol = TrackDetailsListingViewModel.ConvertDeltaToSymbol(x),
-            DeltaSymbolColour =
-                new SolidColorBrush(TrackDetailsListingViewModel.ConvertDeltaSymbolColour(x)),
-            Position = x.Position,
-            Status = x.Status
-        };
-    }
-    
-    public async Task InitialiseViewModelAsync(IScrollListingListIntoView scrollService, IShell shell)
+    public async Task InitialiseViewModelAsync(IScrollListingListIntoView scrollService, IShell shell, IShowTrackDetails trackDetails)
     {
         _shell = shell;
         _scrollService = scrollService; 
+        _trackDetails = trackDetails;
         Editions = await _top2000Services.AllEditionsAsync();
         SelectedEdition = new SelectedEditionViewModel { Year = Editions.First().Year };
         shell.Title = "TOP2000 - " + SelectedEdition.Year;

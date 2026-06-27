@@ -42,6 +42,8 @@
                 Background="{Binding ElementName=ListBoxHidden, Path=Background}"
                 BorderBrush="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="10" >
             <Grid>
+                <ContentControl Content="{Binding DetailsView}" />
+                
                 <!-- <Border IsVisible="{Binding IsListingSelected}">
                     <cnt:TrackDetailsView DataContext="{Binding SelectedListing}" />
                 </Border>

@@ -166,7 +166,8 @@
         
         <!-- Search overview -->
         <ListBox Grid.Row="2" ItemsSource="{Binding SearchListing}"
-                 SelectedItem="{Binding SelectedItem, Mode=TwoWay}" AutoScrollToSelectedItem="False"
+                 SelectedItem="{Binding SelectedSearchTrackResultViewModel, Mode=TwoWay}"
+                 AutoScrollToSelectedItem="False"
                  CornerRadius="0,0,10,10" IsVisible="{Binding ShowSearchResults}" >
             <ListBox.DataTemplates>
                 <DataTemplate DataType="{x:Type vm:SearchTrackResultViewModel}">

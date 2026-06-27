@@ -10,132 +10,10 @@ using Top2000.Apps.AvaloniaApp.Views.Shell;
 using Top2000.Features;
 using Top2000.Features.Editions;
 using Top2000.Features.Listings;
+using Top2000.Features.Searching;
 using Top2000.Features.TrackInformation;
 
 namespace Top2000.Apps.AvaloniaApp.Views.TrackMenu;
-
-public interface ICanFilterListings
-{
-    void UpdateListings();
-}
-
-public interface IHandleGroupSelection
-{
-    void SelectingGroup(ITrackListingViewModel group);
-}
-
-public class ListingGroupedByPosition : ListingsViewModel
-{
-   public override ListingsViewModel ToggleGrouping() => new ListingGroupByPlayTime
-   {
-       IsOrderAscending = IsOrderAscending
-   };
-
-   public override string NextGroupSymbol => Symbols.Clock;
-
-   protected override IEnumerable<ITrackListingViewModel> GroupListing(IOrderedEnumerable<TrackListing> listings, int originalListingCount)
-   {
-       return listings
-           .GroupByPosition(originalListingCount)
-           .SelectMany(Transform);
-
-       static IEnumerable<ITrackListingViewModel> Transform(IGrouping<string, TrackListing> group)
-       {
-           var positionRange = group.Key.Split('-').Select(x => int.Parse(x.Trim())).ToArray();
-
-           return new[]
-           {
-                new TrackListingPositionGroup
-               {
-                   PositionRangStart = positionRange[0],
-                   PositionRangEnd = positionRange[1],
-                   GroupName = group.Key
-               }
-           }.Concat(group.Select(TransformTrackListingViewModel));
-       }
-   }
-
-}
-
-public  class ListingGroupByPlayTime : ListingsViewModel
-{
-
-    public override ListingsViewModel ToggleGrouping() => new ListingGroupedByPosition
-    {
-        IsOrderAscending = IsOrderAscending
-    };
-
-    public override string NextGroupSymbol => Symbols.List;
-
-    protected override IEnumerable<ITrackListingViewModel> GroupListing(IOrderedEnumerable<TrackListing> listings, int _)
-    {
-        return listings
-            .GroupByPlayLocalDateAndTime()
-            .SelectMany(Transform);
-        
-        static IEnumerable<ITrackListingViewModel> Transform(IGrouping<DateTime, TrackListing> group)
-        {
-            return new[]
-            {
-                new TrackListingPlayDateTimeGroup
-                {
-                    GroupName = TrackListingPlayDateTimeGroup.MakeNiceDateTimeString(group.Key),
-                    PlayTime = group.Key
-                }
-            }
-            .Concat(group.Select(TransformTrackListingViewModel));
-        }
-    }
-    
-}
-
-public abstract partial class ListingsViewModel : ObservableObject
-{
-    public abstract ListingsViewModel ToggleGrouping();
-
-    public bool IsOrderAscending { get; set; } = true;
-
-    public abstract string NextGroupSymbol { get; }
-
-    public string NextOrderSymbol { get; private set; } = Symbols.Down;
-    
-    public void ToggleOrder()
-    {
-        IsOrderAscending = !IsOrderAscending;
-        NextOrderSymbol = IsOrderAscending
-            ? Symbols.Down
-            : Symbols.Up;
-    }
-
-    public List<ITrackListingViewModel> CreateListing(IEnumerable<TrackListing> listings, int originalListingCount)
-    {
-        var orderedListings = IsOrderAscending
-            ? listings.OrderBy(x => x.Position)
-            : listings.OrderByDescending(x => x.Position);
-
-        return GroupListing(orderedListings, originalListingCount)
-            .ToList();
-    }
-
-    protected abstract IEnumerable<ITrackListingViewModel> GroupListing(IOrderedEnumerable<TrackListing> listings, int originalListingCount);
-    
-    protected static ITrackListingViewModel TransformTrackListingViewModel(TrackListing x)
-    {
-        return new TrackListingViewModel
-        {
-            TrackId = x.TrackId,
-            Artist = x.Artist,
-            Title = x.Title,
-            Delta = TrackListingViewModel.ConvertDeltaToString(x),
-            DeltaFontSize = x.DeltaType.ToFontSize(),
-            PositionString = x.Position.ToString(),
-            Position = x.Position,
-            DeltaSymbol = x.DeltaType.ToSymbol(),
-            DeltaSymbolColour = x.DeltaType.ToBrush(),
-            LocalPlayDateTime = x.PlayUtcDateAndTime.ToLocalTime()
-        };
-    }
-}
 
 public class DesignTrackMenuViewModel : TrackMenuViewModel
 {
@@ -166,6 +44,9 @@ public partial class TrackMenuViewModel : ObservableObject, ICanFilterListings, 
     [ObservableProperty] private SelectedEditionViewModel? _selectedEdition;
     
     [ObservableProperty]
+    public partial List<SearchTrackResultViewModel> SearchListing { get; set; }
+    
+    [ObservableProperty]
     public partial ITrackListingViewModel? SelectedItem { get; set; }
 
     [ObservableProperty]
@@ -180,6 +61,9 @@ public partial class TrackMenuViewModel : ObservableObject, ICanFilterListings, 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsListingSelected))]
     public partial TrackDetailsViewModel? SelectedListing { get; set; }
+
+    [ObservableProperty] public partial bool ShowSearchResults { get; set; } = false;
+    [ObservableProperty] public partial string SearchString { get; set; }
     
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(GroupIcon))]
@@ -250,6 +134,72 @@ public partial class TrackMenuViewModel : ObservableObject, ICanFilterListings, 
         PositionGroupListing = [];
         SelectedItem = _selectUponGroupClosing;
         _scrollService?.ScrollIntoView(group);
+    }
+
+    private CancellationTokenSource? _debounceCts;
+    private readonly TimeSpan _debounceDelay = TimeSpan.FromMilliseconds(300);
+
+
+    async partial void OnSearchStringChanged(string value)
+    {
+        _debounceCts?.Cancel();
+        _debounceCts?.Dispose();
+
+        _debounceCts = new CancellationTokenSource();
+        var token = _debounceCts.Token;
+
+        try
+        {
+            await Task.Delay(_debounceDelay, token);
+
+            await RunSearchAsync(value, token);
+        }
+        catch (TaskCanceledException)
+        {
+            // swallow
+        }
+    }
+    
+    private async Task RunSearchAsync(string value, CancellationToken token)
+    {
+        try
+        {
+            var result = await _top2000Services.SearchAsync(
+                value,
+                Editions.First().Year,
+                new SortByTitle(),
+                new GroupByNothing(),
+                token);
+
+            if (!token.IsCancellationRequested && result.Any()) 
+            {
+                SearchListing = result.First()
+                    .Select(x => new SearchTrackResultViewModel
+                    {
+                        Artist = x.Artist,
+                        TitleWithRecordedYear = $"{x.Title} ({x.RecordedYear})",
+                        TrackId = x.Id,
+                        PositionInLatestEdition = x.PositionInLatestEdition
+                    })
+                    .ToList();
+
+                ShowSearchResults = true;
+            }
+        }
+        catch (TaskCanceledException)
+        {
+            // swallow
+        }
+    }
+
+    partial void OnShowSearchBarChanged(bool value)
+    {
+        SearchString = string.Empty;
+
+        if (!value)
+        {
+            ShowSearchResults = false;
+        }
     }
 
     async partial void OnSelectedItemChanged(ITrackListingViewModel? oldValue, ITrackListingViewModel? newValue)
@@ -415,27 +365,6 @@ public partial class TrackMenuViewModel : ObservableObject, ICanFilterListings, 
         GroupIcon = SelectedListingsViewModel.NextGroupSymbol;
         UpdateListings();
     }
-
-    [RelayCommand]
-    private void ActivateSearch()
-    {
-        ShowSearchBar = !ShowSearchBar;
-    }
-/*
-    partial void OnListingOrderChanged(ListingOrder value)
-    {
-        OrderIcon = value == ListingOrder.Ascending
-            ? Symbols.Up
-            : Symbols.Down;
-    }
-    
-    partial void OnListingGroupChanged(ListingGroup value)
-    {
-        GroupIcon = value == ListingGroup.Position
-            ? Symbols.ListingMenu
-            : Symbols.Clock;
-    }
-*/
 
     private async Task LoadAllListingsAsync()
     {

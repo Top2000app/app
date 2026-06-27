@@ -9,8 +9,6 @@ public partial class TrackMenuView : UserControl, IScrollListingListIntoView
     public TrackMenuView()
     {
         InitializeComponent();
-
-        SearchGrid.PropertyChanged += SearchGrid_OnPropertyChanged;
     }
     
     public void ScrollIntoView(ITrackListingViewModel item)
@@ -26,7 +24,7 @@ public partial class TrackMenuView : UserControl, IScrollListingListIntoView
 
     private void SearchGrid_OnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
     {
-        if (e.Property == Visual.IsVisibleProperty && SearchGrid.IsVisible)
+        if (e.Property == IsVisibleProperty && SearchGrid.IsVisible)
         {
             Dispatcher.UIThread.Post(() => SearchText.Focus(), DispatcherPriority.Input);
         }

@@ -9,7 +9,7 @@
              x:Class="Top2000.Apps.AvaloniaApp.Views.Details.DetailsView">
     
     
-    <Border IsVisible="{Binding IsListingSelected}">
-        <trackDetails:TrackDetailsView DataContext="{Binding SelectedListing}" />
+    <Border IsVisible="{Binding IsListingSelected}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <trackDetails:TrackDetailsView DataContext="{Binding SelectedListing}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
     </Border>
 </UserControl>

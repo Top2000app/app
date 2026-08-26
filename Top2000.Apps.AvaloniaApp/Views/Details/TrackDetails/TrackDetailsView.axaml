@@ -12,7 +12,7 @@
         <vm:DesignTimeTrackDetailsViewModel />
     </Design.DataContext>
     
-    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*" Margin="20,0,20,0" >
+    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*" Margin="20,0,20,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid Row="0" Column="0" ColumnDefinitions="*,Auto">
             <StackPanel>
                 <TextBlock Text="{Binding Title}"

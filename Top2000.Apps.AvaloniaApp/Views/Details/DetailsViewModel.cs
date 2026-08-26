@@ -25,7 +25,7 @@ public partial class DetailsViewModel : ObservableObject, IShowTrackDetails
     public partial bool IsListingSelected { get; set; }
     
     [ObservableProperty]
-    public partial TrackDetailsViewModel SelectedListing { get; set; }
+    public partial TrackDetailsViewModel? SelectedListing { get; set; }
     
     public DetailsViewModel(ITop2000Services top2000Services)
     {
@@ -60,6 +60,7 @@ public partial class DetailsViewModel : ObservableObject, IShowTrackDetails
 
       if (SelectedListing is null)
       {
+          IsListingSelected = true;
 
           SelectedListing = new TrackDetailsViewModel
           {
@@ -85,7 +86,6 @@ public partial class DetailsViewModel : ObservableObject, IShowTrackDetails
               ]
           };
       }
-
       else
       {
           SelectedListing.YMax = zoomRange.max;

@@ -10,6 +10,12 @@ using Edition = Top2000.Data.JsonClientDatabase.Models.Edition;
 
 namespace Top2000.Apps.CLI.Commands.Export;
 
+public class EditionExport
+{
+    [JsonPropertyName("y")]
+    public required int Year { get; init; }
+}
+
 public class ListingExport
 {
     [JsonPropertyName("t")]
@@ -82,7 +88,7 @@ public class ExportJsonCommand(ITop2000Services top2000Services) : CommandBase("
             HasPlayDateAndTime = x.HasPlayDateAndTime
         }).ToList();
     }
-
+    
     protected override async Task ExecuteAsync(ParseResult result, CancellationToken token)
     {
         var outputPath = result.GetValue<string>("--output") ?? "";
@@ -104,9 +110,18 @@ public class ExportJsonCommand(ITop2000Services top2000Services) : CommandBase("
                 var allEditions = await GetAllEditionsAsync();
                 var version = await top2000Services.DataVersion(token);
 
-                foreach (var editions in allEditions )
+
+                var editions = allEditions.Select(x => new EditionExport
+                    {
+                        Year = x.Year
+                    })
+                    .ToList();
+
+                await File.WriteAllTextAsync(Path.Combine(outputPath, "editions.json"), JsonSerializer.Serialize(editions), token);
+                
+                foreach (var edition in editions )
                 {
-                    var listings = await top2000Services.AllListingsOfEditionAsync(editions.Year, token);
+                    var listings = await top2000Services.AllListingsOfEditionAsync(edition.Year, token);
                     var forExport = listings.Select(x => new ListingExport()
                         {
                             Artist = x.Artist,
@@ -119,10 +134,10 @@ public class ExportJsonCommand(ITop2000Services top2000Services) : CommandBase("
                         .ToList();
 
                     var json = JsonSerializer.Serialize(forExport);
-                    
-                    var path = Path.Combine(outputPath, editions.Year + ".json");
-                    await File.WriteAllTextAsync(path, json, token);
+                    await File.WriteAllTextAsync(Path.Combine(outputPath, edition.Year + ".json"), json, token);
 
+                    
+                    
                 }
                 
             });

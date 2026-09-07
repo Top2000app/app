@@ -12,27 +12,105 @@
         <vm:DesignTimeTrackDetailsViewModel />
     </Design.DataContext>
     
-    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*" Margin="20,0,20,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="*" Margin="20,0,20,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Button Grid.Row="0" x:Name="Button" IsVisible="False" >Hello World</Button>
+        <ComboBox Grid.Row="0" x:Name="ComboBox" IsVisible="False"></ComboBox>
+        
+
+        <!-- header title, artist and badges -->
         <Grid Row="0" Column="0" ColumnDefinitions="*,Auto">
             <StackPanel>
                 <TextBlock Text="{Binding Title}"
-                           FontSize="42"
-                           FontWeight="Bold"
+                           FontSize="30"
                            TextWrapping="Wrap" />
-                <TextBlock  FontSize="20" Opacity="0.6">
-                    <Run Text="{Binding Artist}" />
-                    <Run Text=" · " />
-                    <Run Text="{Binding RecordedYear}" />
-                </TextBlock>
+                <TextBlock Margin="0,10" Text="{Binding Artist}"  TextWrapping="Wrap" FontSize="25" Foreground="{StaticResource Top2000Colour}" />
+                <StackPanel Orientation="Horizontal">
+                    <Border Background="{Binding ElementName=Button,Path=Background}" CornerRadius="5"
+                            BorderBrush="{Binding ElementName=ComboBox, Path=BorderBrush}"
+                            BorderThickness="{Binding ElementName=ComboBox, Path=BorderThickness}" Padding="5">
+                        <TextBlock Text="{Binding RecordedYear}"  />
+                    </Border>    
+                </StackPanel>
             </StackPanel>
-            
-            <Button x:Name="Button" IsVisible="False" />
-
         </Grid>
-        <Border Grid.Row="1" Background="{Binding ElementName=Button,Path=Background}" CornerRadius="10" Height="300" >
+        
+        <Border Grid.Row="3" Margin="0,20" Background="{Binding ElementName=Button,Path=Background}" CornerRadius="10"
+                BorderBrush="{Binding ElementName=ComboBox, Path=BorderBrush}" HorizontalAlignment="Left"
+                BorderThickness="{Binding ElementName=ComboBox, Path=BorderThickness}" Padding="10">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*">
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static assets:Symbols.Calendar}" Foreground="{x:Static assets:Colours.GreyColourBrush}" FontSize="30" FontFamily="{StaticResource MaterialIcons}" />
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Laatste notering" FontSize="20" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding LatestEditionPosition}" FontSize="20" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static assets:Symbols.Clock}" Foreground="{x:Static assets:Colours.GreyColourBrush}" FontSize="30" FontFamily="{StaticResource MaterialIcons}" />
+            </Grid>
+        </Border>
+        
+        <!-- Quick view -->
+        <Border Grid.Row="1" Margin="0,20" Background="{Binding ElementName=Button,Path=Background}" CornerRadius="10"
+                BorderBrush="{Binding ElementName=ComboBox, Path=BorderBrush}" HorizontalAlignment="Left"
+                BorderThickness="{Binding ElementName=ComboBox, Path=BorderThickness}" Padding="10">
             <Grid RowDefinitions="Auto,*">
-            <TextBlock Text="{x:Static assets:Symbols.Chart}" FontFamily="{StaticResource MaterialIcons}" 
-                       Foreground="{StaticResource Top2000Colour}" ></TextBlock>
+                <TextBlock Text="In het kort" FontSize="20" />
+                <StackPanel Grid.Row="1" Orientation="Horizontal" >
+                    <TextBlock Margin="20,20,0,0">
+                        <Run Text="{x:Static assets:Symbols.Flag}" FontSize="30" Foreground="{x:Static assets:Colours.YellowColourBrush}" FontFamily="{StaticResource MaterialIcons}"/>
+                        <LineBreak /> 
+                        <Run Text="Eerst" Foreground="Gray" /> 
+                        <LineBreak /> 
+                        <Run Text="{Binding First.Position}" FontSize="30" />
+                        <LineBreak /> 
+                        <Run Text="{Binding First.EditionString}" FontSize="15" Foreground="Gray" />
+                    </TextBlock> 
+                    
+                    <Separator Height="NaN" Width="1"></Separator>
+                    
+                    <TextBlock Margin="20,20,0,0">
+                        <Run Text="{x:Static assets:Symbols.Up}" FontSize="30" Foreground="{x:Static assets:Colours.GreenColourBrush}" FontFamily="{StaticResource MaterialIcons}" />
+                        <LineBreak /> 
+                        <Run Text="Hoogste" Foreground="Gray" /> 
+                        <LineBreak /> 
+                        <Run Text="{Binding Highest.Position}" FontSize="30" />
+                        <LineBreak /> 
+                        <Run Text="{Binding Highest.EditionString}" FontSize="15" Foreground="Gray" />
+                    </TextBlock> 
+                    
+                    <Separator Height="NaN" Width="1"></Separator>
+                    
+                    <TextBlock Margin="20,20,0,0">
+                        <Run Text="{x:Static assets:Symbols.Down}" FontSize="30" Foreground="{x:Static assets:Colours.RedColourBrush}" FontFamily="{StaticResource MaterialIcons}"/>
+                        <LineBreak /> 
+                        <Run Text="Laagste" Foreground="Gray"/> 
+                        <LineBreak /> 
+                        <Run Text="{Binding Lowest.Position}" FontSize="30"  />
+                        <LineBreak /> 
+                        <Run Text="{Binding Lowest.EditionString}" FontSize="15"  Foreground="Gray" />
+                    </TextBlock> 
+                    
+                    <Separator Height="NaN" Width="1"></Separator>
+                    
+                    <TextBlock Margin="20,20,0,0">
+                        <Run Text="{x:Static assets:Symbols.Star}" FontSize="30" Foreground="{x:Static assets:Colours.YellowColourBrush}" FontFamily="{StaticResource MaterialIcons}"/>
+                        <LineBreak /> 
+                        <Run Text="Laatste" Foreground="Gray" /> 
+                        <LineBreak /> 
+                        <Run Text="{Binding Latest.Position}" FontSize="30" />
+                        <LineBreak /> 
+                        <Run Text="{Binding Latest.EditionString}" FontSize="15" Foreground="Gray" />
+                    </TextBlock> 
+                </StackPanel>
+            </Grid>
+        </Border>
+        
+        <!-- Chart -->
+        <Border Grid.Row="2" Margin="0,20" Background="{Binding ElementName=Button,Path=Background}" CornerRadius="10" Height="300"  
+                BorderBrush="{Binding ElementName=ComboBox, Path=BorderBrush}"
+                BorderThickness="{Binding ElementName=ComboBox, Path=BorderThickness}" Padding="10"
+                >
+            <Grid RowDefinitions="Auto,*">
+            <TextBlock Text="Appearances" FontSize="20">
+            </TextBlock>
                 <lvc:CartesianChart Grid.Row="1" Background="{Binding ElementName=Button,Path=Background}" 
                                     Series="{Binding Series}"
                                     Foreground="{StaticResource Top2000Colour}"
@@ -48,11 +126,9 @@
                 
             </Grid>
         </Border>
-        <Border Grid.Row="2" Background="{Binding ElementName=Button,Path=Background}" CornerRadius="5" >
-            
-        </Border>
-       
-</Grid>
+        
+ 
+        </Grid>
     <!-- <Grid RowDefinitions="Auto,*"> -->
     <!-- -->
     <!--     <TextBlock Grid.Row="0"> -->

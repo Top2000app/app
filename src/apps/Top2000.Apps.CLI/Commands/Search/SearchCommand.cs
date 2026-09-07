@@ -6,7 +6,7 @@ using Top2000.Features.Searching;
 
 namespace Top2000.Apps.CLI.Commands.Search;
 
-public class SearchCommand(Top2000Services top2000Services) : CommandBase("search", "Search for tracks in the database")
+public class SearchCommand(ITop2000Services top2000Services) : CommandBase("search", "Search for tracks in the database")
 {
     protected override async Task ExecuteAsync(ParseResult result, CancellationToken token)
     {

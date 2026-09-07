@@ -45,4 +45,8 @@ public static class Symbols
     public static string List => "\xe896";
 
     public static string PartOfListUp = "\xe25a";
+    
+    public static string Star = "\xe885";
+    
+    public static string Calendar = "\xe935";
 }

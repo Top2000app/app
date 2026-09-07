@@ -6,11 +6,11 @@ namespace Top2000.Apps.CLI.Commands;
 
 public class Top2000Command : RootCommand
 {
-    private readonly Top2000Services _top2000Services;
+    private readonly ITop2000Services _top2000Services;
     private readonly IServiceProvider _serviceProvider;
     private readonly Top2000ServiceBuilder _builder;
 
-    public Top2000Command(Top2000Services top2000Services, IServiceProvider serviceProvider, Top2000ServiceBuilder builder) 
+    public Top2000Command(ITop2000Services top2000Services, IServiceProvider serviceProvider, Top2000ServiceBuilder builder) 
         : base("Top 2000 CLI Application. A command line interface for interacting with the Top 2000 database.")
     {
         _top2000Services = top2000Services;

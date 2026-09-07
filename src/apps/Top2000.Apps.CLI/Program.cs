@@ -1,11 +1,9 @@
-﻿using DownloaderApp;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Top2000.Apps.CLI.Commands.Show;
 using Top2000.Apps.CLI.Commands.Export;
 using Top2000.Apps.CLI.Commands;
-using Top2000.Apps.CLI.Commands.Export.Isam;
 using Top2000.Apps.CLI.Commands.Info;
 using Top2000.Apps.CLI.Commands.Search;
 using Top2000.Apps.CLI.Commands.Stats;
@@ -28,7 +26,6 @@ host.Services
     .AddCommand<ExportCommands, ExportJsonCommand>()
     .AddCommand<ExportCommands, ExportApiCommand>()
     .AddCommand<ExportCommands, ExportCsvCommand>()
-    .AddCommand<ExportCommands, ExportIsamCommand>()
     ;
 
 host.Services

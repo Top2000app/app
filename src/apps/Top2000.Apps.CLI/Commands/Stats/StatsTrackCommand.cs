@@ -4,7 +4,7 @@ using Spectre.Console.Rendering;
 
 namespace Top2000.Apps.CLI.Commands.Stats;
 
-public class StatsTrackCommand(Top2000Services top2000Services) : CommandBase("track", "Show statistics for a track")
+public class StatsTrackCommand(ITop2000Services top2000Services) : CommandBase("track", "Show statistics for a track")
 {
     protected override List<Symbol> Symbols =>
     [

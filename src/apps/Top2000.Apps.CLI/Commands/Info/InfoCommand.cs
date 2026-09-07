@@ -3,7 +3,7 @@ using Top2000.Features;
 
 namespace Top2000.Apps.CLI.Commands.Info;
 
-public class InfoCommand(Top2000Services top2000Services) : CommandBase("--info", "Displays information about the application and database")
+public class InfoCommand(ITop2000Services top2000Services) : CommandBase("--info", "Displays information about the application and database")
 {
     protected override async Task ExecuteAsync(ParseResult result, CancellationToken token)
     {

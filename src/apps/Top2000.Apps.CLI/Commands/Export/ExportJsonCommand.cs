@@ -5,11 +5,54 @@ using Top2000.Apps.CLI.Database;
 using Top2000.Data.JsonClientDatabase;
 using Top2000.Data.JsonClientDatabase.Models;
 using Top2000.Features;
+using Top2000.Features.Listings;
 using Edition = Top2000.Data.JsonClientDatabase.Models.Edition;
 
 namespace Top2000.Apps.CLI.Commands.Export;
 
-public class ExportJsonCommand(Top2000DbContext dbContext, Top2000Services top2000Services) : CommandBase("json", "Export data to Json format")
+public class ListingExport
+{
+    [JsonPropertyName("t")]
+    public required string Title { get; init; }
+    [JsonPropertyName("a")]
+    public required string Artist { get; init; }
+    [JsonPropertyName("p")]
+    public required int Position { get; init; }
+    [JsonPropertyName("d")]
+    public required int Delta { get; init; }
+    [JsonPropertyName("i")]
+    public required string Icon { get; init; }
+    [JsonPropertyName("c")]
+    public required string IconColour { get; init; }
+
+    public static string Transform(TrackListingDeltaType type)
+    {
+        return type switch
+        {
+            TrackListingDeltaType.NoChange => "equal",
+            TrackListingDeltaType.Increased => "arrow_upward",
+            TrackListingDeltaType.Decreased => "arrow_downward",
+            TrackListingDeltaType.New => "flag",
+            TrackListingDeltaType.Recurring => "replay",
+            _ => "equal"
+        };
+    }
+
+    public static string DeltaColour(TrackListingDeltaType type)
+    {
+        return type switch
+        {
+            TrackListingDeltaType.NoChange => "grey",
+            TrackListingDeltaType.Increased =>  "green",
+            TrackListingDeltaType.Decreased => "red",
+            TrackListingDeltaType.New => "yellow",
+            TrackListingDeltaType.Recurring => "yellow",
+            _ => "grey"
+        };
+    }
+}
+
+public class ExportJsonCommand(ITop2000Services top2000Services) : CommandBase("json", "Export data to Json format")
 {
     protected override List<Symbol> Symbols =>
     [
@@ -61,58 +104,27 @@ public class ExportJsonCommand(Top2000DbContext dbContext, Top2000Services top20
                 var allEditions = await GetAllEditionsAsync();
                 var version = await top2000Services.DataVersion(token);
 
-                var fileInfo = new Top2000VersionInfo
+                foreach (var editions in allEditions )
                 {
-                    Editions = allEditions,
-                    Version = version
-                };
-
-                var tracks = await dbContext.Tracks
-                    .AsNoTracking()
-                    .Select(x => new Top2000.Data.JsonClientDatabase.Models.Track()
-                    {
-                        Artist = x.Artist,
-                        Id = x.Id,
-                        RecordedYear = x.RecordedYear,
-                        Title = x.Title,
-                        SearchArtist = x.SearchArtist,
-                        SearchTitle = x.SearchTitle,
-                    })
-                    .ToDictionaryAsync(x => x.Id, token);
-
-                foreach (var edition in allEditions)
-                {
-                    var listingOfEdition = (await top2000Services.AllListingsOfEditionAsync(edition.Year, token))
-                        .Select(listing => new Data.JsonClientDatabase.Models.Listing
+                    var listings = await top2000Services.AllListingsOfEditionAsync(editions.Year, token);
+                    var forExport = listings.Select(x => new ListingExport()
                         {
-                            EditionId = edition.Year,
-                            Position = listing.Position,
-                            TrackId = listing.TrackId,
-                            PlayUtcDateAndTime = listing.PlayUtcDateAndTime,
-                            Delta = listing.Delta,
-                            DeltaType = (DeltaType)listing.DeltaType,
-                            RecordedYear = tracks[listing.TrackId].RecordedYear,
-                            SearchArtist = tracks[listing.TrackId].SearchArtist,
-                            SearchTitle = tracks[listing.TrackId].SearchTitle,
-                            Artist = tracks[listing.TrackId].Artist,
-                            Title = tracks[listing.TrackId].Title,
+                            Artist = x.Artist,
+                            Title = x.Title,
+                            Position = x.Position,
+                            Delta = x.Delta,
+                            Icon = ListingExport.Transform(x.DeltaType),
+                            IconColour = ListingExport.DeltaColour(x.DeltaType)
                         })
                         .ToList();
 
-                    var fileContent = new Top2000File
-                    {
-                        Listings = listingOfEdition,
-                    };
+                    var json = JsonSerializer.Serialize(forExport);
+                    
+                    var path = Path.Combine(outputPath, editions.Year + ".json");
+                    await File.WriteAllTextAsync(path, json, token);
 
-                    var jsonString = JsonSerializer.Serialize(fileContent, _jsonOptions);
-                    var path = Path.Combine(outputPath, $"{edition.Year}.json");
-                    await File.WriteAllTextAsync(path, jsonString, token);
                 }
                 
-                var versionPath = Path.Combine(outputPath, "version.json");
-                var jsonVersionString = JsonSerializer.Serialize(fileInfo, _jsonOptions);
-                await File.WriteAllTextAsync(versionPath, jsonVersionString, token);
-                taskExporting.Value = 100;
             });
     }
 }

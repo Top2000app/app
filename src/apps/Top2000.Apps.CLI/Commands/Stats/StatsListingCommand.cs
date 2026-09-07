@@ -3,7 +3,7 @@ using Top2000.Features.Listings;
 
 namespace Top2000.Apps.CLI.Commands.Stats;
 
-public class StatsListingCommand(Top2000Services top2000Services) : CommandBase("edition", "Show a specific Top 2000 edition")
+public class StatsListingCommand(ITop2000Services top2000Services) : CommandBase("edition", "Show a specific Top 2000 edition")
 {
     protected override List<Symbol> Symbols =>
     [

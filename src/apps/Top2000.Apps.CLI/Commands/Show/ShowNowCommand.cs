@@ -2,7 +2,7 @@ using Top2000.Features;
 
 namespace Top2000.Apps.CLI.Commands.Show;
 
-public class ShowNowCommand(Top2000Services top2000Services) : CommandBase("now", "Show the currently playing Top 2000 song")
+public class ShowNowCommand(ITop2000Services top2000Services) : CommandBase("now", "Show the currently playing Top 2000 song")
 {
     protected override async Task ExecuteAsync(ParseResult result, CancellationToken token)
     {

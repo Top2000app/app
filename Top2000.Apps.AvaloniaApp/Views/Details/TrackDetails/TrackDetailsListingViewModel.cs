@@ -8,6 +8,7 @@ public class TrackDetailsListingViewModel
 {
     public required int Edition { get; init; }
     public string PositionString => Position?.ToString() ?? "-";
+    public string EditionString => $"({Edition})";
     public required int? Position { get; init; }
     public required string Delta { get; init; }
     public required string DeltaSymbol { get; init; }

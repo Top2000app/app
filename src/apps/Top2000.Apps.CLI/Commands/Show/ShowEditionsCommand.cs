@@ -2,7 +2,7 @@ using Top2000.Features;
 
 namespace Top2000.Apps.CLI.Commands.Show;
 
-public class ShowEditionsCommand(Top2000Services services) : CommandBase("editions", "Show Top 2000 editions")
+public class ShowEditionsCommand(ITop2000Services services) : CommandBase("editions", "Show Top 2000 editions")
 {
     private async Task<int> HandleShowEditionsAsync(ParseResult result, CancellationToken token)
     {

@@ -1,0 +1,46 @@
+import "./styles.scss";
+import { onRouteChange, parseRoute } from "./router";
+import { renderMaster } from "./views/master";
+import { renderDetail } from "./views/detail";
+import { loadEdition, type Track } from "./dataLoader";
+
+const master = document.querySelector(".master") as HTMLElement;
+const detail = document.querySelector(".detail") as HTMLElement;
+
+let cachedTracks: Track[] = [];
+
+async function updateUI(): Promise<void> {
+    const { edition, slug } = parseRoute();
+
+    // Load edition data
+    if (!cachedTracks.length || cachedTracks[0].g !== edition) {
+        try {
+            cachedTracks = await loadEdition(edition);
+        } catch (err) {
+            master.innerHTML = `<p>Edition ${edition} not found.</p>`;
+            return;
+        }
+    }
+
+    const isSmall = window.matchMedia("(max-width: 800px)").matches;
+
+    if (!slug) {
+        renderMaster(master, String(edition), cachedTracks);
+        master.classList.remove("hidden");
+        detail.classList.add("hidden");
+    } else {
+        const track = cachedTracks.find(t => t.s === slug);
+        renderDetail(detail, String(edition), slug, track);
+
+        if (isSmall) {
+            master.classList.add("hidden");
+            detail.classList.remove("hidden");
+        } else {
+            master.classList.remove("hidden");
+            detail.classList.remove("hidden");
+        }
+    }
+}
+
+onRouteChange(updateUI);
+updateUI();

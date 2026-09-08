@@ -14,5 +14,5 @@ builder.AddProject<Projects.Top2000_Data_LocalDb>("DbUp")
     .WithReference(database)
     .WaitFor(database)
     .WithParentRelationship(database);
-    
+
 builder.Build().Run();

@@ -112,7 +112,8 @@ public partial class DetailsViewModel : ObservableObject, IShowTrackDetails
             DeltaSymbolColour =
                 new SolidColorBrush(TrackDetailsListingViewModel.ConvertDeltaSymbolColour(x)),
             Position = x.Position,
-            Status = x.Status
+            Status = x.Status,
+            LocalDateAndTime = x.LocalUtcDateAndTime  
         };
     }
 }

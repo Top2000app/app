@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
@@ -7,8 +8,10 @@ using Top2000.Data.JsonClientDatabase.Models;
 using Top2000.Features;
 using Top2000.Features.Listings;
 using Edition = Top2000.Data.JsonClientDatabase.Models.Edition;
+using Track = Top2000.Apps.CLI.Database.Track;
 
 namespace Top2000.Apps.CLI.Commands.Export;
+
 
 public class EditionExport
 {
@@ -25,11 +28,17 @@ public class ListingExport
     [JsonPropertyName("p")]
     public required int Position { get; init; }
     [JsonPropertyName("d")]
-    public required int Delta { get; init; }
+    public required int? Delta { get; init; }
     [JsonPropertyName("i")]
     public required string Icon { get; init; }
     [JsonPropertyName("c")]
     public required string IconColour { get; init; }
+    
+    [JsonPropertyName("g")]
+    public required double? PlaygroupEpoch { get; init; }
+    
+    [JsonPropertyName("s")]
+    public required string Slug { get; init; }
 
     public static string Transform(TrackListingDeltaType type)
     {
@@ -58,7 +67,7 @@ public class ListingExport
     }
 }
 
-public class ExportJsonCommand(ITop2000Services top2000Services) : CommandBase("json", "Export data to Json format")
+public class ExportJsonCommand(Top2000DbContext dbContext, ITop2000Services top2000Services) : CommandBase("json", "Export data to Json format")
 {
     protected override List<Symbol> Symbols =>
     [
@@ -110,7 +119,65 @@ public class ExportJsonCommand(ITop2000Services top2000Services) : CommandBase("
                 var allEditions = await GetAllEditionsAsync();
                 var version = await top2000Services.DataVersion(token);
 
+                var trackWithSlugs = new Dictionary<int, string>();
+                var slugs = new HashSet<string>();
+                var tracks = await dbContext.Tracks.ToListAsync(token);
+                foreach (var track in tracks)
+                {
+                    var builder = new StringBuilder();
 
+                    var title = string.IsNullOrWhiteSpace(track.SearchTitle)
+                        ? track.Title
+                        : track.SearchTitle;
+
+                    var artist = string.IsNullOrWhiteSpace(track.SearchArtist)
+                        ? track.Artist
+                        : track.SearchArtist;
+
+                    var slug = $"{title}-{artist}"
+                        .Replace("!", "")
+                        .Replace("@", "")
+                        .Replace("#", "")
+                        .Replace("$", "")
+                        .Replace("%", "")
+                        .Replace("^", "")
+                        .Replace("&", "")
+                        .Replace("*", "")
+                        .Replace("(", "")
+                        .Replace(")", "")
+                        .Replace("_", "")
+                        .Replace(".", "")
+                        .Replace("=", "")
+                        .Replace("+", "")
+                        .Replace("{", "")
+                        .Replace("}", "")
+                        .Replace("|", "")
+                        .Replace("/", "")
+                        .Replace("\\", "")
+                        .Replace("[", "")
+                        .Replace("]", "")
+                        .Replace("~", "")
+                        .Replace("`", "")
+                        .Replace("'", "")
+                        .Replace("\"", "")
+                        .Replace(":", "")
+                        .Replace(";", "")
+                        .Replace(" ", "-")
+                        .ToLowerInvariant();
+
+                    while (slug.Contains("--"))
+                    {
+                        slug = slug.Replace("--", "-");
+                    }
+                    
+                    if (!slugs.Add(slug))
+                    {
+                        throw new Exception($"Slug {slug} already added");
+                    }
+                    
+                    trackWithSlugs.Add(track.Id, slug);
+                }
+                
                 var editions = allEditions.Select(x => new EditionExport
                     {
                         Year = x.Year
@@ -119,6 +186,7 @@ public class ExportJsonCommand(ITop2000Services top2000Services) : CommandBase("
 
                 await File.WriteAllTextAsync(Path.Combine(outputPath, "editions.json"), JsonSerializer.Serialize(editions), token);
                 
+                DateTime unixStart = new DateTime(1970, 1, 1);
                 foreach (var edition in editions )
                 {
                     var listings = await top2000Services.AllListingsOfEditionAsync(edition.Year, token);
@@ -127,16 +195,16 @@ public class ExportJsonCommand(ITop2000Services top2000Services) : CommandBase("
                             Artist = x.Artist,
                             Title = x.Title,
                             Position = x.Position,
-                            Delta = x.Delta,
+                            Delta = x.Delta == 0 ? null : x.Delta,
                             Icon = ListingExport.Transform(x.DeltaType),
-                            IconColour = ListingExport.DeltaColour(x.DeltaType)
+                            IconColour = ListingExport.DeltaColour(x.DeltaType),
+                            PlaygroupEpoch = (x.PlayUtcDateAndTime - unixStart).TotalSeconds,
+                            Slug = trackWithSlugs[x.TrackId]
                         })
                         .ToList();
 
                     var json = JsonSerializer.Serialize(forExport);
                     await File.WriteAllTextAsync(Path.Combine(outputPath, edition.Year + ".json"), json, token);
-
-                    
                     
                 }
                 

@@ -4,6 +4,7 @@ using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.Kernel;
 using LiveChartsCore.SkiaSharpView;
+using Top2000.Data.ClientDatabase.Models;
 using Top2000.Features.TrackInformation;
 
 namespace Top2000.Apps.AvaloniaApp.Views.Details.TrackDetails;
@@ -85,6 +86,7 @@ public class DesignTimeTrackDetailsViewModel : TrackDetailsViewModel
                 DeltaSymbolColour = new SolidColorBrush(TrackDetailsListingViewModel.ConvertDeltaSymbolColour(x)),
                 DeltaFontSize = TrackDetailsListingViewModel.ConvertDeltaFontSize(x),
                 Status = x.Status,
+                LocalDateAndTime = DateTime.Now
             })
             .ToList();
 
@@ -168,33 +170,31 @@ public partial class TrackDetailsViewModel : ObservableObject
     
     public double InTop2000 => ((double)Appearances / Listings.Count) * 360d;
 
-    async partial void OnSelectedListingChanged(TrackDetailsListingViewModel? value)
-    {
-        if (value is not null)
-        {
-          //  ParentMainWindowViewModel?.ChangeSelectedEditionAsync(value.Edition, value.Position);
-        }
-    }
+    public bool HasListingInLatestEdition => Listings.First().Position.HasValue;
+
+    public string LatestEditionPlayDate => Listings.First().LocalDateAndTime?.ToString("D") ?? "-";
+
+    public string LatestEditionPlayTime => $"{Listings.First().LocalDateAndTime?.ToString("t") ?? "-"} - {Listings.First().LocalDateAndTime?.AddHours(1).ToString("t") ?? "-"}"; 
     
-    public static double Percentile(List<int> values, double p)
+    private static double Percentile(List<int> values, double p)
     {
         if (values.Count == 0) return 0;
         var sorted = values.OrderBy(x => x).ToList();
-        double index = (sorted.Count - 1) * p;
-        int lower = (int)Math.Floor(index);
-        int upper = (int)Math.Ceiling(index);
+        var index = (sorted.Count - 1) * p;
+        var lower = (int)Math.Floor(index);
+        var upper = (int)Math.Ceiling(index);
         if (lower == upper) return sorted[lower];
-        double fraction = index - lower;
+        var fraction = index - lower;
         return sorted[lower] + fraction * (sorted[upper] - sorted[lower]);
     }
     
     public static (double min, double max) GetZoomRange(List<int?> values)
     {
         var cleanValues = values.Where(x => x.HasValue).Select(x => x.Value).ToList();
-        double yMin = Percentile(cleanValues, 0.02);
-        double yMax = Percentile(cleanValues, 0.98);
+        var yMin = Percentile(cleanValues, 0.02);
+        var yMax = Percentile(cleanValues, 0.98);
 
-        double padding = (yMax - yMin) * 0.1;
+        var padding = (yMax - yMin) * 0.1;
 
         yMin -= padding;
         yMax += padding;
@@ -202,7 +202,7 @@ public partial class TrackDetailsViewModel : ObservableObject
         yMin = Math.Max(1, yMin);
         yMax = Math.Min(2000, yMax);
 
-        double range = yMax - yMin;
+        var range = yMax - yMin;
 
         int step =
             range <= 20 ? 1 :

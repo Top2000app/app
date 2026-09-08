@@ -1,4 +1,4 @@
-<Project Sdk="Aspire.AppHost.Sdk/13.0.0">
+<Project Sdk="Aspire.AppHost.Sdk/13.5.0">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -10,6 +10,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\data\sql\Top2000.Data.LocalDb\Top2000.Data.LocalDb.csproj" />
+      <ProjectReference Include="..\..\Top2000.Apps.CLI\Top2000.Apps.CLI.csproj" />
     </ItemGroup>
 
     <ItemGroup>

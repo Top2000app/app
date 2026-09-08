@@ -15,7 +15,10 @@ public class TrackDetailsListingViewModel
     public required Brush DeltaSymbolColour { get; init; }
     public required double DeltaFontSize { get; init; }
     public required ListingStatus Status { get; init; }
+    public required DateTime? LocalDateAndTime { get; init; }
 
+    
+    
     public static double ConvertDeltaFontSize(ListingInformation listing)
     {
         return listing.Status switch

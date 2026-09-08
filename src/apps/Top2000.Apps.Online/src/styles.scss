@@ -1,0 +1,47 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.master {
+  flex: 1;
+  border-right: 1px solid #ddd;
+  overflow-y: auto;
+}
+
+.detail {
+  flex: 2;
+  overflow-y: auto;
+}
+
+/* Small screens: only one pane visible */
+@media (max-width: 800px) {
+  .app {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .master,
+  .detail {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow-y: auto;
+    background: white; // important so it covers master
+  }
+
+  .hidden {
+    display: none;
+  }
+}
+

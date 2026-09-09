@@ -1,0 +1,92 @@
+body {
+  font-family: sans-serif;
+}
+
+body.light-theme {
+  --grey-button-rest: #e6e6e6;   // light theme rest
+  --grey-button-hover: #d2d2d2;  // light theme hover
+}
+
+.theme-toggle {
+  display: inline-block;
+  padding: 8px 12px;
+  margin: 8px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.stat-equal { color: gray; }
+.stat-up    { color: #4caf50; }
+.stat-down  { color: #f44336; }
+.stat-flag  { color: #ff9800; }
+.stat-repeat{ color: #2196f3; }
+
+$top2000-red: #DA161C;
+$grey-button-rest: #3b3b3b;
+$light-button-rest: #cbcbcb;
+$stat-equal: gray;
+$stat-up: #4caf50;
+$stat-down: #f44336;
+$stat-flag: #ff9800;
+$stat-repeat: #2196f3;
+
+body.light-theme {
+  .filter-buttons {
+    .btn {
+      background-color: $light-button-rest;
+      border-color: $light-button-rest;
+    }
+
+    .btn:hover {
+      background-color: darken($light-button-rest, 5%);
+      border-color: darken($light-button-rest, 5%);
+    }
+  }
+}
+
+.filter-buttons {
+  .btn {
+    background-color: $grey-button-rest;
+    border-color: $grey-button-rest;
+  }
+
+
+
+  .btn:hover {
+    background-color: darken($grey-button-rest, 5%);
+    border-color: darken($grey-button-rest, 5%);
+  }
+
+
+  
+  .btn.stat-equal:hover {
+    color: $stat-equal;
+  }
+  
+  .btn.stat-up:hover {
+    color: $stat-up;
+  }
+  
+  .btn.stat-down:hover {
+    color: $stat-down;
+  }
+  
+  .btn.stat-flag:hover {
+    color: $stat-flag;
+  }
+  
+  .btn.stat-repeat:hover {
+    color: $stat-repeat;
+  }
+
+  .btn-check:checked + .btn {
+    background-color: $top2000-red;
+    border-color: $top2000-red;
+  }
+
+  .btn-check:checked + .btn:hover {
+    background-color: darken($top2000-red, 10%);
+    border-color: darken($top2000-red, 10%);
+    color: white;
+  }
+}

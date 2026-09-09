@@ -1,21 +1,31 @@
 export interface Track {
-    t: string;   // title
-    a: string;   // artist
-    p: number;   // position
-    i: string;   // icon type
-    c: string;   // color
-    g: number;   // play group (epoch)
-    d?: number;  // delta (optional)
-    s: string;   // slug
+    title: string;
+    artist: string;
+    position: number;
+    icon: string;
+    colour: string;
+    group: number;
+    delta?: number;
+    slug: string;
+}
+
+function mapTrack(raw: any): Track {
+    return {
+        title: raw.t,
+        artist: raw.a,
+        position: raw.p,
+        icon: raw.i,
+        colour: raw.c,
+        group: raw.g,
+        delta: raw.d,
+        slug: raw.s
+    };
 }
 
 export async function loadEdition(edition: number): Promise<Track[]> {
     const url = `/data/${edition}.json`;
-
     const response = await fetch(url);
-    if (!response.ok) {
-        throw new Error(`Edition ${edition} not found`);
-    }
 
-    return await response.json();
+    const rawList = await response.json();
+    return rawList.map(mapTrack);
 }

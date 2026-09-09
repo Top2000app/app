@@ -16,13 +16,13 @@ export function renderDetail(
     }
 
     container.innerHTML = `
-    <h2>${track.t}</h2>
-    <p>Artist: ${track.a}</p>
-    <p>Position: ${track.p}</p>
-    <p>Icon: ${track.i}</p>
-    <p>Color: ${track.c}</p>
-    <p>Group: ${track.g}</p>
-    ${track.d ? `<p>Delta: ${track.d}</p>` : ""}
+    <h2>${track.title}</h2>
+    <p>Artist: ${track.artist}</p>
+    <p>Position: ${track.position}</p>
+    <p>Icon: ${track.icon}</p>
+    <p>Color: ${track.colour}</p>
+    <p>Group: ${track.group}</p>
+    ${track.delta ? `<p>Delta: ${track.delta}</p>` : ""}
     <a href="#/${year}">Back</a>
   `;
 }

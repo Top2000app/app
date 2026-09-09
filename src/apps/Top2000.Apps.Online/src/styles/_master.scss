@@ -1,0 +1,136 @@
+.master {
+  display: flex;
+  flex-direction: column;
+}
+
+/* HEADER */
+.master-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.master-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 22px;
+}
+
+
+/* STATS ROW */
+.filter-buttons {
+  display: flex;
+  gap: 16px;
+  padding: 8px 16px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.track-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.track-item {
+  padding: 0;
+  border: none;
+}
+
+.track-link {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.track-position {
+  width: 32px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.track-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.track-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.track-artist {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.track-delta-icon {
+  font-size: 22px;
+}
+
+.track-delta-value {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.master-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+}
+
+.master-filters {
+  display: flex;
+  gap: 8px;
+}
+
+.filter-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.master-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.edition-label {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 22px;
+}
+

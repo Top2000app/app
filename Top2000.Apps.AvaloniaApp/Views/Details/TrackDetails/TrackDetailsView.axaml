@@ -117,7 +117,7 @@
                                     Foreground="{StaticResource Top2000Colour}"
                                     >
                 <lvc:CartesianChart.XAxes>
-                        <lvc:XamlAxis ForceStepToMin="true" MinStep="1" MinLimit="1999" MaxLimit="2025" />
+                        <lvc:XamlAxis ForceStepToMin="true" MinStep="1" MinLimit="1999" MaxLimit="2025" MinSeparators="2" />
                     </lvc:CartesianChart.XAxes>
                     
                  <lvc:CartesianChart.YAxes>

@@ -195,7 +195,7 @@ public class ExportJsonCommand(Top2000DbContext dbContext, ITop2000Services top2
                             Artist = x.Artist,
                             Title = x.Title,
                             Position = x.Position,
-                            Delta = x.Delta == 0 ? null : x.Delta,
+                            Delta = x.Delta == 0 ? null : Math.Abs(x.Delta),
                             Icon = ListingExport.Transform(x.DeltaType),
                             IconColour = ListingExport.DeltaColour(x.DeltaType),
                             PlaygroupEpoch = (x.PlayUtcDateAndTime - unixStart).TotalSeconds,

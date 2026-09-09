@@ -1,4 +1,4 @@
-import "./styles.scss";
+import "./styles/main.scss";
 import { onRouteChange, parseRoute } from "./router";
 import { renderMaster } from "./views/master";
 import { renderDetail } from "./views/detail";
@@ -8,12 +8,17 @@ const master = document.querySelector(".master") as HTMLElement;
 const detail = document.querySelector(".detail") as HTMLElement;
 
 let cachedTracks: Track[] = [];
+const themeToggle = document.getElementById("theme-toggle") as HTMLElement;
+
+themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("light-theme");
+});
 
 async function updateUI(): Promise<void> {
     const { edition, slug } = parseRoute();
 
     // Load edition data
-    if (!cachedTracks.length || cachedTracks[0].g !== edition) {
+    if (!cachedTracks.length) {
         try {
             cachedTracks = await loadEdition(edition);
         } catch (err) {
@@ -29,7 +34,7 @@ async function updateUI(): Promise<void> {
         master.classList.remove("hidden");
         detail.classList.add("hidden");
     } else {
-        const track = cachedTracks.find(t => t.s === slug);
+        const track = cachedTracks.find(t => t.slug === slug);
         renderDetail(detail, String(edition), slug, track);
 
         if (isSmall) {

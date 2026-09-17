@@ -87,6 +87,4 @@ export function renderMaster(
      
         ul.appendChild(fragment);
     });
-
-
 }

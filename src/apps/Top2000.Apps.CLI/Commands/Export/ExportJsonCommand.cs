@@ -32,11 +32,14 @@ public class ListingExport
     [JsonPropertyName("i")]
     public required int Icon { get; init; }
     
-    [JsonPropertyName("g")]
+    [JsonPropertyName("z")]
     public required double? PlaygroupEpoch { get; init; }
     
     [JsonPropertyName("s")]
     public required string Slug { get; init; }
+
+    [JsonPropertyName("g")]
+    public required string Group { get; set; }
 
 }
 
@@ -171,7 +174,8 @@ public class ExportJsonCommand(Top2000DbContext dbContext, ITop2000Services top2
                             Delta = x.Delta == 0 ? null : Math.Abs(x.Delta),
                             Icon = (int)x.DeltaType,
                             PlaygroupEpoch = (x.PlayUtcDateAndTime - unixStart).TotalSeconds,
-                            Slug = trackWithSlugs[x.TrackId]
+                            Slug = trackWithSlugs[x.TrackId],
+                            Group = GroupExtensions.Position(x.Position, listings.Count)
                         })
                         .ToList();
 

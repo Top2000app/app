@@ -5,7 +5,8 @@ export interface Track {
     artist: string;
     position: number;
     icon: TrackListingDeltaType;
-    group: number;
+    group: string;
+    epoch: number;
     delta?: number;
     slug: string;
 }
@@ -16,6 +17,7 @@ function mapTrack(raw: any): Track {
         artist: raw.a,
         position: raw.p,
         icon: raw.i as TrackListingDeltaType,
+        epoch: raw.z,
         group: raw.g,
         delta: raw.d,
         slug: raw.s

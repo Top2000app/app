@@ -41,7 +41,9 @@
               <label class="btn stat-repeat" for="btn-filter-stat-repeat">⟳ 59</label>
           </div>
           <!-- TRACK LIST -->
-          <ul class="track-list"></ul>
+          <ul class="track-list">
+              
+          </ul>
 
       </div>
 
@@ -51,15 +53,20 @@
   <template id="track-item-template">
       <li class="track-item">
           <a class="track-link">
-              <span class="track-position"></span>
+              
+              <div class="track-position">
+                  <span class="track-position-value"></span>
+                  <div class="track-status">
+                      <span class="material-symbols-outlined track-delta-icon"></span>
+                      <span class="track-delta-value"></span>
+                  </div>
+              </div>
 
               <div class="track-main">
                   <span class="track-title"></span>
                   <span class="track-artist"></span>
               </div>
 
-              <span class="material-symbols-outlined track-delta-icon"></span>
-              <span class="track-delta-value"></span>
           </a>
       </li>
   </template>

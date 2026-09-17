@@ -1,3 +1,5 @@
+@use "sass:color";
+
 body {
   font-family: sans-serif;
 }
@@ -19,7 +21,7 @@ body.light-theme {
 .stat-up    { color: #4caf50; }
 .stat-down  { color: #f44336; }
 .stat-flag  { color: #ff9800; }
-.stat-repeat{ color: #2196f3; }
+.stat-repeat{ color: #ff9800; }
 
 $top2000-red: #DA161C;
 $grey-button-rest: #3b3b3b;
@@ -28,7 +30,7 @@ $stat-equal: gray;
 $stat-up: #4caf50;
 $stat-down: #f44336;
 $stat-flag: #ff9800;
-$stat-repeat: #2196f3;
+$stat-repeat: #ff9800;
 
 body.light-theme {
   .filter-buttons {
@@ -38,8 +40,16 @@ body.light-theme {
     }
 
     .btn:hover {
-      background-color: darken($light-button-rest, 5%);
-      border-color: darken($light-button-rest, 5%);
+      //background-color: darken($light-button-rest, 5%);
+      //border-color: darken($light-button-rest, 5%);
+      background-color: color.scale($light-button-rest, $lightness: 20%);
+      border-color: color.scale($light-button-rest, $lightness: 20%);
+    }
+
+    .btn-check:checked + .btn {
+      background-color: $top2000-red;
+      border-color: $top2000-red;
+      color: white;
     }
   }
 }
@@ -50,14 +60,12 @@ body.light-theme {
     border-color: $grey-button-rest;
   }
 
-
-
   .btn:hover {
-    background-color: darken($grey-button-rest, 5%);
-    border-color: darken($grey-button-rest, 5%);
+   // background-color: darken($grey-button-rest, 5%);
+    //border-color: darken($grey-button-rest, 5%);
+    background-color: color.scale($grey-button-rest, $lightness: -20%);
+    border-color: color.scale($grey-button-rest, $lightness: -20%);
   }
-
-
   
   .btn.stat-equal:hover {
     color: $stat-equal;
@@ -85,8 +93,10 @@ body.light-theme {
   }
 
   .btn-check:checked + .btn:hover {
-    background-color: darken($top2000-red, 10%);
-    border-color: darken($top2000-red, 10%);
+    //background-color: darken($top2000-red, 10%);
+    //border-color: darken($top2000-red, 10%);
+    background-color: color.scale($top2000-red, $lightness: -10%);
+    border-color: color.scale($top2000-red, $lightness: -10%);
     color: white;
   }
 }

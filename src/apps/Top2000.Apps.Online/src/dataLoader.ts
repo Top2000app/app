@@ -1,9 +1,10 @@
+import {TrackListingDeltaType} from "./trackListingDeltaType.ts";
+
 export interface Track {
     title: string;
     artist: string;
     position: number;
-    icon: string;
-    colour: string;
+    icon: TrackListingDeltaType;
     group: number;
     delta?: number;
     slug: string;
@@ -14,8 +15,7 @@ function mapTrack(raw: any): Track {
         title: raw.t,
         artist: raw.a,
         position: raw.p,
-        icon: raw.i,
-        colour: raw.c,
+        icon: raw.i as TrackListingDeltaType,
         group: raw.g,
         delta: raw.d,
         slug: raw.s

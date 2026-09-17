@@ -30,9 +30,7 @@ public class ListingExport
     [JsonPropertyName("d")]
     public required int? Delta { get; init; }
     [JsonPropertyName("i")]
-    public required string Icon { get; init; }
-    [JsonPropertyName("c")]
-    public required string IconColour { get; init; }
+    public required int Icon { get; init; }
     
     [JsonPropertyName("g")]
     public required double? PlaygroupEpoch { get; init; }
@@ -40,31 +38,6 @@ public class ListingExport
     [JsonPropertyName("s")]
     public required string Slug { get; init; }
 
-    public static string Transform(TrackListingDeltaType type)
-    {
-        return type switch
-        {
-            TrackListingDeltaType.NoChange => "equal",
-            TrackListingDeltaType.Increased => "arrow_upward",
-            TrackListingDeltaType.Decreased => "arrow_downward",
-            TrackListingDeltaType.New => "flag",
-            TrackListingDeltaType.Recurring => "replay",
-            _ => "equal"
-        };
-    }
-
-    public static string DeltaColour(TrackListingDeltaType type)
-    {
-        return type switch
-        {
-            TrackListingDeltaType.NoChange => "grey",
-            TrackListingDeltaType.Increased =>  "green",
-            TrackListingDeltaType.Decreased => "red",
-            TrackListingDeltaType.New => "yellow",
-            TrackListingDeltaType.Recurring => "yellow",
-            _ => "grey"
-        };
-    }
 }
 
 public class ExportJsonCommand(Top2000DbContext dbContext, ITop2000Services top2000Services) : CommandBase("json", "Export data to Json format")
@@ -186,7 +159,7 @@ public class ExportJsonCommand(Top2000DbContext dbContext, ITop2000Services top2
 
                 await File.WriteAllTextAsync(Path.Combine(outputPath, "editions.json"), JsonSerializer.Serialize(editions), token);
                 
-                DateTime unixStart = new DateTime(1970, 1, 1);
+                var unixStart = new DateTime(1970, 1, 1);
                 foreach (var edition in editions )
                 {
                     var listings = await top2000Services.AllListingsOfEditionAsync(edition.Year, token);
@@ -196,14 +169,13 @@ public class ExportJsonCommand(Top2000DbContext dbContext, ITop2000Services top2
                             Title = x.Title,
                             Position = x.Position,
                             Delta = x.Delta == 0 ? null : Math.Abs(x.Delta),
-                            Icon = ListingExport.Transform(x.DeltaType),
-                            IconColour = ListingExport.DeltaColour(x.DeltaType),
+                            Icon = (int)x.DeltaType,
                             PlaygroupEpoch = (x.PlayUtcDateAndTime - unixStart).TotalSeconds,
                             Slug = trackWithSlugs[x.TrackId]
                         })
                         .ToList();
 
-                    var json = JsonSerializer.Serialize(forExport);
+                    var json = JsonSerializer.Serialize(forExport, _jsonOptions);
                     await File.WriteAllTextAsync(Path.Combine(outputPath, edition.Year + ".json"), json, token);
                     
                 }

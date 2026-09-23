@@ -14,6 +14,28 @@ themeToggle.addEventListener("click", () => {
     document.body.classList.toggle("light-theme");
 });
 
+const groupMenu = document.getElementById("group-list-menu") as HTMLElement;
+
+groupMenu.addEventListener("click", (e) => {
+    const target = e.target as HTMLElement;
+
+    // Was a dropdown item clicked?
+    const item = target.closest(".dropdown-item") as HTMLElement | null;
+    console.log(item);
+    if (!item) return;
+
+    e.preventDefault();
+
+    const group = item.dataset.group;
+    console.log(group);
+    if (!group) return;
+
+    document.getElementById(`group-${group}`)?.scrollIntoView({
+        behavior: "auto",
+        block: "start"
+    });
+});
+
 async function updateUI(): Promise<void> {
     const { edition, slug } = parseRoute();
 

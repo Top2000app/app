@@ -38,9 +38,11 @@ public class ListingExport
     [JsonPropertyName("s")]
     public required string Slug { get; init; }
 
-    [JsonPropertyName("g")]
-    public required string Group { get; set; }
+    [JsonPropertyName("gs")]
+    public required int GroupStart { get; set; }
 
+    [JsonPropertyName("ge")]
+    public required int GroupEnd { get; set; }
 }
 
 public class ExportJsonCommand(Top2000DbContext dbContext, ITop2000Services top2000Services) : CommandBase("json", "Export data to Json format")
@@ -167,17 +169,18 @@ public class ExportJsonCommand(Top2000DbContext dbContext, ITop2000Services top2
                 {
                     var listings = await top2000Services.AllListingsOfEditionAsync(edition.Year, token);
                     var forExport = listings.Select(x => new ListingExport()
-                        {
-                            Artist = x.Artist,
-                            Title = x.Title,
-                            Position = x.Position,
-                            Delta = x.Delta == 0 ? null : Math.Abs(x.Delta),
-                            Icon = (int)x.DeltaType,
-                            PlaygroupEpoch = (x.PlayUtcDateAndTime - unixStart).TotalSeconds,
-                            Slug = trackWithSlugs[x.TrackId],
-                            Group = GroupExtensions.Position(x.Position, listings.Count)
-                        })
-                        .ToList();
+                    {
+                        Artist = x.Artist,
+                        Title = x.Title,
+                        Position = x.Position,
+                        Delta = x.Delta == 0 ? null : Math.Abs(x.Delta),
+                        Icon = (int)x.DeltaType,
+                        PlaygroupEpoch = (x.PlayUtcDateAndTime - unixStart).TotalSeconds,
+                        Slug = trackWithSlugs[x.TrackId],
+                        GroupStart = int.Parse(GroupExtensions.Position(x.Position, listings.Count).Split('-')[0].Trim()),
+                        GroupEnd = int.Parse(GroupExtensions.Position(x.Position, listings.Count).Split('-')[1].Trim())
+                    })
+                    .ToList();
 
                     var json = JsonSerializer.Serialize(forExport, _jsonOptions);
                     await File.WriteAllTextAsync(Path.Combine(outputPath, edition.Year + ".json"), json, token);

@@ -87,16 +87,20 @@
   display: grid;
   grid-template-columns: 75px minmax(0, 1fr);
   column-gap: 30px;
-  padding: 12px 16px;
+  padding: 6px 8px;
   text-decoration: none;
 
   width: 100%;
 }
 
+.group-title {
+  padding: 6px 8px;
+  color: #DA161C;
+}
+
 .track-position {
   width: 75px;
 }
-
 
 .track-main {
   flex: 1;
@@ -104,15 +108,16 @@
   flex-direction: column;
 }
 
+.group-title,
 .track-position-value,
 .track-title {
   font-size: 20px;
-  font-weight: 600;
+  
 }
 
 .track-artist {
   font-size: 18px;
-  opacity: 0.8;
+  opacity: 0.5;
 }
 
 .track-status{

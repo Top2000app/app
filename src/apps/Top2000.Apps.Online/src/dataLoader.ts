@@ -5,7 +5,8 @@ export interface Track {
     artist: string;
     position: number;
     icon: TrackListingDeltaType;
-    group: string;
+    groupStart: number;
+    groupEnd: number;
     epoch: number;
     delta?: number;
     slug: string;
@@ -18,11 +19,14 @@ function mapTrack(raw: any): Track {
         position: raw.p,
         icon: raw.i as TrackListingDeltaType,
         epoch: raw.z,
-        group: raw.g,
+        groupStart: raw.gs,
+        groupEnd: raw.ge,
         delta: raw.d,
         slug: raw.s
     };
 }
+
+
 
 export async function loadEdition(edition: number): Promise<Track[]> {
     const url = `/data/${edition}.json`;

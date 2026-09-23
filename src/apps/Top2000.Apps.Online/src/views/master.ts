@@ -29,24 +29,44 @@ export function renderMaster(
     }
 
     const ul = container.querySelector(".track-list") as HTMLElement;
-    if (!ul) {
-        console.error("track-list element not found in master HTML");
-        return;
-    }
-
-    const template = document.getElementById(
-        "track-item-template"
-    ) as HTMLTemplateElement;
-
+    const groupList = document.getElementById("group-list-menu") as HTMLElement;
+    const template = document.getElementById("track-item-template") as HTMLTemplateElement;
+    const groupTemplate = document.getElementById("group-template") as HTMLTemplateElement;
+    const groupListItemTemplate = document.getElementById("group-list-item-template") as HTMLTemplateElement;
+    
     if (!template) {
         console.error("track-item-template not found");
         return;
     }
 
     ul.innerHTML = "";
+    let group = "";
 
     tracks.forEach(track => {
+        let newGroup = `${track.groupStart} - ${track.groupEnd}`
 
+        if (group !== newGroup) {
+            group = newGroup;
+
+            // add a group to the track list
+            let newGroupData = `${track.groupStart}_${track.groupEnd}`;
+            const groupFragment = groupTemplate.content.cloneNode(true) as HTMLTemplateElement;
+            const groupTitle = groupFragment.querySelector(".group-title") as HTMLElement;
+            const groupIl = groupFragment.querySelector(".track-group-item") as HTMLElement;
+            groupTitle.textContent = newGroup;
+            groupIl.id = `group-${newGroupData}`;
+            
+            ul.appendChild(groupFragment);
+            
+            // Add as group menu item
+            const groupListItemFragment = groupListItemTemplate.content.cloneNode(true) as HTMLTemplateElement;
+            const groupListItem = groupListItemFragment.querySelector(".group-list-item") as HTMLElement;
+            groupListItem.textContent = newGroup;
+            groupListItem.dataset.group = newGroupData;
+            
+            groupList.appendChild(groupListItem);
+        }
+        
         // Clone template
         const fragment = template.content.cloneNode(true) as DocumentFragment;
 

@@ -39,17 +39,35 @@
               
               <input type="checkbox" class="btn-check" id="btn-filter-stat-repeat" autocomplete="off">
               <label class="btn stat-repeat" for="btn-filter-stat-repeat">⟳ 59</label>
+
+              <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <span class="material-symbols-outlined">layers</span>
+                  </button>
+                  <ul class="dropdown-menu" id="group-list-menu">
+                  </ul>
+              </div>
           </div>
           <!-- TRACK LIST -->
           <ul class="track-list">
-              
           </ul>
-
       </div>
 
       <div class="detail"></div>
   </div>
+  
+  <template id="group-list-item-template">
+      <li>
+          <a class="dropdown-item group-list-item" href="#"></a>
+      </li>
+  </template>
 
+  <template id="group-template">
+      <li class="track-group-item">
+          <div class="group-title"></div>
+      </li>
+  </template>
+  
   <template id="track-item-template">
       <li class="track-item">
           <a class="track-link">
@@ -70,7 +88,6 @@
           </a>
       </li>
   </template>
-  
 
   <script type="module" src="/src/main.ts"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>

@@ -4,14 +4,40 @@ using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Top2000.Apps.CLI.Database;
 using Top2000.Data.JsonClientDatabase;
-using Top2000.Data.JsonClientDatabase.Models;
 using Top2000.Features;
 using Top2000.Features.Listings;
+using Top2000.Features.TrackInformation;
 using Edition = Top2000.Data.JsonClientDatabase.Models.Edition;
-using Track = Top2000.Apps.CLI.Database.Track;
 
 namespace Top2000.Apps.CLI.Commands.Export;
 
+public class TrackExport
+{
+    [JsonPropertyName("r")]
+    public required int RecordedYear { get; init; }
+    
+    [JsonPropertyName("l")]
+    public required TrackListingExport[] Listings { get; init; }
+    
+}
+
+public class TrackListingExport
+{
+    [JsonPropertyName("e")]
+    public required int Edition { get; init; }
+
+    [JsonPropertyName("p")]
+    public required int? Position { get; init; }
+
+    [JsonPropertyName("t")]
+    public required DateTime? PlayUtcDateAndTime { get; init; }
+
+    [JsonPropertyName("d")]
+    public required int? Delta { get; init; }
+
+    [JsonPropertyName("s")]
+    public required ListingStatus Status { get; init; }
+}
 
 public class EditionExport
 {
@@ -61,7 +87,6 @@ public class ExportJsonCommand(Top2000DbContext dbContext, ITop2000Services top2
         PropertyNamingPolicy = new ShortNameNamingPolicy(),
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
-
   
     private async Task<List<Edition>> GetAllEditionsAsync()
     {
@@ -154,6 +179,24 @@ public class ExportJsonCommand(Top2000DbContext dbContext, ITop2000Services top2
                     }
                     
                     trackWithSlugs.Add(track.Id, slug);
+                    
+                    var trackDetails = await top2000Services.TrackDetailsAsync(track.Id, token);
+                    var trackExport = new TrackExport()
+                    {
+                        RecordedYear = trackDetails.RecordedYear,
+                        Listings = trackDetails.Listings
+                            .Select(x => new TrackListingExport
+                            {
+                                Delta = x.Delta,
+                                Edition = x.Edition,
+                                Position = x.Position,
+                                PlayUtcDateAndTime = x.PlayUtcDateAndTime,
+                                Status = x.Status,
+                            }).ToArray()
+                    };
+                    
+                    var json = JsonSerializer.Serialize(trackExport, _jsonOptions);
+                    await File.WriteAllTextAsync(Path.Combine(outputPath, slug + ".json"), json, token);
                 }
                 
                 var editions = allEditions.Select(x => new EditionExport
@@ -186,7 +229,6 @@ public class ExportJsonCommand(Top2000DbContext dbContext, ITop2000Services top2
                     await File.WriteAllTextAsync(Path.Combine(outputPath, edition.Year + ".json"), json, token);
                     
                 }
-                
             });
     }
 }

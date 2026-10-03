@@ -191,7 +191,7 @@ public class ExportJsonCommand(Top2000DbContext dbContext, ITop2000Services top2
                         Listings = trackDetails.Listings
                             .Select(x => new TrackListingExport
                             {
-                                Delta = x.Delta,
+                                Delta = x.Delta is null or 0 ? null : Math.Abs(x.Delta ?? 0),
                                 Edition = x.Edition,
                                 Position = x.Position,
                                 PlayUtcDateAndTimeEpoch = (x.PlayUtcDateAndTime - unixStart)?.TotalSeconds,

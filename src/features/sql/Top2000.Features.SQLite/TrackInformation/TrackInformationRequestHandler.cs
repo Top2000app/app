@@ -41,7 +41,7 @@ public class TrackInformationFeature : ITrackInformation
         Track track;
         await using (var cmd = _connection.CreateCommand())
         {
-            cmd.CommandText = "SELECT Id, Title, Artist, RecordedYear FROM Track WHERE Id = $trackId";
+            cmd.CommandText = "SELECT Id, Title, Artist, RecordedYear, SpotifyTrackId FROM Track WHERE Id = $trackId";
             cmd.Parameters.AddWithValue("$trackId", trackId);
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             if (!await reader.ReadAsync(cancellationToken))
@@ -53,7 +53,10 @@ public class TrackInformationFeature : ITrackInformation
                 Id = reader.GetInt32(reader.GetOrdinal("Id")),
                 Title = reader.GetString(reader.GetOrdinal("Title")),
                 Artist = reader.GetString(reader.GetOrdinal("Artist")),
-                RecordedYear = reader.GetInt32(reader.GetOrdinal("RecordedYear"))
+                RecordedYear = reader.GetInt32(reader.GetOrdinal("RecordedYear")),
+                SpotifyTrackId = reader.IsDBNull(reader.GetOrdinal("SpotifyTrackId")) 
+                    ? null 
+                    : reader.GetString(reader.GetOrdinal("SpotifyTrackId")),
             };
         }
 
@@ -73,6 +76,7 @@ public class TrackInformationFeature : ITrackInformation
 
         return new TrackDetails
         {
+            SpotifyTrackId = track.SpotifyTrackId,
             Title = track.Title,
             Artist = track.Artist,
             RecordedYear = track.RecordedYear,

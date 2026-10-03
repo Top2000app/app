@@ -10,4 +10,5 @@ public class Track
     public string? SearchTitle { get; set; }
     public string? SearchArtist { get; set; }
     public int RecordedYear { get; set; }
+    public string? SpotifyTrackId { get; set; }
 }

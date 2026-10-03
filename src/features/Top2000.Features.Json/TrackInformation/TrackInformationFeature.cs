@@ -20,6 +20,7 @@ public class TrackInformationFeature : ITrackInformation
         {
             return Task.FromResult(new TrackDetails()
             {
+                SpotifyTrackId = null,
                 Listings = [],
                 Artist = "TILT",
                 Title = "Track not found",
@@ -60,6 +61,7 @@ public class TrackInformationFeature : ITrackInformation
         
         var trackDetails = new TrackDetails
         {
+            SpotifyTrackId = track.SpotifyTrackId,
             Title = track.Title,
             Artist = track.Artist,
             RecordedYear =  track.RecordedYear,

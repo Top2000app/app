@@ -1,0 +1,1 @@
+ALTER TABLE Track ADD SpotifyTrackId NVARCHAR(25);

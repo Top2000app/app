@@ -6,6 +6,7 @@ using Top2000.Apps.CLI.Commands.Export;
 using Top2000.Apps.CLI.Commands;
 using Top2000.Apps.CLI.Commands.Info;
 using Top2000.Apps.CLI.Commands.Search;
+using Top2000.Apps.CLI.Commands.SpotifyHelper;
 using Top2000.Apps.CLI.Commands.Stats;
 using Top2000.Apps.CLI.Database;
 using Top2000.Features;
@@ -48,7 +49,11 @@ host.Services
 
 host.Services.AddCommand<InfoCommand>()
     ;
-
+/*
+host.Services
+    .AddCommand<SpotifyCommand>()
+    ;
+*/
 var app = host.Build();
 
 await app.Services

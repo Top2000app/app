@@ -10,4 +10,6 @@ public class Track
     public string? SearchTitle { get; init; }
     
     public string? SearchArtist { get; init; }
+    
+    public string? SpotifyTrackId { get; init; }
 }

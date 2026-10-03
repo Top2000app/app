@@ -7,6 +7,8 @@ public class TrackDetails
     public required string Artist { get; init; }
 
     public required int RecordedYear { get; init; }
+    
+    public required string? SpotifyTrackId { get; init; }
 
     public required SortedSet<ListingInformation> Listings { get; init;  }
 

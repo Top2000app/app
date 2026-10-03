@@ -19,6 +19,9 @@ public class Track
     [MaxLength(100)]
     public string? SearchArtist { get; init; }
     
+    [MaxLength(25)]
+    public string? SpotifyTrackId { get; init; }
+    
     [JsonIgnore]
     public ICollection<Listing> Listings { get; init; } = [];
 }

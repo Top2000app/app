@@ -79,6 +79,7 @@ public class MockupTop2000Services : ITop2000Services
         var edition = DateTime.Now.Year;
         var details = new TrackDetails
         {
+            SpotifyTrackId = null,
             Artist = "The song was played by Artist A",
             Title = "The is some song Title that is nice to look at",
             RecordedYear = 2020,

@@ -19,6 +19,8 @@ public class TrackExport
     [JsonPropertyName("l")]
     public required TrackListingExport[] Listings { get; init; }
     
+    [JsonPropertyName("s")]
+    public required string? SpotifyTrackId { get; init; }
 }
 
 public class TrackListingExport
@@ -30,7 +32,7 @@ public class TrackListingExport
     public required int? Position { get; init; }
 
     [JsonPropertyName("t")]
-    public required DateTime? PlayUtcDateAndTime { get; init; }
+    public required double? PlayUtcDateAndTimeEpoch { get; init; }
 
     [JsonPropertyName("d")]
     public required int? Delta { get; init; }
@@ -104,6 +106,7 @@ public class ExportJsonCommand(Top2000DbContext dbContext, ITop2000Services top2
     protected override async Task ExecuteAsync(ParseResult result, CancellationToken token)
     {
         var outputPath = result.GetValue<string>("--output") ?? "";
+        var unixStart = new DateTime(1970, 1, 1);
 
         // Single Progress session to avoid concurrency issues
         await AnsiConsole.Progress()
@@ -183,6 +186,7 @@ public class ExportJsonCommand(Top2000DbContext dbContext, ITop2000Services top2
                     var trackDetails = await top2000Services.TrackDetailsAsync(track.Id, token);
                     var trackExport = new TrackExport()
                     {
+                        SpotifyTrackId = trackDetails.SpotifyTrackId,
                         RecordedYear = trackDetails.RecordedYear,
                         Listings = trackDetails.Listings
                             .Select(x => new TrackListingExport
@@ -190,7 +194,7 @@ public class ExportJsonCommand(Top2000DbContext dbContext, ITop2000Services top2
                                 Delta = x.Delta,
                                 Edition = x.Edition,
                                 Position = x.Position,
-                                PlayUtcDateAndTime = x.PlayUtcDateAndTime,
+                                PlayUtcDateAndTimeEpoch = (x.PlayUtcDateAndTime - unixStart)?.TotalSeconds,
                                 Status = x.Status,
                             }).ToArray()
                     };
@@ -207,7 +211,6 @@ public class ExportJsonCommand(Top2000DbContext dbContext, ITop2000Services top2
 
                 await File.WriteAllTextAsync(Path.Combine(outputPath, "editions.json"), JsonSerializer.Serialize(editions), token);
                 
-                var unixStart = new DateTime(1970, 1, 1);
                 foreach (var edition in editions )
                 {
                     var listings = await top2000Services.AllListingsOfEditionAsync(edition.Year, token);
